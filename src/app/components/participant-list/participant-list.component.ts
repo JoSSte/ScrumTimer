@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Participant } from "../../models/Participant";
+import { ParticipantService } from "../../services/participant/participant.service";
+
 
 @Component({
   selector: 'app-participant-list',
@@ -7,16 +9,26 @@ import { Participant } from "../../models/Participant";
   styleUrls: ['./participant-list.component.css']
 })
 export class ParticipantListComponent implements OnInit {
-  newParticipant: Participant;
-  participantList: Participant[] = [
-    { "init": "JSS", "name": "Jonas Stevnsvig" },
-    { "init": "RKI", "name": "Rasmus K" },
-    { "init": "JB", "name": "Joacim B" },
-    { "init": "RKT", "name": "Ronni KT" }
-  ];
-  constructor() { }
+  init: string="";
+  name: string="";
+  participantList: Participant[];
+  constructor(public participantService: ParticipantService) {
+
+  }
 
   ngOnInit() {
+    this.participantList = this.participantService.getParticipants();
+  }
+
+  addParticipant() {
+    if(this.init.length > 1 && this.name.length > 2)
+    this.participantService.addParticipant({ "init": this.init, "name": this.name });
+    this.init = "";
+    this.name = "";
+  }
+
+  removeParticipant(participant:Participant){
+    this.participantService.removeParticipant(participant);
   }
 
 }
