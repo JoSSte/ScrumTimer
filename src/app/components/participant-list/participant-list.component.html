@@ -1,0 +1,35 @@
+<div class="row">
+  <div class="col-md-6 offset-md-3">
+    <form (submit)="submitParticipant()">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Initials</th>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let participant of participantList">
+          <td>
+            {{ participant.init }}
+          </td>
+          <td>
+            {{ participant.name }}
+          </td>
+          <td>
+            <button class="btn btn-danger btn-sm" (click)="deleteParticipant(participant.id)">delete</button>
+          </td>
+        </tr>
+      </tbody>
+
+      <tfoot>
+        <tr>
+          <td><input type="text" id="init" name="init"></td>
+          <td><input type="text" id="name" name="name"></td>
+          <td><button type="submit" class="btn btn-sm btn-primary">Add</button></td>
+        </tr>
+      </tfoot>
+    </table>
+    </form>
+  </div>
+</div>
