@@ -4,19 +4,23 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 //import { Timer } from 'angular-timer'; // AngularJS - not 4??
 
+//Services
+import { ParticipantService } from './services/participant/participant.service';
 
 // Components
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { TimerComponent } from './components/timer/timer.component';
 import { ParticipantListComponent } from './components/participant-list/participant-list.component';
+import { SettingsComponent } from './components/settings/settings.component';
 
-//Services
-import { ParticipantService } from './services/participant/participant.service';
+
+
 
 const appRoutes: Routes = [
   { path: '', component: TimerComponent },
-  { path: 'participants', component: ParticipantListComponent }
+  { path: 'participants', component: ParticipantListComponent },
+  { path: 'settings', component: SettingsComponent }
   //{ path: '', component: Component }
 ];
 
@@ -26,7 +30,8 @@ const appRoutes: Routes = [
     AppComponent,
     NavbarComponent,
     TimerComponent,
-    ParticipantListComponent
+    ParticipantListComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,
