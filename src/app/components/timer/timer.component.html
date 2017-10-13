@@ -1,6 +1,20 @@
-<p>
-  timer works!
-</p>
-<div>
-  {{message}}
+<div class="container">
+  <br>
+  <div class="progress">
+    <div class="progress-bar progress-bar-striped " [ngClass]="{ 'progress-bar-animated': currentPercent < 100, 'bg-warning': currentPercent > 80 && currentPercent <= 95,'bg-danger': currentPercent > 95 }"
+      role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" [style.width]="currentPercent + '%'">{{currentPercent}}%</div>
+  </div>
+  <div class="row">
+    <div class="">
+      <button class="btn btn-warning">Next</button>
+    </div>
+
+  </div>
+
+
+  <ul>
+    <li>{{ participantList[currentParticipant].init }}</li>
+    <li>{{ currentCounter }}</li>
+    <li>{{ currentPercent }}% Complete</li>
+  </ul>
 </div>

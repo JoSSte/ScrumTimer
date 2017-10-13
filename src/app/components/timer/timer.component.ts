@@ -9,18 +9,25 @@ import { Observable, Subscription } from 'rxjs/Rx';
   styleUrls: ['./timer.component.css']
 })
 export class TimerComponent implements OnInit {
-  private future: Date;
-  private futureString: string;
-  private diff: number;
-  private $counter: Observable<number>;
+  private $currentCounter: Observable<number>;
   private subscription: Subscription;
-  private message: string;
-  participantList: Participant[];
+  private participantList: Participant[];
+
+  // variables for session
+  private totalMaxTime = 60 * 15;
+  private recommendedIndividualTime = 120;
+  private currentParticipant = 0;
+
+  // variables for indiviual
+  private individualMaxTime = 120;
+  private currentCounter = 0;
+  private currentPercent: number = 0;
+
+
+
+
 
   constructor(public participantService: ParticipantService, elm: ElementRef) {
-    this.futureString = elm.nativeElement.getAttribute('inputDate');
-    //console.log(this.futureString);
-    //this.futureString = 'January 1, 2018 12:00:00';
   }
 
   dhms(t) {
@@ -44,22 +51,29 @@ export class TimerComponent implements OnInit {
 
   ngOnInit() {
     this.participantList = this.participantService.getParticipants();
-    //this.future = new Date(this.futureString);
-    this.future = new Date();
-    this.future.setMinutes(this.future.getMinutes() + 2) ;
-    console.log(this.future);
-    this.$counter = Observable.interval(1000).map((x) => {
-      this.diff = Math.floor((this.future.getTime() - new Date().getTime()) / 1000);
+    this.$currentCounter = Observable.interval(1000).map((x) => {
+
+      this.currentCounter++;
+      this.currentPercent = Math.round(this.currentCounter / this.individualMaxTime * 100);
+      if (this.currentCounter == this.individualMaxTime) {
+        this.currentPercent = 100;
+        this.subscription.unsubscribe();
+      }
       return x;
     });
 
-    this.subscription = this.$counter.subscribe((x) => this.message = this.dhms(this.diff));
+    this.subscription = this.$currentCounter.subscribe((x) => this.currentCounter.toString());
   }
+
+
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
+  nextParticipant(): void {
+    this.currentParticipant++;
+  }
 
 
 
