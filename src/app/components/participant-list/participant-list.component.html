@@ -17,7 +17,7 @@
               {{ participant.name }}
             </td>
             <td>
-              <button class="btn btn-danger btn-sm" (click)="removeParticipant(participant)">Remove</button>
+              <button class="btn btn-outline-danger btn-sm" (click)="removeParticipant(participant)">Remove</button>
             </td>
           </tr>
         </tbody>
@@ -30,7 +30,8 @@
               <input type="text" id="name" name="name" [(ngModel)]="name">
             </td>
             <td>
-              <button type="submit" class="btn btn-sm btn-primary">Add</button>
+              <button type="submit" class="btn btn-sm btn-outline-primary">Add</button>
+              <!-- <button class="btn btn-sm btn-outline-warning" (click)="sortParticipants()" >Sort</button> -->
             </td>
           </tr>
         </tfoot>
@@ -41,8 +42,8 @@
 <div class="container">
   <p>The ScrumTimer does not save anything online. If you want to share the list of participants with another from your team,
     click export, and send them the result from the field below</p>
-  <button class="btn btn-sm" (click)="exportParticipants()">Export list</button>
-  <button class="btn btn-sm btn-success" *ngIf="jsonParticipants.length > 0" (click)="importParticipants()">Import List</button>
+  <button class="btn btn-sm btn-outline-dark" (click)="exportParticipants()">Export list</button>
+  <button class="btn btn-sm btn-outline-success" *ngIf="jsonParticipants.length > 10" (click)="importParticipants()">Import List</button>
   <br>
-  <textarea cols="50" rows="5" id="jsonParticipants" name="jsonParticipants" [(ngModel)]="jsonParticipants"></textarea>
+  <textarea  class="form-control" cols="50" rows="5" id="jsonParticipants" name="jsonParticipants" [(ngModel)]="jsonParticipants"></textarea>
 </div>

@@ -35,10 +35,17 @@ export class ParticipantService {
   }
 
   //overwrite localstorage, and refresh local list of participants from there...
-  importParticipants(jsonParticipants){
+  importParticipants(jsonParticipants) {
     localStorage.setItem('participants', jsonParticipants);
     this.exportParticipants();
   }
 
+  compare(a, b) {
+    if (a.last_nom < b.last_nom)
+      return -1;
+    if (a.last_nom > b.last_nom)
+      return 1;
+    return 0;
+  }
 
 }
