@@ -1,6 +1,18 @@
-<p>
-  timer works!
-</p>
-<div>
-  {{message}}
+<div class="container">
+  <ul>
+    <li>Message: {{ message }}</li>
+    <li>Diff: {{ diff }}</li>
+    <li>Elapsed: {{ currentElapsed }}</li>
+    <li>Current Participant: {{ participantList[currentParticipant].name }}</li>
+  </ul>
+  <button class="btn btn-sm btn-warn" (click)="shuffle(participantList)">Shuffle Participants</button>
+  <button class="btn btn-sm" (click)="startTimer()">Start Timer</button>
+  <button class="btn btn-sm btn-danger btn-outline">Stop Timer</button>
+  <button class="btn btn-sm" (click)="nextParticipant()">Next participant ({{ participantList[currentParticipant + 1].init }})</button>
+
+  <hr>
+  <ul>
+    <li *ngFor="let p of participantList"> {{ p.init }}</li>
+  </ul>
+
 </div>
