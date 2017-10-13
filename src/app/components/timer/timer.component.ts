@@ -11,7 +11,9 @@ import { Observable, Subscription } from 'rxjs/Rx';
 export class TimerComponent implements OnInit {
   private $currentCounter: Observable<number>;
   private subscription: Subscription;
-  private participantList: Participant[];
+  private participatingParticipants: Participant[];
+  private absentParticipants: Participant[] = Array();
+  private doneParticipants: Participant[] = Array();
 
   // variables for session
   private totalMaxTime = 60 * 15;
@@ -28,7 +30,7 @@ export class TimerComponent implements OnInit {
   private currentDiff: number;
   private currentElapsed: number = 0;
 
-  private totalTime: number = 10;
+  private totalTime: number = 120;
 
   private message: string;
 
@@ -36,7 +38,7 @@ export class TimerComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.participantList = this.participantService.getParticipants();
+    this.participatingParticipants = this.participantService.getParticipants();
     //this.future = new Date(this.futureString);
     this.future = new Date();
     //this.future.setMinutes(this.future.getMinutes() + 2) ;
@@ -59,6 +61,7 @@ export class TimerComponent implements OnInit {
     this.$currentCounter = Observable.interval(1000).map((x) => {
       this.diff = Math.floor((this.future.getTime() - new Date().getTime()) / 1000);
       this.currentElapsed = this.totalTime - this.diff;
+      this.currentPercent = Math.round((this.currentElapsed / this.totalTime) * 100);
       return x;
     });
 
@@ -66,7 +69,7 @@ export class TimerComponent implements OnInit {
   }
 
   nextParticipant() {
-    if (this.currentParticipant < this.participantList.length) {
+    if (this.currentParticipant < this.participatingParticipants.length) {
       this.currentParticipant++;
     } else {
       this.message = "No more participants";
@@ -91,5 +94,20 @@ export class TimerComponent implements OnInit {
 
     return array;
   }
+
+  markAbsent(participant) {
+    var idx: number = this.participatingParticipants.indexOf(participant);
+    this.absentParticipants.push(participant);
+    this.participatingParticipants.splice(idx, 1);
+    //console.log(this.absentParticipants);
+  }
+
+  markPresent(participant) {
+    var idx: number = this.absentParticipants.indexOf(participant);
+    this.participatingParticipants.push(participant);
+    this.absentParticipants.splice(idx, 1);
+    //console.log(this.absentParticipants);
+  }
+
 
 }
