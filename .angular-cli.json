@@ -9,6 +9,7 @@
       "outDir": "dist",
       "assets": [
         "assets",
+        "js",
         "favicon.ico"
       ],
       "index": "index.html",
@@ -23,10 +24,6 @@
         "../node_modules/bootstrap/dist/css/bootstrap.css"
       ],
       "scripts": [],
-      "_unused_scripts":[
-        "../node_modules/jquery/dist/jquery.min.js",
-        "../node_modules/popper.js/dist/umd/popper.min.js",
-        "../node_modules/tether/dist/js/tether.min.js"],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",
