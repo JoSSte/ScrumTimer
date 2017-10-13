@@ -30,4 +30,15 @@ export class ParticipantService {
     localStorage.setItem('participants', JSON.stringify(this.participants));
   }
 
+  exportParticipants() {
+    return JSON.stringify(this.participants);
+  }
+
+  //overwrite localstorage, and refresh local list of participants from there...
+  importParticipants(jsonParticipants){
+    localStorage.setItem('participants', jsonParticipants);
+    this.exportParticipants();
+  }
+
+
 }

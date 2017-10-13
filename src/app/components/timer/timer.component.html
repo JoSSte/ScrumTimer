@@ -1,4 +1,5 @@
 <div class="container">
+
   <br>
   <div class="progress">
     <div class="progress-bar progress-bar-striped " [ngClass]="{ 'progress-bar-animated': currentPercent < 100, 'bg-warning': currentPercent > 80 && currentPercent <= 95,'bg-danger': currentPercent > 95 }"
@@ -17,4 +18,21 @@
     <li>{{ currentCounter }}</li>
     <li>{{ currentPercent }}% Complete</li>
   </ul>
+
+  <ul>
+    <li>Message: {{ message }}</li>
+    <li>Diff: {{ diff }}</li>
+    <li>Elapsed: {{ currentElapsed }}</li>
+    <li>Current Participant: {{ participantList[currentParticipant].name }}</li>
+  </ul>
+  <button class="btn btn-sm btn-warn" (click)="shuffle(participantList)">Shuffle Participants</button>
+  <button class="btn btn-sm" (click)="startTimer()">Start Timer</button>
+  <button class="btn btn-sm btn-danger btn-outline">Stop Timer</button>
+  <button class="btn btn-sm" (click)="nextParticipant()">Next participant ({{ participantList[currentParticipant + 1].init }})</button>
+
+  <hr>
+  <ul>
+    <li *ngFor="let p of participantList"> {{ p.init }}</li>
+  </ul>
+
 </div>

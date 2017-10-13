@@ -1,35 +1,48 @@
 <div class="row">
   <div class="col-md-6 offset-md-3">
     <form (submit)="addParticipant()">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Initials</th>
-          <th>Name</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let participant of participantList">
-          <td>
-            {{ participant.init }}
-          </td>
-          <td>
-            {{ participant.name }}
-          </td>
-          <td>
-            <button class="btn btn-danger btn-sm" (click)="removeParticipant(participant)">Remove</button>
-          </td>
-        </tr>
-      </tbody>
-
-      <tfoot>
-        <tr>
-          <td><input type="text" id="init" name="init" [(ngModel)]="init"></td>
-          <td><input type="text" id="name" name="name" [(ngModel)]="name"></td>
-          <td><button type="submit" class="btn btn-sm btn-primary">Add</button></td>
-        </tr>
-      </tfoot>
-    </table>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Initials</th>
+            <th>Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let participant of participantList">
+            <td>
+              {{ participant.init }}
+            </td>
+            <td>
+              {{ participant.name }}
+            </td>
+            <td>
+              <button class="btn btn-danger btn-sm" (click)="removeParticipant(participant)">Remove</button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>
+              <input type="text" id="init" name="init" [(ngModel)]="init">
+            </td>
+            <td>
+              <input type="text" id="name" name="name" [(ngModel)]="name">
+            </td>
+            <td>
+              <button type="submit" class="btn btn-sm btn-primary">Add</button>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
     </form>
   </div>
+</div>
+<div class="container">
+  <p>The ScrumTimer does not save anything online. If you want to share the list of participants with another from your team,
+    click export, and send them the result from the field below</p>
+  <button class="btn btn-sm" (click)="exportParticipants()">Export list</button>
+  <button class="btn btn-sm btn-success" *ngIf="jsonParticipants.length > 0" (click)="importParticipants()">Import List</button>
+  <br>
+  <textarea cols="50" rows="5" id="jsonParticipants" name="jsonParticipants" [(ngModel)]="jsonParticipants"></textarea>
 </div>

@@ -20,46 +20,76 @@ export class TimerComponent implements OnInit {
 
   // variables for indiviual
   private individualMaxTime = 120;
-  private currentCounter = 0;
   private currentPercent: number = 0;
 
+  private future: Date;
+  private futureString: string;
+  private diff: number;
+  private currentDiff: number;
+  private currentElapsed: number = 0;
 
+  private totalTime: number = 10;
 
-
+  private message: string;
 
   constructor(public participantService: ParticipantService, elm: ElementRef) {
   }
 
-
   ngOnInit() {
     this.participantList = this.participantService.getParticipants();
-    this.$currentCounter = Observable.interval(1000).map((x) => {
+    //this.future = new Date(this.futureString);
+    this.future = new Date();
+    //this.future.setMinutes(this.future.getMinutes() + 2) ;
 
-      this.currentCounter++;
-      this.currentPercent = Math.round(this.currentCounter / this.individualMaxTime * 100);
-      if (this.currentCounter == this.individualMaxTime) {
-        this.currentPercent = 100;
-        this.subscription.unsubscribe();
-      }
-      return x;
-    });
-
-    this.subscription = this.$currentCounter.subscribe((x) => this.currentCounter.toString());
   }
 
-
-
   ngOnDestroy(): void {
+    this.stopTimer();
+  }
+
+  stopTimer() {
     this.subscription.unsubscribe();
   }
 
-  nextParticipant(): void {
-    this.currentParticipant++;
+  startTimer() {
+    // set the timer to a time in the future, based on "totalTime" seconds
+    this.future.setSeconds(this.future.getSeconds() + this.totalTime);
+
+    //console.log(this.future);
+    this.$currentCounter = Observable.interval(1000).map((x) => {
+      this.diff = Math.floor((this.future.getTime() - new Date().getTime()) / 1000);
+      this.currentElapsed = this.totalTime - this.diff;
+      return x;
+    });
+
+    this.subscription = this.$currentCounter.subscribe((x) => this.currentDiff);
   }
 
+  nextParticipant() {
+    if (this.currentParticipant < this.participantList.length) {
+      this.currentParticipant++;
+    } else {
+      this.message = "No more participants";
+    }
+  }
 
+  shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
 
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
 
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
 
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+  }
 
 }

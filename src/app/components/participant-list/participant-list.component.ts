@@ -9,9 +9,11 @@ import { ParticipantService } from "../../services/participant/participant.servi
   styleUrls: ['./participant-list.component.css']
 })
 export class ParticipantListComponent implements OnInit {
-  init: string="";
-  name: string="";
-  participantList: Participant[];
+  private init: string = "";
+  private name: string = "";
+  private participantList: Participant[];
+  private jsonParticipants: string = "";
+
   constructor(public participantService: ParticipantService) {
 
   }
@@ -21,14 +23,24 @@ export class ParticipantListComponent implements OnInit {
   }
 
   addParticipant() {
-    if(this.init.length > 1 && this.name.length > 2)
-    this.participantService.addParticipant({ "init": this.init, "name": this.name });
+    if (this.init.length > 1 && this.name.length > 2)
+      this.participantService.addParticipant({ "init": this.init, "name": this.name });
     this.init = "";
     this.name = "";
   }
 
-  removeParticipant(participant:Participant){
+  removeParticipant(participant: Participant) {
     this.participantService.removeParticipant(participant);
+  }
+
+  exportParticipants() {
+    this.jsonParticipants = this.participantService.exportParticipants();
+  }
+
+  importParticipants() {
+    this.participantService.importParticipants(this.jsonParticipants);
+    this.participantList = this.participantService.getParticipants();
+    this.jsonParticipants = "";
   }
 
 }
