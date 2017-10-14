@@ -1,11 +1,12 @@
 <div class="row">
-  <div class="col-md-6 offset-md-3">
+  <div class="col-md-10 offset-md-3">
     <form (submit)="addParticipant()">
       <table class="table table-striped">
         <thead>
           <tr>
             <th>Initials</th>
             <th>Name</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -17,21 +18,20 @@
               {{ participant.name }}
             </td>
             <td>
-              <button class="btn btn-outline-danger btn-sm" (click)="removeParticipant(participant)"><i class="fa fa-trash-o fa-lg"></i> Remove</button>
+              <button class="btn btn-outline-danger btn-sm" (click)="removeParticipant(participant)"><i class="fa fa-trash-o fa-lg"></i></button>
             </td>
           </tr>
         </tbody>
         <tfoot>
           <tr>
             <td>
-              <input type="text" id="init" name="init" [(ngModel)]="init">
+              <input class="form-control" type="text" id="init" name="init" [(ngModel)]="init">
             </td>
             <td>
-              <input type="text" id="name" name="name" [(ngModel)]="name">
+              <input class="form-control" type="text" id="name" name="name" [(ngModel)]="name">
             </td>
             <td>
               <button type="submit" class="btn btn-sm btn-outline-primary" [disabled]="name =='' || init == ''"><i class="fa fa-plus"></i> Add</button>
-              <!-- <button class="btn btn-sm btn-outline-warning" (click)="sortParticipants()" >Sort</button> -->
             </td>
           </tr>
         </tfoot>
@@ -39,11 +39,13 @@
     </form>
   </div>
 </div>
+<div class="row">
+  <textarea class="form-control" cols="50" rows="5" id="jsonParticipants" name="jsonParticipants" [(ngModel)]="jsonParticipants"></textarea>
+</div>
 <div class="container">
-  <p>The ScrumTimer does not save anything online. If you want to share the list of participants with another from your team,
-    click export, and send them the result from the field below</p>
-  <button class="btn btn-sm btn-outline-dark" (click)="exportParticipants()" [disabled]="participantList.length ==0"><i class="fa fa-upload" ></i> Export list</button>
-  <button class="btn btn-sm btn-outline-success" *ngIf="jsonParticipants.length > 10" (click)="importParticipants()"><i class="fa fa-download"></i> Import List</button>
-  <br>
-  <textarea  class="form-control" cols="50" rows="5" id="jsonParticipants" name="jsonParticipants" [(ngModel)]="jsonParticipants"></textarea>
+
+  <button class="btn btn-sm btn-outline-dark" (click)="exportParticipants()" [disabled]="participantList.length == 0"><i class="fa fa-upload" ></i> Export list ({{ participantList.length }})</button>
+  <button class="btn btn-sm btn-outline-success" [disabled]="! isJsonString(jsonParticipants)" (click)="importParticipants()"><i class="fa fa-download"></i> Import List</button>
+  <button class="btn btn-sm btn-outline-danger" (click)="jsonParticipants ='' " [disabled]="jsonParticipants.length == 0"><i class="fa fa-eraser"></i> Clear</button>
+ 
 </div>

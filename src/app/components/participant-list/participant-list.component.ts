@@ -46,4 +46,14 @@ export class ParticipantListComponent implements OnInit {
   sortParticipants() {
     console.log("[sortParticipants()] This function has not yet been implemented");
   }
+
+
+  isJsonString(str) {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
 }
