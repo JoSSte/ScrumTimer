@@ -3,3 +3,14 @@
   From here, you will be able to choose whether you want an overall time goal (e.g. 15 minutes), or a static time-per-person.
   You will also be able to choose when you want to have the progress bar to chang colour (standard = 80% and 95%)
 </p>
+<form action="">
+  <div class="input-group">
+    <span class="input-group-addon">
+          <input type="checkbox" name="useGlobalMaxTime" aria-label="Use Global max Time" [(ngModel)]="useGlobalMaxTime">
+        </span>
+    <label for="globalMaxTime" class="input-group-addon">Total Max Time</label>
+    <input name="globalMaxTime" id="globalMaxTime" type="number" class="form-control" [(ngModel)]="globalMaxTime">
+  </div>
+  <br>
+  <input type="submit" value="submit" class="btn btn-primary form-control">
+</form>

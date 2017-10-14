@@ -6,6 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 //Services
 import { ParticipantService } from './services/participant/participant.service';
+import { SettingsService } from './services/settings/settings.service';
 
 // Components
 import { AppComponent } from './app.component';
@@ -38,7 +39,10 @@ const appRoutes: Routes = [
     FormsModule,
     RouterModule.forRoot(appRoutes)
   ],
-  providers: [ParticipantService],
+  providers: [
+    ParticipantService,
+    SettingsService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
