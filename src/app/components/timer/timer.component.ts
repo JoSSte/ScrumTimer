@@ -19,6 +19,7 @@ export class TimerComponent implements OnInit {
   private totalMaxTime = 60 * 15;
   private recommendedIndividualTime = 120;
   private currentParticipant = 0;
+  private overallPercent = 0;
 
   // variables for indiviual
   private individualMaxTime = 120;
@@ -69,11 +70,10 @@ export class TimerComponent implements OnInit {
   }
 
   nextParticipant() {
-    if (this.currentParticipant < this.participatingParticipants.length) {
-      this.currentParticipant++;
-    } else {
-      this.message = "No more participants";
-    }
+    //move first Participant to done participants
+    this.doneParticipants.push(this.participatingParticipants[0]);
+    //remove the top participant
+    this.participatingParticipants.splice(0, 1);
   }
 
   shuffle(array) {
@@ -96,10 +96,13 @@ export class TimerComponent implements OnInit {
   }
 
   markAbsent(participant) {
-    var idx: number = this.participatingParticipants.indexOf(participant);
-    this.absentParticipants.push(participant);
-    this.participatingParticipants.splice(idx, 1);
-    //console.log(this.absentParticipants);
+    if (this.participatingParticipants.length <= 2) {
+      console.log("Cannot mark the last two participants absent.");
+    } else {
+      var idx: number = this.participatingParticipants.indexOf(participant);
+      this.absentParticipants.push(participant);
+      this.participatingParticipants.splice(idx, 1);
+    }
   }
 
   markPresent(participant) {
