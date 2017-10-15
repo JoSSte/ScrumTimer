@@ -44,7 +44,9 @@ export class TimerComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.stopTimer();
+    if (this.$currentCounter != null){
+      this.stopTimer();
+    }
   }
 
   stopTimer() {

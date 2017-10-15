@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-
+//TODO: save settings in localStorage
 @Injectable()
 export class SettingsService {
   private useGlobalMaxTime: boolean = true;

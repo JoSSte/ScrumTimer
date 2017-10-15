@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
+import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
 //import { Timer } from 'angular-timer'; // AngularJS - not 4??
 
 import { SecondsPipe } from "./pipes/hhmmss.pipe";
@@ -47,7 +48,9 @@ const appRoutes: Routes = [
   ],
   providers: [
     ParticipantService,
-    SettingsService
+    SettingsService,
+    Location, 
+    {provide: LocationStrategy, useClass: HashLocationStrategy}
   ],
   bootstrap: [AppComponent]
 })
