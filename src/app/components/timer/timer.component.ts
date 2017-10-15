@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { Participant } from "../../models/Participant";
 import { ParticipantService } from "../../services/participant/participant.service";
 import { Observable, Subscription } from 'rxjs/Rx';
+import { SecondsPipe } from "../../pipes/hhmmss.pipe";
 
 @Component({
   selector: 'app-timer',
@@ -17,12 +18,13 @@ export class TimerComponent implements OnInit {
 
   // variables for session
   private totalMaxTime = 60 * 15;
-  private totalTime: number = 120;
   private recommendedIndividualTime = 120;
-  private overallPercent = 0;
+  private totalPercent = 0;
+  private totalElapsed = 0;
 
   // variables for indiviual
-  private individualMaxTime = 120;
+  private individualMaxTime: number = 120;
+  //private individualTime: number = 120;
   private currentPercent: number = 0;
   private currentParticipant: Participant;
 
@@ -31,16 +33,13 @@ export class TimerComponent implements OnInit {
   private diff: number;
   private currentDiff: number;
   private currentElapsed: number = 0;
-  private timerActive:boolean = false;
+  private timerActive: boolean = false;
 
   constructor(public participantService: ParticipantService, elm: ElementRef) {
   }
 
   ngOnInit() {
     this.participatingParticipants = this.participantService.getParticipants();
-    //this.future = new Date(this.futureString);
-    this.future = new Date();
-    //this.future.setMinutes(this.future.getMinutes() + 2) ;
     this.currentParticipant = this.participatingParticipants[0];
   }
 
@@ -49,24 +48,30 @@ export class TimerComponent implements OnInit {
   }
 
   stopTimer() {
-    //stop timer
-    this.subscription.unsubscribe();
-    //set nextParticipant
-    this.nextParticipant();
+    //save time for participant
+    this.participatingParticipants[0].time = this.currentElapsed;
+    this.currentPercent = 0;
+    //move first Participant to done participants
+    this.doneParticipants.push(this.participatingParticipants[0]);
+    //remove the top participant
+    this.participatingParticipants.splice(0, 1);
     // set progressbar to 100%
     this.currentPercent = 100;
     this.timerActive = false;
+    //stop timer
+    this.subscription.unsubscribe();
   }
 
   startTimer() {
-    // set the timer to a time in the future, based on "totalTime" seconds
-    this.future.setSeconds(this.future.getSeconds() + this.totalTime);
+    this.future = new Date();
+    // set the timer to a time in the future, based on "individualMaxTime" seconds
+    this.future.setSeconds(this.future.getSeconds() + this.individualMaxTime);
 
     //console.log(this.future);
     this.$currentCounter = Observable.interval(1000).map((x) => {
-      this.diff = Math.floor((this.future.getTime() - new Date().getTime()) / 1000);
-      this.currentElapsed = this.totalTime - this.diff;
-      this.currentPercent = Math.round((this.currentElapsed / this.totalTime) * 100);
+      this.currentDiff = Math.floor((this.future.getTime() - new Date().getTime()) / 1000);
+      this.currentElapsed = this.individualMaxTime - this.currentDiff;
+      this.currentPercent = Math.round((this.currentElapsed / this.individualMaxTime) * 100);
       return x;
     });
 
@@ -74,17 +79,58 @@ export class TimerComponent implements OnInit {
     this.timerActive = true;
   }
 
+
   nextParticipant() {
     //save time for participant
     this.participatingParticipants[0].time = this.currentElapsed;
+    //add up total elapsed time
+    this.totalElapsed += this.currentElapsed;
     this.currentElapsed = 0;
+    this.currentDiff = 0;
+    this.currentPercent = 0;
     //move first Participant to done participants
     this.doneParticipants.push(this.participatingParticipants[0]);
     //remove the top participant
     this.participatingParticipants.splice(0, 1);
-    this.overallPercent = Math.round((this.doneParticipants.length / (this.participatingParticipants.length + this.doneParticipants.length)) * 100);
+    if (this.participatingParticipants.length > 0) {
+      this.currentParticipant = this.participatingParticipants[0];
+    } else {
+      this.currentParticipant = {"name" : "","init":""};
+
+    }
+    this.totalPercent = Math.round((this.doneParticipants.length / (this.participatingParticipants.length + this.doneParticipants.length)) * 100);
+    this.currentPercent = 0;
+    this.currentDiff = 0;
+    this.currentPercent = 0;
+    this.startTimer();
   }
 
+  resetTimer() {
+    //move all participants from done to present
+    for (var i = this.doneParticipants.length - 1; i >= 0; i--) {
+      //reset time taken
+      this.doneParticipants[i].time = 0;
+      this.participatingParticipants.push(this.doneParticipants[i]);
+      this.doneParticipants.splice(i, 1);
+    }
+    
+    //reset timers
+    this.totalElapsed = 0;
+    this.totalPercent = 0;
+    this.currentPercent = 0;
+    this.currentDiff = 0;
+    this.currentParticipant = this.participatingParticipants[0];
+    this.currentPercent = 0;
+
+    
+
+  }
+
+  /**
+   * Shuffles an array pseudo-randomly
+   * 
+   * @param array 
+   */
   shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -104,6 +150,15 @@ export class TimerComponent implements OnInit {
     return array;
   }
 
+
+
+  /**
+   * Mark participant as absent.
+   * 
+   * note that the last two participants cannot be marked as absent.
+   * 
+   * @param participant Participant to mark as absent
+   */
   markAbsent(participant) {
     if (this.participatingParticipants.length <= 2) {
       console.log("Cannot mark the last two participants absent.");
@@ -114,6 +169,11 @@ export class TimerComponent implements OnInit {
     }
   }
 
+  /**
+   * Mark participant as present.
+   * 
+   * @param participant Participant to mark as present
+   */
   markPresent(participant) {
     var idx: number = this.absentParticipants.indexOf(participant);
     this.participatingParticipants.push(participant);
