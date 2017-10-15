@@ -95,7 +95,7 @@ export class TimerComponent implements OnInit {
     if (this.participatingParticipants.length > 0) {
       this.currentParticipant = this.participatingParticipants[0];
     } else {
-      this.currentParticipant = {"name" : "","init":""};
+      this.currentParticipant = { "name": "", "init": "" };
 
     }
     this.totalPercent = Math.round((this.doneParticipants.length / (this.participatingParticipants.length + this.doneParticipants.length)) * 100);
@@ -113,7 +113,7 @@ export class TimerComponent implements OnInit {
       this.participatingParticipants.push(this.doneParticipants[i]);
       this.doneParticipants.splice(i, 1);
     }
-    
+
     //reset timers
     this.totalElapsed = 0;
     this.totalPercent = 0;
@@ -122,7 +122,7 @@ export class TimerComponent implements OnInit {
     this.currentParticipant = this.participatingParticipants[0];
     this.currentPercent = 0;
 
-    
+
 
   }
 
@@ -150,7 +150,10 @@ export class TimerComponent implements OnInit {
     return array;
   }
 
-
+  shuffleParticipants() {
+    this.participatingParticipants = this.shuffle(this.participatingParticipants);
+    this.currentParticipant = this.participatingParticipants[0];
+  }
 
   /**
    * Mark participant as absent.
