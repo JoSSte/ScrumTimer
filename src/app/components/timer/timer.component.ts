@@ -171,6 +171,7 @@ export class TimerComponent implements OnInit {
       var idx: number = this.participatingParticipants.indexOf(participant);
       this.absentParticipants.push(participant);
       this.participatingParticipants.splice(idx, 1);
+      this.currentParticipant = this.participatingParticipants[0];
     }
   }
 
