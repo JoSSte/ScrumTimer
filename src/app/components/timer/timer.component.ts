@@ -10,30 +10,30 @@ import { SecondsPipe } from "../../pipes/hhmmss.pipe";
   styleUrls: ['./timer.component.css']
 })
 export class TimerComponent implements OnInit {
-  private $currentCounter: Observable<number>;
-  private subscription: Subscription;
-  private participatingParticipants: Participant[];
-  private absentParticipants: Participant[] = Array();
-  private doneParticipants: Participant[] = Array();
+  $currentCounter: Observable<number>;
+  subscription: Subscription;
+  participatingParticipants: Participant[];
+  absentParticipants: Participant[] = Array();
+  doneParticipants: Participant[] = Array();
 
   // variables for session
-  private totalMaxTime = 60 * 15;
-  private recommendedIndividualTime = 120;
-  private totalPercent = 0;
-  private totalElapsed = 0;
+  totalMaxTime = 60 * 15;
+  recommendedIndividualTime = 120;
+  totalPercent = 0;
+  totalElapsed = 0;
 
   // variables for indiviual
-  private individualMaxTime: number = 120;
+  individualMaxTime: number = 120;
   //private individualTime: number = 120;
-  private currentPercent: number = 0;
-  private currentParticipant: Participant;
+  currentPercent: number = 0;
+  currentParticipant: Participant;
 
-  private future: Date;
-  private futureString: string;
-  private diff: number;
-  private currentDiff: number;
-  private currentElapsed: number = 0;
-  private timerActive: boolean = false;
+  future: Date;
+  futureString: string;
+  diff: number;
+  currentDiff: number;
+  currentElapsed: number = 0;
+  timerActive: boolean = false;
 
   constructor(public participantService: ParticipantService, elm: ElementRef) {
   }
@@ -44,7 +44,7 @@ export class TimerComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    if (this.$currentCounter != null){
+    if (this.$currentCounter != null) {
       this.stopTimer();
     }
   }

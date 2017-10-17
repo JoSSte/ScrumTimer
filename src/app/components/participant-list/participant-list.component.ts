@@ -9,10 +9,10 @@ import { ParticipantService } from "../../services/participant/participant.servi
   styleUrls: ['./participant-list.component.css']
 })
 export class ParticipantListComponent implements OnInit {
-  private init: string = "";
-  private name: string = "";
-  private participantList: Participant[];
-  private jsonParticipants: string = "";
+  init: string = "";
+  name: string = "";
+  participantList: Participant[];
+  jsonParticipants: string = "";
 
   constructor(public participantService: ParticipantService) {
 

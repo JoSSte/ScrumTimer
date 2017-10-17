@@ -7,8 +7,8 @@ import { SettingsService } from "../../services/settings/settings.service";
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
-  private useGlobalMaxTime: boolean;
-  private globalMaxTime: number;
+  useGlobalMaxTime: boolean;
+  globalMaxTime: number;
 
   constructor(public settings: SettingsService) {
     
