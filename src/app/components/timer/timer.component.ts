@@ -12,7 +12,7 @@ import { SecondsPipe } from "../../pipes/hhmmss.pipe";
 export class TimerComponent implements OnInit {
   $currentCounter: Observable<number>;
   subscription: Subscription;
-  participatingParticipants: Participant[];
+  participantList: Participant[];
   absentParticipants: Participant[] = Array();
   doneParticipants: Participant[] = Array();
 
@@ -39,8 +39,8 @@ export class TimerComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.participatingParticipants = this.participantService.getParticipants();
-    this.currentParticipant = this.participatingParticipants[0];
+    this.participantList = this.participantService.getParticipants();
+    this.currentParticipant = this.participantList[0];
   }
 
   ngOnDestroy(): void {
@@ -51,12 +51,12 @@ export class TimerComponent implements OnInit {
 
   stopTimer() {
     //save time for participant
-    this.participatingParticipants[0].time = this.currentElapsed;
+    this.currentParticipant.time = this.currentElapsed;
     this.currentPercent = 0;
     //move first Participant to done participants
-    this.doneParticipants.push(this.participatingParticipants[0]);
+    this.doneParticipants.push(this.currentParticipant);
     //remove the top participant
-    this.participatingParticipants.splice(0, 1);
+    this.participantList.splice(0, 1);
     // set progressbar to 100%
     this.currentPercent = 100;
     this.timerActive = false;
@@ -84,23 +84,23 @@ export class TimerComponent implements OnInit {
 
   nextParticipant() {
     //save time for participant
-    this.participatingParticipants[0].time = this.currentElapsed;
+    this.participantList[0].time = this.currentElapsed;
     //add up total elapsed time
     this.totalElapsed += this.currentElapsed;
     this.currentElapsed = 0;
     this.currentDiff = 0;
     this.currentPercent = 0;
     //move first Participant to done participants
-    this.doneParticipants.push(this.participatingParticipants[0]);
+    this.doneParticipants.push(this.participantList[0]);
     //remove the top participant
-    this.participatingParticipants.splice(0, 1);
-    if (this.participatingParticipants.length > 0) {
-      this.currentParticipant = this.participatingParticipants[0];
+    this.participantList.splice(0, 1);
+    if (this.participantList.length > 0) {
+      this.currentParticipant = this.participantList[0];
     } else {
       this.currentParticipant = { "name": "", "init": "" };
 
     }
-    this.totalPercent = Math.round((this.doneParticipants.length / (this.participatingParticipants.length + this.doneParticipants.length)) * 100);
+    this.totalPercent = Math.round((this.doneParticipants.length / (this.participantList.length + this.doneParticipants.length)) * 100);
     this.currentPercent = 0;
     this.currentDiff = 0;
     this.currentPercent = 0;
@@ -112,7 +112,7 @@ export class TimerComponent implements OnInit {
     for (var i = this.doneParticipants.length - 1; i >= 0; i--) {
       //reset time taken
       this.doneParticipants[i].time = 0;
-      this.participatingParticipants.push(this.doneParticipants[i]);
+      this.participantList.push(this.doneParticipants[i]);
       this.doneParticipants.splice(i, 1);
     }
 
@@ -121,7 +121,7 @@ export class TimerComponent implements OnInit {
     this.totalPercent = 0;
     this.currentPercent = 0;
     this.currentDiff = 0;
-    this.currentParticipant = this.participatingParticipants[0];
+    this.currentParticipant = this.participantList[0];
     this.currentPercent = 0;
 
 
@@ -153,8 +153,8 @@ export class TimerComponent implements OnInit {
   }
 
   shuffleParticipants() {
-    this.participatingParticipants = this.shuffle(this.participatingParticipants);
-    this.currentParticipant = this.participatingParticipants[0];
+    this.participantList = this.shuffle(this.participantList);
+    this.currentParticipant = this.participantList[0];
   }
 
   /**
@@ -165,13 +165,13 @@ export class TimerComponent implements OnInit {
    * @param participant Participant to mark as absent
    */
   markAbsent(participant) {
-    if (this.participatingParticipants.length <= 2) {
+    if (this.participantList.length <= 2) {
       console.log("Cannot mark the last two participants absent.");
     } else {
-      var idx: number = this.participatingParticipants.indexOf(participant);
+      var idx: number = this.participantList.indexOf(participant);
       this.absentParticipants.push(participant);
-      this.participatingParticipants.splice(idx, 1);
-      this.currentParticipant = this.participatingParticipants[0];
+      this.participantList.splice(idx, 1);
+      this.currentParticipant = this.participantList[0];
     }
   }
 
@@ -182,7 +182,7 @@ export class TimerComponent implements OnInit {
    */
   markPresent(participant) {
     var idx: number = this.absentParticipants.indexOf(participant);
-    this.participatingParticipants.push(participant);
+    this.participantList.push(participant);
     this.absentParticipants.splice(idx, 1);
     //console.log(this.absentParticipants);
   }
