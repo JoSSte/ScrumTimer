@@ -40,7 +40,7 @@ export class TimerComponent implements OnInit {
 
   ngOnInit() {
     this.participantList = this.participantService.getParticipants();
-    this.currentParticipant = this.participantList[0];
+    this.shuffleParticipants();
   }
 
   ngOnDestroy(): void {
