@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" *ngIf="participatingParticipants.length > 0">
 
   <br>
   <h4>Overall Progress</h4>
@@ -13,7 +13,7 @@
       role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" [style.width]="currentPercent + '%'">{{currentElapsed | Seconds}}</div>
   </div>
   <br>
-  
+
   <!--
   <h4>Debug info</h4>
   <ul>
@@ -31,7 +31,7 @@
     <li>Elapsed: {{ totalElapsed }}</li>
     <li>Current Participant: {{ currentParticipant.name }} [{{ currentParticipant.init }}]</li>
   </ul> -->
-  
+
 
   <button class="btn btn-outline-success" (click)="startTimer()" title="Start Timer" [disabled]="participatingParticipants.length == 0 || timerActive">
     <i class="fa fa-hourglass-start"></i>
@@ -65,4 +65,10 @@
       </button> {{ ap.init }}</li>
   </ul>
 
+</div>
+<div class="jumbotron" *ngIf="participatingParticipants.length == 0">
+  <p>There are no participants in your list. </p>
+  <p>To start using the Scrum Timer, please go to the
+    <a href="#" [routerLink]="['participants']">participant list</a> and add some people to the list, either manually or by importing a list from a colleague.</p>
+    <p>Note that the Scrum Timer stores participants in local storage. Nothing is sent to the server. This is to provide anonymity and be compliant with corporate policies.</p>
 </div>
