@@ -1,21 +1,21 @@
 <nav class="navbar navbar-dark bg-dark navbar-expand-md">
   <a class="navbar-brand" href="#">SCRUM Timer</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample01" aria-controls="navbarsExample01" aria-expanded="false" aria-label="Toggle navigation">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ScrumNavBar" aria-controls="ScrumNavBar" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
-  <div class="collapse navbar-collapse" id="navbarsExample01">
+  <div class="collapse navbar-collapse" id="ScrumNavBar">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="/" routerLink="/"><i class="fa fa-clock-o"></i> Timer</a>
+      <li class="nav-item" [routerLinkActive]="['active']">
+        <a class="nav-link" href="#" [routerLink]="['timer']"><i class="fa fa-clock-o"></i> Timer</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" [routerLinkActive]="['active']">
         <a class="nav-link" href="#" [routerLink]="['participants']"><i class="fa fa-users"></i> Participants</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#" routerLink="/settings"><i class="fa fa-cog"></i> Settings</a>
+      <li class="nav-item" [routerLinkActive]="['active']">
+        <a class="nav-link" href="#" [routerLink]="['settings']"><i class="fa fa-cog"></i> Settings</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" [routerLinkActive]="['active']">
         <a class="nav-link" href="#" routerLink="/help"><i class="fa fa-question-circle"></i> Help</a>
       </li>
     </ul>

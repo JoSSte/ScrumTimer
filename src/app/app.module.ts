@@ -24,6 +24,7 @@ import { HelpComponent } from './components/help/help.component';
 
 const appRoutes: Routes = [
   { path: '', component: TimerComponent },
+  { path: 'timer', component: TimerComponent },
   { path: 'participants', component: ParticipantListComponent },
   { path: 'settings', component: SettingsComponent },
   { path: 'help', component: HelpComponent }
@@ -49,8 +50,8 @@ const appRoutes: Routes = [
   providers: [
     ParticipantService,
     SettingsService,
-    Location, 
-    {provide: LocationStrategy, useClass: HashLocationStrategy}
+    Location,
+    { provide: LocationStrategy, useClass: HashLocationStrategy }
   ],
   bootstrap: [AppComponent]
 })
