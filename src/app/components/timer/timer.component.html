@@ -4,34 +4,25 @@
   <h4>Overall Progress</h4>
   <div class="progress">
     <div class="progress-bar progress-bar-striped bg-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"
-      [style.width]="totalPercent + '%'">{{totalPercent}}%</div>
+      [style.width]="totalPercent + '%'"><span>{{totalPercent}}%</span></div>
+  </div>
+  <br>
+  <h4>Overall Time</h4>
+  <div class="progress">
+    <div class="progress-bar progress-bar-striped bg-info" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" [ngClass]="{ 'progress-bar-animated': totalTimePercent < 100, 'bg-warning': totalTimePercent > 80 && totalTimePercent <= 95,'bg-danger': totalTimePercent > 95 }"
+      [style.width]="totalTimePercent + '%'"><span><i class="fa fa-exclamation-triangle" [ngClass]="{'invisible' : totalTimePercent <= 95}" ></i>{{totalMaxTime - currentTotalElapsed | Seconds}}</span></div>
   </div>
   <br>
   <h4>{{ currentParticipant.name }} Progress</h4>
   <div class="progress">
     <div class="progress-bar progress-bar-striped " [ngClass]="{ 'progress-bar-animated': currentPercent < 100, 'bg-warning': currentPercent > 80 && currentPercent <= 95,'bg-danger': currentPercent > 95 }"
-      role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" [style.width]="currentPercent + '%'">{{currentElapsed | Seconds}}</div>
+      role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" [style.width]="currentPercent + '%'">
+      <span>
+        <i class="fa fa-exclamation-triangle" [ngClass]="{'invisible' : currentPercent <= 95}" ></i>
+        {{individualTime - currentElapsed | Seconds}}
+      </span></div>
   </div>
-  <br>
-
-  <!--
-  <h4>Debug info</h4>
-  <ul>
-    <li>Total {{ totalPercent }}% Complete</li>
-    <li>Current {{ currentPercent }}% Complete</li>
-    <li>Stats
-      <ul>
-        <li>Participants Left: {{ participantList.length }}</li>
-        <li>Participants Done: {{ doneParticipants.length }}</li>
-        <li>Participants Absent: {{ absentParticipants.length }}</li>
-      </ul>
-    </li>
-    <li>Diff: {{ diff }}</li>
-    <li>Elapsed: {{ currentElapsed }}</li>
-    <li>Elapsed: {{ totalElapsed }}</li>
-    <li>Current Participant: {{ currentParticipant.name }} [{{ currentParticipant.init }}]</li>
-  </ul> -->
-
+  <br>  
 
   <button class="btn btn-outline-success" (click)="startTimer()" title="Start Timer" [disabled]="participantList.length == 0 || timerActive">
     <i class="fa fa-hourglass-start"></i>
@@ -46,11 +37,57 @@
   <button class="btn btn-outline-danger " (click)="stopTimer()" title="Stop Timer" [disabled]="totalPercent == 0 && currentPercent == 0 || !timerActive">
     <i class="fa fa-hourglass-end"></i>
   </button>
+  <button class="btn btn-outline-secondary " data-toggle="collapse" data-target="#Questions" aria-expanded="false" aria-controls="Questions">
+      <i class="fa fa-question"></i>
+  </button>
+  <button class="btn btn-outline-danger " data-toggle="collapse" data-target="#Debug" aria-expanded="false" aria-controls="Debug">
+      <i class="fa fa-bug"></i>
+  </button>
 
+  <div class="collapse" id="Debug">
+    <hr>
+    <div class="card card-body">
+      <h4>Debug info</h4>
+      <ul>
+        <li>Total {{ totalPercent }}% Complete</li>
+        <li>Current {{ currentPercent }}% Complete</li>
+        <li>Total Elapsed: {{ currentTotalElapsed }}</li>
+        <li>Stats
+          <ul>
+            <li>Participants Left: {{ participantList.length }}</li>
+            <li>Participants Done: {{ doneParticipants.length }}</li>
+            <li>Participants Absent: {{ absentParticipants.length }}</li>
+          </ul>
+        </li>
+        <li>Diff: {{ diff }}</li>
+        <li>Elapsed: {{ currentElapsed }}</li>
+        <li>Elapsed: {{ totalElapsed }}</li>
+        <li>Partipicant Time: {{ individualTime }}</li>
+        <li>Current Participant: {{ currentParticipant.name }} [{{ currentParticipant.init }}]</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <div class="collapse" id="Questions">
+    <hr>
+      <div class="card card-body">
+          <h4>Questions</h4>
+          <ul>
+            <li>What did you do yesterday?</li>
+            <li>What will you do today?</li>
+            <li>Are there any impediments in your way?</li>
+          </ul>
+      </div>
+    </div>
+  
   <hr>
   <h4>Participants
     <button class="btn btn-sm btn-info" (click)="shuffleParticipants()" title="Shuffle Participants" [disabled]="participantList.length <= 2">
       <i class="fa fa-random"></i>
+    </button>
+    <button class="btn btn-sm btn-info" (click)="sortParticipants()" title="Sort Participants" [disabled]="participantList.length <= 2">
+      <i class="fa fa-sort-amount-asc"></i>
     </button>
   </h4>
   <ul class="list-group">
@@ -62,7 +99,7 @@
     <li class="list-group-item list-group-item-danger" *ngFor="let ap of absentParticipants">
       <button class="btn btn-outline-secondary btn-sm" (click)="markPresent(ap)" title="Mark as present">
         <i class="fa fa-plus-circle"></i>
-      </button> {{ ap.init }}</li>
+      </button> {{ ap.name }}</li>
   </ul>
 
 </div>
