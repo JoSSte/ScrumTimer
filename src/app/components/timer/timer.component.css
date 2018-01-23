@@ -6,7 +6,11 @@
     position: relative;
 }
 
-.progress .progress-bar {
+.progress {
+    height: 40px;
+}
+
+.progress-bar {
     height: 40px;
 }
 
