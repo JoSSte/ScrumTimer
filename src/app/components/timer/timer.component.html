@@ -12,7 +12,7 @@
   <h4>Overall Time</h4>
   <div class="progress">
     <div class="progress-bar progress-bar-striped bg-info" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"
-      [ngClass]="{ 'progress-bar-animated': totalTimePercent < 100, 'bg-warning': totalTimePercent > 80 && totalTimePercent <= 95,'bg-danger': totalTimePercent > 95 }"
+      [ngClass]="{ 'progress-bar-animated': totalTimePercent < 100, 'bg-warning': totalTimePercent > 75 && totalTimePercent <= 95,'bg-danger': totalTimePercent > 95 }"
       [style.width]="totalTimePercent + '%'">
       <span>
         <i class="fa fa-exclamation-triangle" [ngClass]="{'invisible' : totalTimePercent <= 95}"></i>{{totalMaxTime - currentTotalElapsed | Seconds}}</span>
@@ -21,7 +21,7 @@
   <br>
   <h4>{{ currentParticipant.name }} Progress</h4>
   <div class="progress">
-    <div class="progress-bar progress-bar-striped " [ngClass]="{ 'progress-bar-animated': currentPercent < 100, 'bg-warning': currentPercent > 80 && currentPercent <= 95,'bg-danger': currentPercent > 95 }"
+    <div class="progress-bar progress-bar-striped " [ngClass]="{ 'progress-bar-animated': currentPercent < 100, 'bg-warning': currentPercent > 75 && currentPercent <= 95,'bg-danger': currentPercent > 95 }"
       role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" [style.width]="currentPercent + '%'">
       <span>
         <i class="fa fa-exclamation-triangle" [ngClass]="{'invisible' : currentPercent <= 95}"></i>
