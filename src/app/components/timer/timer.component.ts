@@ -18,7 +18,7 @@ export class TimerComponent implements OnInit {
   doneParticipants: Participant[] = Array();
 
   // variables for session
-  totalMaxTime = 60 * 15;
+  totalMaxTime = this.settingsService.getGlobalMaxTime();
   recommendedIndividualTime = 120;
   totalPercent = 0;
   totalTimePercent = 0;
@@ -82,10 +82,15 @@ export class TimerComponent implements OnInit {
     this.future = new Date();
     // set the timer to a time in the future, based on "individualTime" seconds
     if (this.settingsService.getUseGlobalMaxTime()) {
-      this.individualTime = Math.round(
-        this.settingsService.getGlobalMaxTime() / 
-        (this.participantList.length + this.doneParticipants.length)
-      );
+      if (this.totalElapsed >= this.settingsService.getGlobalMaxTime()) {
+        // 1 sec grace time :)
+        this.individualTime = 1;
+      } else {
+        this.individualTime = Math.round(
+          (this.settingsService.getGlobalMaxTime() - this.totalElapsed )/ 
+          (this.participantList.length)
+        );
+      }
     } else {
       this.individualTime = this.individualMaxTime;
     }
@@ -157,6 +162,10 @@ export class TimerComponent implements OnInit {
     this.currentParticipant = this.participantList[0];
     this.currentPercent = 0;
     this.currentElapsed = 0;
+    this.individualTime = Math.round(
+      this.settingsService.getGlobalMaxTime() / 
+      this.participantList.length
+    );
 
     this.sortParticipants();
   }
