@@ -25,6 +25,7 @@
     "angular2-flash-messages": "^1.0.8",
     "bootstrap": "^4.4.1",
     "core-js": "^2.6.10",
+    "diff": "^4.0.1",
     "jquery": "^3.4.1",
     "popper.js": "^1.16.0",
     "rxjs": "^5.5.12",
