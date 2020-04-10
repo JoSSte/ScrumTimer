@@ -19,4 +19,10 @@ export class SettingsComponent implements OnInit {
     this.globalMaxTime = this.settings.getGlobalMaxTime();
   }
 
+  saveSettings() {
+    this.settings.setGlobalMaxTime(this.globalMaxTime);
+    this.settings.setUseGlobelMaxTime(this.useGlobalMaxTime);
+    this.settings.saveSettings();
+  }
+
 }
