@@ -63,7 +63,7 @@ export class TimerComponent implements OnInit {
   stopTimer() {
     // save time for participant
     this.currentParticipant.time = this.currentElapsed;
-    this.currentPercent = 0;
+    //this.currentPercent = 0;
     // move first Participant to done participants
     if (this.participantList.length > 0) {
       this.doneParticipants.push(this.currentParticipant);
@@ -71,7 +71,7 @@ export class TimerComponent implements OnInit {
     // remove the top participant
     this.participantList.splice(0, 1);
     // set progressbar to 100%
-    this.currentPercent = 100;
+    this.totalPercent = 100;
     this.timerActive = false;
     // stop timer
     this.subscription.unsubscribe();
