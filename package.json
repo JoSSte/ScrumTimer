@@ -1,6 +1,6 @@
 {
   "name": "scrum-timer",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -9,8 +9,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "deploy": "ng build –prod –aot && sed -i -e 's/href=\"\\/\"/href=\"\\/ScrumTimer\\/\"/g' ./dist/index.html && cp ./dist/index.html ./dist/404.html && angular-cli-ghpages –-no-silent",
-    "postinstall": "ng build --aot -prod"
+    "deploy": " ng build  --prod --base-href \"https://josste.github.io/ScrumTimer/\" && cp ./dist/index.html ./dist/404.html && angular-cli-ghpages –-no-silent",
+    "postinstall": "ng build --aot --configuration=prod"
   },
   "private": true,
   "dependencies": {
