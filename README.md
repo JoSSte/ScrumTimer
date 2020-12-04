@@ -2,4 +2,4 @@
 
 This is an offline scrumtimer based on localstorage, with a database of team members
 
-accessible online: https://josste.github.io/ScrumTimer/
+Accessible online: https://josste.github.io/ScrumTimer/
