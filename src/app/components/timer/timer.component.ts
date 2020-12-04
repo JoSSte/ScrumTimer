@@ -12,7 +12,6 @@ import { SecondsPipe } from '../../pipes/hhmmss.pipe';
 })
 export class TimerComponent implements OnInit {
   currentCounter: Observable<number>;
-  currentStat: number;
   subscription: Subscription;
   participantList: Participant[];
   absentParticipants: Participant[] = Array();
