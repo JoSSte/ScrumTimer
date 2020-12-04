@@ -2,7 +2,7 @@ import { SettingsService } from '../../services/settings/settings.service';
 import { Component, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { Participant } from '../../models/Participant';
 import { ParticipantService } from '../../services/participant/participant.service';
-import { Observable, Subscription } from 'rxjs/Rx';
+import { Observable, Subscription, timer } from 'rxjs';
 import { SecondsPipe } from '../../pipes/hhmmss.pipe';
 
 @Component({
@@ -12,6 +12,7 @@ import { SecondsPipe } from '../../pipes/hhmmss.pipe';
 })
 export class TimerComponent implements OnInit {
   currentCounter: Observable<number>;
+  currentStat: number;
   subscription: Subscription;
   participantList: Participant[];
   absentParticipants: Participant[] = Array();
@@ -78,6 +79,7 @@ export class TimerComponent implements OnInit {
   }
 
   startTimer() {
+    const source = timer(1000, 2000);
     this.currentParticipant = this.participantList[0];
     this.future = new Date();
     // set the timer to a time in the future, based on "individualTime" seconds
@@ -96,17 +98,15 @@ export class TimerComponent implements OnInit {
     }
     this.future.setSeconds(this.future.getSeconds() + this.individualTime);
 
-    // console.log(this.future);
-    this.currentCounter = Observable.interval(1000).map((x) => {
+    this.subscription = source.subscribe(val => {
+      console.log(val);
       this.currentDiff = Math.floor((this.future.getTime() - new Date().getTime()) / 1000);
       this.currentElapsed = this.individualTime - this.currentDiff;
       this.currentPercent = Math.round((this.currentElapsed / this.individualTime) * 100);
       this.currentTotalElapsed = this.totalElapsed + this.currentElapsed; 
       this.totalTimePercent = Math.round(((this.totalElapsed + this.currentElapsed) / this.totalMaxTime) * 100) ;
-      return x;
     });
 
-    this.subscription = this.currentCounter.subscribe((x) => this.currentDiff);
     this.timerActive = true;
   }
 
