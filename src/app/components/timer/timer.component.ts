@@ -11,8 +11,7 @@ import { SecondsPipe } from '../../pipes/hhmmss.pipe';
   styleUrls: ['./timer.component.css']
 })
 export class TimerComponent implements OnInit {
-  currentCounter: Observable<number>;
-  subscription: Subscription;
+  timerSubscription: Subscription;
   participantList: Participant[];
   absentParticipants: Participant[] = Array();
   doneParticipants: Participant[] = Array();
@@ -38,7 +37,10 @@ export class TimerComponent implements OnInit {
   currentElapsed: number = 0;
   timerActive: boolean = false;
 
-  constructor(public participantService: ParticipantService, public settingsService: SettingsService, elm: ElementRef) {
+  constructor(
+    public participantService: ParticipantService, 
+    public settingsService: SettingsService
+    ) {
   }
 
   ngOnInit() {
@@ -55,9 +57,6 @@ export class TimerComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    if (this.currentCounter != null) {
-      this.stopTimer();
-    }
   }
 
   stopTimer() {
@@ -74,7 +73,7 @@ export class TimerComponent implements OnInit {
     this.totalPercent = 100;
     this.timerActive = false;
     // stop timer
-    this.subscription.unsubscribe();
+    this.timerSubscription.unsubscribe();
   }
 
   startTimer() {
@@ -97,8 +96,7 @@ export class TimerComponent implements OnInit {
     }
     this.future.setSeconds(this.future.getSeconds() + this.individualTime);
 
-    this.subscription = source.subscribe(val => {
-      console.log(val);
+    this.timerSubscription = source.subscribe(val => {
       this.currentDiff = Math.floor((this.future.getTime() - new Date().getTime()) / 1000);
       this.currentElapsed = this.individualTime - this.currentDiff;
       this.currentPercent = Math.round((this.currentElapsed / this.individualTime) * 100);
@@ -135,7 +133,7 @@ export class TimerComponent implements OnInit {
     this.currentPercent = 0;
     this.timerActive = false;
     // stop timer
-    this.subscription.unsubscribe();
+    this.timerSubscription.unsubscribe();
     this.startTimer();
   }
 
@@ -174,8 +172,8 @@ export class TimerComponent implements OnInit {
    * 
    * @param array 
    */
-  shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
+  shuffle(array: any[]) {
+    var currentIndex = array.length, temporaryValue: any, randomIndex: number;
 
     // While there remain elements to shuffle...
     while (0 !== currentIndex) {
@@ -213,7 +211,7 @@ export class TimerComponent implements OnInit {
    * 
    * @param participant Participant to mark as absent
    */
-  markAbsent(participant) {
+  markAbsent(participant: Participant) {
     if (this.participantList.length <= 2) {
       console.log('Cannot mark the last two participants absent.');
     } else {
@@ -229,7 +227,7 @@ export class TimerComponent implements OnInit {
    * 
    * @param participant Participant to mark as present
    */
-  markPresent(participant) {
+  markPresent(participant: Participant) {
     var idx: number = this.absentParticipants.indexOf(participant);
     this.participantList.push(participant);
     this.absentParticipants.splice(idx, 1);
