@@ -22,7 +22,6 @@
     "@angular/platform-browser": "^9.1.12",
     "@angular/platform-browser-dynamic": "^9.1.12",
     "@babel/polyfill": "^7.12.1",
-    "angular2-flash-messages": "^3.0.1",
     "bootstrap": "^4.5.3",
     "core-js": "^3.8.0",
     "diff": "^4.0.1",
