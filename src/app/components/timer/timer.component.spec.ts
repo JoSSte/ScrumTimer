@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
+import { ParticipantService } from '../../services/participant/participant.service';
+import { SettingsService } from '../../services/settings/settings.service';
 import { TimerComponent } from './timer.component';
 
 describe('TimerComponent', () => {
@@ -8,7 +9,13 @@ describe('TimerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TimerComponent ]
+      declarations: [ 
+        TimerComponent 
+      ],
+      providers: [
+        ParticipantService,
+        SettingsService
+      ]
     })
     .compileComponents();
   }));
