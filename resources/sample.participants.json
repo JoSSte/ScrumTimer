@@ -1,0 +1,26 @@
+[
+    {
+        "init": "IJ",
+        "name": "Indiana Jones"
+    },
+    {
+        "init": "PS",
+        "name": "Papa Smurf"
+    },
+    {
+        "init": "TT",
+        "name": "Tintin"
+    },
+    {
+        "init": "MM",
+        "name": "Mickey Mouse"
+    },
+    {
+        "init": "SMcD",
+        "name": "Scrooge McDuck"
+    },
+    {
+        "init": "DD",
+        "name": "Donald Duck"
+    }
+]
