@@ -17,7 +17,7 @@
     /***/
     function _(module, exports, __webpack_require__) {
       module.exports = __webpack_require__(
-      /*! C:\udvikling\ScrumTimer\src\main.ts */
+      /*! /home/jss/udvikling/ScrumTimer/src/main.ts */
       "zUnb");
       /***/
     },
@@ -423,8 +423,7 @@
 
       __webpack_require__.d(__webpack_exports__, "SettingsService", function () {
         return SettingsService;
-      }); //TODO: save settings in localStorage
-
+      });
 
       var SettingsService = /*#__PURE__*/function () {
         function SettingsService() {
@@ -2614,7 +2613,7 @@
 
     /***/
     function kiQV(module) {
-      module.exports = JSON.parse("{\"name\":\"scrum-timer\",\"version\":\"0.2.6\",\"license\":\"MIT\",\"scripts\":{\"ng\":\"ng\",\"start\":\"node server.js\",\"build\":\"ng build\",\"test\":\"ng test\",\"lint\":\"ng lint\",\"e2e\":\"ng e2e\",\"bump-version\":\"npm version patch -m \\\"Bump version to %s\\\"\",\"deploy\":\" ng build --base-href \\\"https://josste.github.io/ScrumTimer/\\\" && cp ./dist/index.html ./dist/404.html && angular-cli-ghpages –-no-silent\"},\"private\":true,\"dependencies\":{\"@angular/animations\":\"^11.2.11\",\"@angular/common\":\"^11.2.11\",\"@angular/compiler\":\"^11.2.11\",\"@angular/core\":\"^11.2.11\",\"@angular/forms\":\"^11.2.11\",\"@angular/platform-browser\":\"^11.2.11\",\"@angular/platform-browser-dynamic\":\"^11.2.11\",\"@babel/polyfill\":\"^7.12.1\",\"bootstrap\":\"^4.5.3\",\"core-js\":\"^3.10.0\",\"diff\":\"^4.0.1\",\"font-awesome\":\"^4.7.0\",\"jquery\":\"^3.5.1\",\"popper.js\":\"^1.16.0\",\"rxjs\":\"^6.6.7\",\"rxjs-compat\":\"^6.6.7\",\"tether\":\"^1.4.7\",\"tslib\":\"^2.0.0\",\"zone.js\":\"~0.11.4\"},\"devDependencies\":{\"@angular-devkit/build-angular\":\"^0.1102.10\",\"@angular/cli\":\"^11.2.10\",\"@angular/compiler-cli\":\"^11.2.11\",\"@angular/language-service\":\"^11.2.11\",\"@angular/router\":\"^11.2.11\",\"@types/jasmine\":\"~3.6.0\",\"@types/jasminewd2\":\"^2.0.8\",\"@types/node\":\"^13.13.34\",\"angular-cli-ghpages\":\"^0.6.2\",\"codelyzer\":\"^6.0.0\",\"jasmine-core\":\"~3.6.0\",\"jasmine-spec-reporter\":\"~5.0.0\",\"karma\":\"~6.3.2\",\"karma-chrome-launcher\":\"~3.1.0\",\"karma-cli\":\"~2.0.0\",\"karma-coverage-istanbul-reporter\":\"~3.0.2\",\"karma-jasmine\":\"~4.0.0\",\"karma-jasmine-html-reporter\":\"^1.5.0\",\"protractor\":\"~7.0.0\",\"ts-node\":\"~8.8.2\",\"eslint\":\"^7.14.0\",\"typescript\":\"~4.1.5\"}}");
+      module.exports = JSON.parse("{\"name\":\"scrum-timer\",\"version\":\"0.2.7\",\"license\":\"MIT\",\"scripts\":{\"ng\":\"ng\",\"start\":\"node server.js\",\"build\":\"ng build\",\"test\":\"ng test\",\"lint\":\"ng lint\",\"e2e\":\"ng e2e\",\"bump-version\":\"npm version patch -m \\\"Bump version to %s\\\"\",\"deploy\":\" ng build --base-href \\\"https://josste.github.io/ScrumTimer/\\\" && cp ./dist/index.html ./dist/404.html && angular-cli-ghpages –-no-silent\"},\"private\":true,\"dependencies\":{\"@angular/animations\":\"^11.2.11\",\"@angular/common\":\"^11.2.11\",\"@angular/compiler\":\"^11.2.11\",\"@angular/core\":\"^11.2.11\",\"@angular/forms\":\"^11.2.11\",\"@angular/platform-browser\":\"^11.2.11\",\"@angular/platform-browser-dynamic\":\"^11.2.11\",\"@babel/polyfill\":\"^7.12.1\",\"bootstrap\":\"^4.5.3\",\"core-js\":\"^3.10.0\",\"diff\":\"^4.0.1\",\"font-awesome\":\"^4.7.0\",\"jquery\":\"^3.5.1\",\"popper.js\":\"^1.16.0\",\"rxjs\":\"^6.6.7\",\"rxjs-compat\":\"^6.6.7\",\"tether\":\"^1.4.7\",\"tslib\":\"^2.0.0\",\"zone.js\":\"~0.11.4\"},\"devDependencies\":{\"@angular-devkit/build-angular\":\"^0.1102.10\",\"@angular/cli\":\"^11.2.10\",\"@angular/compiler-cli\":\"^11.2.11\",\"@angular/language-service\":\"^11.2.11\",\"@angular/router\":\"^11.2.11\",\"@types/jasmine\":\"~3.6.0\",\"@types/jasminewd2\":\"^2.0.8\",\"@types/node\":\"^13.13.34\",\"angular-cli-ghpages\":\"^0.6.2\",\"codelyzer\":\"^6.0.0\",\"eslint\":\"^7.14.0\",\"jasmine-core\":\"~3.6.0\",\"jasmine-spec-reporter\":\"~5.0.0\",\"karma\":\"~6.3.2\",\"karma-chrome-launcher\":\"~3.1.0\",\"karma-cli\":\"~2.0.0\",\"karma-coverage-istanbul-reporter\":\"~3.0.2\",\"karma-jasmine\":\"~4.0.0\",\"karma-jasmine-html-reporter\":\"^1.5.0\",\"protractor\":\"~7.0.0\",\"ts-node\":\"~8.8.2\",\"typescript\":\"~4.1.5\"}}");
       /***/
     },
 
