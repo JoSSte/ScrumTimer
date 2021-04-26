@@ -4,6 +4,7 @@ This is a *decentral* Daily Scrum Timer based on localstorage, with a database o
 
 Accessible online: https://josste.github.io/ScrumTimer/
 
+[![Build Angular](https://github.com/JoSSte/ScrumTimer/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/JoSSte/ScrumTimer/actions/workflows/main.yml)
 ## Privacy & Philosophy
 I developed this while working in a company with a very strict data protection policy.  
 It is designed to **NOT** use cookies, **NOT** use any webservices and store everything in localstorage, so even if you delete cookies regularly it will persist. Unfortunately this means that you need to exchange a json string if you want to share the list with a colleague. I might extend it to use a URL for a `.json` file in the future, but at the moment it will not happen.  
