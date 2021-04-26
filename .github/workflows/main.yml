@@ -1,5 +1,5 @@
 on: push
-name: Build Angular
+name: Build Angular Application
 jobs:
   build:
     if: github.ref != 'refs/heads/master'
