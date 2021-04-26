@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "bump-version": "npm version patch -m \"Bump version to %s\"",
+    "bump-version": "npm version patch -m \"Bump version to %s\" && git push --tags",
     "deploy": "ng build --base-href \"https://josste.github.io/ScrumTimer/\" && cp ./dist/index.html ./dist/404.html && angular-cli-ghpages –-no-silent"
   },
   "private": true,
