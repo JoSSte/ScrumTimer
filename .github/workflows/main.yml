@@ -9,7 +9,7 @@ jobs:
         node-version: [12.x]
     steps:
       - uses: actions/checkout@v1
-      - uses: filipesilva/ng-github-actions@5c86c55b4fcfeb99b7556864ebe71325bc911fbf
+      - uses: filipesilva/ng-github-actions@master
 
       - name: Cache node modules
         uses: actions/cache@v1
