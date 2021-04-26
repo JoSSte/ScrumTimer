@@ -9,6 +9,7 @@ jobs:
         node-version: [12.x]
     steps:
       - uses: actions/checkout@v1
+      - uses: filipesilva/ng-github-actions
 
       - name: Cache node modules
         uses: actions/cache@v1
@@ -34,7 +35,6 @@ jobs:
           token: ${{ secrets.TOKEN }}
       - name: Deploy to GH pages
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: filipesilva/ng-github-actions
         run: |
           ng build --base-href "https://josste.github.io/ScrumTimer/"
           cp ./dist/index.html ./dist/404.html
