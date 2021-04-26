@@ -509,7 +509,7 @@
     /***/
     function _(module, exports, __webpack_require__) {
       __webpack_require__(
-      /*! /home/jss/udvikling/ScrumTimer/node_modules/@angular-devkit/build-angular/src/webpack/es5-polyfills.js */
+      /*! C:\udvikling\ScrumTimer\node_modules\@angular-devkit\build-angular\src\webpack\es5-polyfills.js */
       "voQr");
 
       __webpack_require__(
@@ -517,7 +517,7 @@
       "R0gw");
 
       module.exports = __webpack_require__(
-      /*! /home/jss/udvikling/ScrumTimer/src/polyfills.ts */
+      /*! C:\udvikling\ScrumTimer\src\polyfills.ts */
       "hN/g");
       /***/
     },
