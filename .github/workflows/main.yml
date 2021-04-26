@@ -34,4 +34,4 @@ jobs:
           token: ${{ secrets.TOKEN }}
       - name: Deploy to GH pages
         run: |
-          npm deploy
+          npm run deploy
