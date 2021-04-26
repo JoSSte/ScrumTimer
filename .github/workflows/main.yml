@@ -28,7 +28,7 @@ jobs:
         # npm run build:prod
   deploy:
     needs: build
-    if: startsWith(github.ref, 'refs/tags/v*')
+    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     strategy:
       matrix:
