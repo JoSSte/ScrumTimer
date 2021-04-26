@@ -32,5 +32,6 @@ jobs:
         with:
           artifacts: "dist/angular-githubaction/*"
           token: ${{ secrets.TOKEN }}
-        #run: |
-        #  npm deploy
+      - name: Deploy to GH pages
+        run: |
+          npm deploy
