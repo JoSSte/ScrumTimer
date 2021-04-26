@@ -40,3 +40,6 @@ The tool was developed as a response to Daily scrum meetings frequently running 
 ]
 
 ```
+
+# ngcc after `npm i`
+"postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points"
