@@ -1,11 +1,30 @@
 import { Injectable } from '@angular/core';
 import { Participant } from '../../models/Participant';
+import { SettingsService } from "../settings/settings.service";
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class ParticipantService {
   participants: Participant[];
+  lastSync: Date = new Date('2000-01-01T00:00:00.000Z');
 
-  constructor() { }
+  constructor(public settings: SettingsService, private http: HttpClient) {
+    //this.lastSync = this.getLastSync();
+    this.getLastSync();
+  }
+
+  getLastSync() {
+    let localSync = localStorage.getItem('lastSync');
+    if(localSync == null){
+      console.log("never synced");
+    } else {
+      console.log("Last sync: " + localSync)
+    }
+  }
+
+  setLastSync(d: Date) {
+    let localSync = localStorage.setItem('lastSync', d.toISOString());
+  }
 
   getParticipants() {
     if (localStorage.getItem('participants') === null) {
@@ -38,6 +57,24 @@ export class ParticipantService {
   importParticipants(jsonParticipants) {
     localStorage.setItem('participants', jsonParticipants);
     this.exportParticipants();
+  }
+
+  getRemoteParticipants() {
+    if (this.settings.usesRemoteParticipantList()) {
+      console.log('remote participant list affirmative. Checking URL');
+      let durationSinceLastSync = (Date.now()).valueOf() - this.lastSync.valueOf()
+      console.log("since last sync: " + durationSinceLastSync);
+      //TODO: check last sync and retreive
+
+      let url = this.settings.getRemoteParticipantListURL();
+      this.http.get(url).subscribe(result => {
+        this.participants = result as Participant[];
+        this.setLastSync(new Date());
+      }, error => console.error(error));
+      //TODO: update localstorage when done
+    } else {
+      console.log('using local participant list');
+    }
   }
 
   compare(a, b) {

@@ -34,6 +34,10 @@ export class SettingsService {
     return this.remoteParticipantList;
   }
 
+  usesRemoteParticipantList(): boolean {
+    return this.getRemoteParticipantListURL() != '';
+  }
+
   setGlobalMaxTime(newTime: number) {
     this.globalMaxTime = newTime;
     this.saveSettings();
