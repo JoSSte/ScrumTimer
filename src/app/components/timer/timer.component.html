@@ -19,7 +19,7 @@
     </div>
   </div>
   <br>
-  <h4>{{ currentParticipant.name }} Progress</h4>
+  <h4>{{ currentParticipant.name }} [{{ currentParticipant.init }}] Progress</h4>
   <div class="progress">
     <div class="progress-bar progress-bar-striped " [ngClass]="{ 'progress-bar-animated': currentPercent < 100, 'bg-warning': currentPercent > 75 && currentPercent <= 95,'bg-danger': currentPercent > 95 }"
       role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" [style.width]="currentPercent + '%'">
@@ -111,14 +111,14 @@
     <li class="list-group-item" *ngFor="let p of participantList">
       <button class="btn btn-outline-secondary btn-sm" (click)="markAbsent(p)" title="Mark as absent" [disabled]="participantList.length <= 2">
         <i class="fa fa-minus-circle"></i>
-      </button> {{ p.name }}</li>
+      </button> {{ p.name }} [{{ p.init }}]</li>
     <li class="list-group-item list-group-item-secondary" *ngFor="let dp of doneParticipants"> {{ dp.name }} [{{ dp.init }}] -
       <span [ngClass]="{'text-danger' : dp.time >= individualTime}">{{ dp.time | Seconds }}</span>
     </li>
     <li class="list-group-item list-group-item-danger" *ngFor="let ap of absentParticipants">
       <button class="btn btn-outline-secondary btn-sm" (click)="markPresent(ap)" title="Mark as present">
         <i class="fa fa-plus-circle"></i>
-      </button> {{ ap.name }}</li>
+      </button> {{ ap.name }} [{{ ap.init }}]</li>
   </ul>
 
 </div>
