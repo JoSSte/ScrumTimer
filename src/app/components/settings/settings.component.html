@@ -1,29 +1,36 @@
 <h3>Settings</h3>
 <p>
-  From here, you will be able to choose whether you want an overall time goal (e.g. 15 minutes), or a static time-per-person.
+  From here, you will be able to choose whether you want an overall time goal (e.g. 15 minutes), or a static
+  time-per-person.
   <!-- You will also be able to choose when you want to have the progress bar to change colour (standard = 80% and 95%) -->
 </p>
 <form action="">
   <div class="input-group mb-3">
-    <label for="globalMaxTime" class="input-group-addon">Total Max Time</label>
+
     <div class="input-group-prepend">
+      <span class="input-group-text">Total Max Time</span>
       <div class="input-group-text">
-        <input type="checkbox" name="useGlobalMaxTime" aria-label="Use Global max Time" [(ngModel)]="useGlobalMaxTime">
+        <input type="checkbox" name="useGlobalMaxTime" aria-label="Use Global max Time" [(ngModel)]="useGlobalMaxTime" size="3">
       </div>
     </div>
     <input name="globalMaxTime" id="globalMaxTime" type="number" class="form-control" [(ngModel)]="globalMaxTime">
   </div>
-  <small id="globalMaxTimeHelp" class="form-text text-muted">If the checkbox is selected, the time (in seconds) is used to define the max length of the Scrum meeting. The time for each participant is scaled to fit.</small>
+  <small id="globalMaxTimeHelp" class="form-text text-muted">If the Total Max Time checkbox is selected, the time (in seconds) is used
+    to define the max length of the Scrum meeting. The time for each participant is scaled to fit. If it is left unchecked, each participant is given the time shown in seconds.</small>
+  <br>
   <div class="input-group mb3">
-    <label for=""></label>
     <div class="input-group-prepend">
+      <span class="input-group-text">Remote Participant list</span>
       <div class="input-group-text">
-        <input type="checkbox" name="useRemoteParticipantList" aria-label="Use Remote Participant List" [(ngModel)]="useRemoteParticipantList">
+        <input type="checkbox" name="useRemoteParticipantList" aria-label="Use Remote Participant List"
+          [(ngModel)]="useRemoteParticipantList">
       </div>
     </div>
-    <input name="remoteParticipantListURL" id="remoteParticipantListURL" type="text" class="form-control" [(ngModel)]="remoteParticipantListURL">
+    <input name="remoteParticipantListURL" id="remoteParticipantListURL" type="url" class="form-control"
+      [(ngModel)]="remoteParticipantListURL" [disabled]="useRemoteParticipantListChecked()">
   </div>
-  <small id="remoteParticipantListURLHelp" class="form-text text-muted">If the checkbox is selected, the tool will try to download a separate </small>
+  <small id="remoteParticipantListURLHelp" class="form-text text-muted">If the Remote Participant List URL checkbox is selected, the tool will try
+    to download a .json file from the URL and import the participants from that</small>
   <br>
-  <input type="submit" value="submit" class="btn btn-primary form-control" (click)="saveSettings()">
+  <input type="submit" value="Save Settings" class="btn btn-primary form-control" (click)="saveSettings()">
 </form>

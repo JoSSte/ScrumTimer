@@ -3,8 +3,10 @@ import { Injectable } from '@angular/core';
 export class SettingsService {
   private useGlobalMaxTime: boolean = true;
   private globalMaxTime: number = 60 * 15;
+  private remoteParticipantList: string = '';
 
   constructor() { }
+
   getGlobalMaxTime(): number {
     if (localStorage.getItem('settings') === null) {
       this.globalMaxTime = 60 * 15;
@@ -12,11 +14,6 @@ export class SettingsService {
       this.globalMaxTime = JSON.parse(localStorage.getItem('settings'))[1];
     }
     return this.globalMaxTime;
-  }
-
-  setGlobalMaxTime(newTime: number) {
-    this.globalMaxTime = newTime;
-    this.saveSettings();
   }
 
   getUseGlobalMaxTime(): boolean {
@@ -28,13 +25,32 @@ export class SettingsService {
     return this.useGlobalMaxTime;
   }
 
+  getRemoteParticipantListURL():string {
+    if (localStorage.getItem('settings') === null) {
+      this.remoteParticipantList = '';
+    } else {
+      this.remoteParticipantList = JSON.parse(localStorage.getItem('settings'))[2];
+    }
+    return this.remoteParticipantList;
+  }
+
+  setGlobalMaxTime(newTime: number) {
+    this.globalMaxTime = newTime;
+    this.saveSettings();
+  }
+
+  setRemoteParticipantList(newUrl: string) {
+    this.remoteParticipantList = newUrl;
+    this.saveSettings();
+  }
+
   setUseGlobelMaxTime(useGMTime: boolean) {
     this.useGlobalMaxTime = useGMTime;
     this.saveSettings();
   }
 
   exportSettings() {
-    return JSON.stringify([this.useGlobalMaxTime, this.globalMaxTime]);
+    return JSON.stringify([this.useGlobalMaxTime, this.globalMaxTime, this.remoteParticipantList]);
   }
 
   saveSettings() {
