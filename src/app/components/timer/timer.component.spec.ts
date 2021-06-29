@@ -1,8 +1,10 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ParticipantService } from '../../services/participant/participant.service';
-import { SettingsService } from '../../services/settings/settings.service';
+import { RouterTestingModule } from "@angular/router/testing";
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+
+import { ParticipantService } from '../../services/participant/participant.service';
+import { SettingsService } from '../../services/settings/settings.service';
 import { TimerComponent } from './timer.component';
 
 describe('TimerComponent', () => {
@@ -15,6 +17,7 @@ describe('TimerComponent', () => {
         TimerComponent 
       ],
       imports: [
+        RouterTestingModule.withRoutes([]),
         HttpClientModule,
         FormsModule
       ],
