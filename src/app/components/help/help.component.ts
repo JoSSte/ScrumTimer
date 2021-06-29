@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { version } from '../../../../package.json';
+import  packageInfo from '../../../../package.json';
 
 @Component({
   selector: 'app-help',
@@ -7,7 +7,7 @@ import { version } from '../../../../package.json';
   styleUrls: ['./help.component.css']
 })
 export class HelpComponent implements OnInit {
-  public version: string = version;
+  public version: string = packageInfo.version;
 
   constructor() { }
 
