@@ -1,11 +1,14 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from "@angular/router/testing";
+import { HttpClientModule } from '@angular/common/http';
 import { ParticipantListComponent } from './participant-list.component';
 import { ParticipantService } from '../../services/participant/participant.service';
+import { SettingsService } from '../../services/settings/settings.service';
 
 describe('ParticipantListComponent', () => {
   let component: ParticipantListComponent;
-  let service: ParticipantService;
+  let partService: ParticipantService;
+  let settingService: SettingsService;
   let fixture: ComponentFixture<ParticipantListComponent>;
 
   beforeEach(waitForAsync(() => {
@@ -14,14 +17,17 @@ describe('ParticipantListComponent', () => {
         ParticipantListComponent
       ],
       imports: [
-        RouterTestingModule.withRoutes([])
+        RouterTestingModule.withRoutes([]),
+        HttpClientModule
       ],
       providers: [
-        ParticipantService
+        ParticipantService,
+        SettingsService
       ]
     })
       .compileComponents();
-    service = TestBed.inject(ParticipantService);
+    partService = TestBed.inject(ParticipantService);
+    settingService = TestBed.inject(SettingsService);
   }));
 
   beforeEach(() => {
