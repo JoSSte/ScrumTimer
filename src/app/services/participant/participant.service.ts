@@ -9,7 +9,6 @@ export class ParticipantService {
   lastSync: Date = new Date('2000-01-01T00:00:00.000Z');
 
   constructor(public settings: SettingsService, private http: HttpClient) {
-    //this.lastSync = this.getLastSync();
     this.getLastSync();
   }
 
@@ -23,7 +22,7 @@ export class ParticipantService {
   }
 
   setLastSync(d: Date) {
-    let localSync = localStorage.setItem('lastSync', d.toISOString());
+    localStorage.setItem('lastSync', d.toISOString());
   }
 
   getParticipants() {
