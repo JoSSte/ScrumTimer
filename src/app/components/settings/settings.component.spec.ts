@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 
 import { SettingsService } from '../../services/settings/settings.service';
 import { SettingsComponent } from './settings.component';
@@ -11,7 +12,10 @@ describe('SettingsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SettingsComponent ],
-      providers: [ SettingsService ]
+      providers: [ SettingsService ],
+      imports: [
+        FormsModule
+      ],
     })
     .compileComponents();
   }));
