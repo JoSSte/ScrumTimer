@@ -10,6 +10,7 @@ module.exports = function (config) {
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
+      require('karma-junit-reporter'),
       require('@angular-devkit/build-angular/plugins/karma')
     ],
     client:{
@@ -20,7 +21,11 @@ module.exports = function (config) {
       fixWebpackSourcePaths: true
     },
     
-    reporters: ['progress', 'kjhtml'],
+    reporters: ['progress', 'kjhtml', 'junit'],
+    junitReporter: { // config: https://www.npmjs.com/package/karma-junit-reporter
+      outputDir: 'test-results', // results will be saved as $outputDir/$browserName.xml
+      outputFile: undefined
+    },
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
