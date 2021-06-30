@@ -22,15 +22,15 @@ describe('AppComponent', () => {
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   }));
-  it(`should have as title 'ScrumTimer'`, waitForAsync(() => {
+  it('should have as title \'ScrumTimer\'', waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app.title).toEqual('ScrumTimer');
   }));
-  //it('should render title in a a tag with class "navbar-brand"', waitForAsync(() => {
+  // it('should render title in a a tag with class "navbar-brand"', waitForAsync(() => {
   //  const fixture = TestBed.createComponent(AppComponent);
   //  fixture.detectChanges();
   //  const compiled = fixture.debugElement.nativeElement;
   //  expect(compiled.querySelector('a.navbar-brand').textContent).toContain("SCRUM Timer");
-  //}));
+  // }));
 });

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 @Injectable()
 export class SettingsService {
-  private useGlobalMaxTime: boolean = true;
+  private useGlobalMaxTime = true;
   private globalMaxTime: number = 60 * 15;
-  private remoteParticipantList: string = '';
+  private remoteParticipantList = '';
 
   constructor() { }
 
@@ -25,7 +25,7 @@ export class SettingsService {
     return this.useGlobalMaxTime;
   }
 
-  getRemoteParticipantListURL():string {
+  getRemoteParticipantListURL(): string {
     if (localStorage.getItem('settings') === null) {
       this.remoteParticipantList = '';
     } else {
@@ -35,7 +35,7 @@ export class SettingsService {
   }
 
   usesRemoteParticipantList(): boolean {
-    return this.getRemoteParticipantListURL() != '';
+    return this.getRemoteParticipantListURL() !== '';
   }
 
   setGlobalMaxTime(newTime: number) {
@@ -61,7 +61,7 @@ export class SettingsService {
     localStorage.setItem('settings', this.exportSettings());
   }
 
-  //overwrite localstorage, and refresh local list of participants from there...
+  // overwrite localstorage, and refresh local list of participants from there...
   importSettings(jsonSettings) {
     localStorage.setItem('participants', jsonSettings);
     this.exportSettings();

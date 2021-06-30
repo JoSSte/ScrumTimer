@@ -4,11 +4,11 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
-//import { Timer } from 'angular-timer'; // AngularJS - not 4??
+// import { Timer } from 'angular-timer'; // AngularJS - not 4??
 
-import { SecondsPipe } from "./pipes/hhmmss.pipe";
+import { SecondsPipe } from './pipes/hhmmss.pipe';
 
-//Services
+// Services
 import { ParticipantService } from './services/participant/participant.service';
 import { SettingsService } from './services/settings/settings.service';
 
@@ -29,7 +29,7 @@ const appRoutes: Routes = [
   { path: 'participants', component: ParticipantListComponent },
   { path: 'settings', component: SettingsComponent },
   { path: 'help', component: HelpComponent }
-  //{ path: '', component: Component }
+  // { path: '', component: Component }
 ];
 
 

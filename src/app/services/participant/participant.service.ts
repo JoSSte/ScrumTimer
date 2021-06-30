@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Participant } from '../../models/Participant';
-import { SettingsService } from "../settings/settings.service";
+import { SettingsService } from '../settings/settings.service';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
@@ -13,11 +13,11 @@ export class ParticipantService {
   }
 
   getLastSync() {
-    let localSync = localStorage.getItem('lastSync');
+    const localSync = localStorage.getItem('lastSync');
     if(localSync == null){
-      console.log("never synced");
+      console.log('never synced');
     } else {
-      console.log("Last sync: " + localSync)
+      console.log('Last sync: ' + localSync);
     }
   }
 
@@ -41,7 +41,7 @@ export class ParticipantService {
 
   removeParticipant(participant: Participant) {
     for (let i = 0; i < this.participants.length; i++) {
-      if (participant == this.participants[i]) {
+      if (participant === this.participants[i]) {
         this.participants.splice(i, 1);
       }
     }
@@ -52,7 +52,7 @@ export class ParticipantService {
     return JSON.stringify(this.participants);
   }
 
-  //overwrite localstorage, and refresh local list of participants from there...
+  // overwrite localstorage, and refresh local list of participants from there...
   importParticipants(jsonParticipants) {
     localStorage.setItem('participants', jsonParticipants);
     this.exportParticipants();
@@ -61,26 +61,28 @@ export class ParticipantService {
   getRemoteParticipants() {
     if (this.settings.usesRemoteParticipantList()) {
       console.log('remote participant list affirmative. Checking URL');
-      let durationSinceLastSync = (Date.now()).valueOf() - this.lastSync.valueOf()
-      console.log("since last sync: " + durationSinceLastSync);
-      //TODO: check last sync and retreive
+      const durationSinceLastSync = (Date.now()).valueOf() - this.lastSync.valueOf();
+      console.log('since last sync: ' + durationSinceLastSync);
+      // TODO: check last sync and retreive
 
-      let url = this.settings.getRemoteParticipantListURL();
+      const url = this.settings.getRemoteParticipantListURL();
       this.http.get(url).subscribe(result => {
         this.participants = result as Participant[];
         this.setLastSync(new Date());
       }, error => console.error(error));
-      //TODO: update localstorage when done
+      // TODO: update localstorage when done
     } else {
       console.log('using local participant list');
     }
   }
 
   compare(a, b) {
-    if (a.last_nom < b.last_nom)
-      return -1;
-    if (a.last_nom > b.last_nom)
-      return 1;
+    if (a.last_nom < b.last_nom) {
+return -1;
+}
+    if (a.last_nom > b.last_nom) {
+return 1;
+}
     return 0;
   }
 

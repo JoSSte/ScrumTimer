@@ -25,20 +25,20 @@ export class TimerComponent implements OnInit {
   currentTotalElapsed = 0;
 
   // variables for indiviual
-  individualMaxTime: number = 120;
+  individualMaxTime = 120;
   individualTime: number = this.individualMaxTime;
-  currentPercent: number = 0;
+  currentPercent = 0;
   currentParticipant: Participant;
 
   future: Date;
   futureString: string;
   diff: number;
   currentDiff: number;
-  currentElapsed: number = 0;
-  timerActive: boolean = false;
+  currentElapsed = 0;
+  timerActive = false;
 
   constructor(
-    public participantService: ParticipantService, 
+    public participantService: ParticipantService,
     public settingsService: SettingsService
     ) {
   }
@@ -48,7 +48,7 @@ export class TimerComponent implements OnInit {
     this.sortParticipants();
     if (this.settingsService.getUseGlobalMaxTime()) {
       this.individualTime = Math.round(
-        this.settingsService.getGlobalMaxTime() / 
+        this.settingsService.getGlobalMaxTime() /
         (this.participantList.length + this.doneParticipants.length)
       );
     } else {
@@ -56,13 +56,10 @@ export class TimerComponent implements OnInit {
     }
   }
 
-  ngOnDestroy(): void {
-  }
-
   stopTimer() {
     // save time for participant
     this.currentParticipant.time = this.currentElapsed;
-    //this.currentPercent = 0;
+    // this.currentPercent = 0;
     // move first Participant to done participants
     if (this.participantList.length > 0) {
       this.doneParticipants.push(this.currentParticipant);
@@ -87,7 +84,7 @@ export class TimerComponent implements OnInit {
         this.individualTime = 1;
       } else {
         this.individualTime = Math.round(
-          (this.settingsService.getGlobalMaxTime() - this.totalElapsed )/ 
+          (this.settingsService.getGlobalMaxTime() - this.totalElapsed )/
           (this.participantList.length)
         );
       }
@@ -100,7 +97,7 @@ export class TimerComponent implements OnInit {
       this.currentDiff = Math.floor((this.future.getTime() - new Date().getTime()) / 1000);
       this.currentElapsed = this.individualTime - this.currentDiff;
       this.currentPercent = Math.round((this.currentElapsed / this.individualTime) * 100);
-      this.currentTotalElapsed = this.totalElapsed + this.currentElapsed; 
+      this.currentTotalElapsed = this.totalElapsed + this.currentElapsed;
       this.totalTimePercent = Math.round(((this.totalElapsed + this.currentElapsed) / this.totalMaxTime) * 100) ;
     });
 
@@ -160,7 +157,7 @@ export class TimerComponent implements OnInit {
     this.currentPercent = 0;
     this.currentElapsed = 0;
     this.individualTime = Math.round(
-      this.settingsService.getGlobalMaxTime() / 
+      this.settingsService.getGlobalMaxTime() /
       this.participantList.length
     );
 
@@ -169,11 +166,11 @@ export class TimerComponent implements OnInit {
 
   /**
    * Shuffles an array pseudo-randomly
-   * 
-   * @param array 
+   *
+   * @param array
    */
   shuffle(array: any[]) {
-    var currentIndex = array.length, temporaryValue: any, randomIndex: number;
+    let currentIndex = array.length, temporaryValue: any, randomIndex: number;
 
     // While there remain elements to shuffle...
     while (0 !== currentIndex) {
@@ -206,16 +203,16 @@ export class TimerComponent implements OnInit {
 
   /**
    * Mark participant as absent.
-   * 
+   *
    * note that the last two participants cannot be marked as absent.
-   * 
+   *
    * @param participant Participant to mark as absent
    */
   markAbsent(participant: Participant) {
     if (this.participantList.length <= 2) {
       console.log('Cannot mark the last two participants absent.');
     } else {
-      var idx: number = this.participantList.indexOf(participant);
+      const idx: number = this.participantList.indexOf(participant);
       this.absentParticipants.push(participant);
       this.participantList.splice(idx, 1);
       this.currentParticipant = this.participantList[0];
@@ -224,11 +221,11 @@ export class TimerComponent implements OnInit {
 
   /**
    * Mark participant as present.
-   * 
+   *
    * @param participant Participant to mark as present
    */
   markPresent(participant: Participant) {
-    var idx: number = this.absentParticipants.indexOf(participant);
+    const idx: number = this.absentParticipants.indexOf(participant);
     this.participantList.push(participant);
     this.absentParticipants.splice(idx, 1);
     // console.log(this.absentParticipants);

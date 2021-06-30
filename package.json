@@ -8,6 +8,7 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "eslint -c .eslintrc.js --ext .ts src",
+    "lint:fix": "eslint -c .eslintrc.js --fix --ext .ts src",
     "e2e": "ng e2e",
     "bump-version": "npm version patch -m \"Bump version to %s\" && git push --tags",
     "deploy": "ng build --base-href \"https://josste.github.io/ScrumTimer/\" && cp ./dist/index.html ./dist/404.html && angular-cli-ghpages –-no-silent"

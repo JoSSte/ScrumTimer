@@ -1,5 +1,5 @@
 export interface Participant{
-    init?:string;
-    name?:string;
-    time?:number;
+    init?: string;
+    name?: string;
+    time?: number;
 }
