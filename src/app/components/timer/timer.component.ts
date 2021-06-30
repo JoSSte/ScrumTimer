@@ -123,7 +123,7 @@ export class TimerComponent implements OnInit {
     if (this.participantList.length > 0) {
       this.currentParticipant = this.participantList[0];
     } else {
-      this.currentParticipant = { 'name': '', 'init': '' };
+      this.currentParticipant = { 'name': '', 'init': '', 'time': 0 };
 
     }
     this.totalPercent = Math.round((this.doneParticipants.length / (this.participantList.length + this.doneParticipants.length)) * 100);
