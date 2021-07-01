@@ -16,21 +16,22 @@ module.exports = function (config) {
     client:{
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
-    coverageIstanbulReporter: {
-      dir: require('path').join(__dirname, 'coverage'), reports: [ 'html', 'lcovonly' ],
-      fixWebpackSourcePaths: true
-    },
-    
-    reporters: ['progress', 'kjhtml', 'junit'],
-    junitReporter: { // config: https://www.npmjs.com/package/karma-junit-reporter
-      outputDir: 'test-results', // results will be saved as $outputDir/$browserName.xml
-      outputFile: undefined
-    },
+    reporters: ['progress', 'kjhtml', 'junit','coverage-istanbul'],
+    codeCoverage: true,
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ["ChromeHeadless"],
-    singleRun: true
+    browsers: ['ChromeHeadless'],
+    singleRun: true,
+    coverageIstanbulReporter: {
+      dir: require('path').join(__dirname, 'test-results/coverage'), 
+      reports: [ 'html', 'lcovonly' ],
+      fixWebpackSourcePaths: true
+    },
+    junitReporter: { // config: https://www.npmjs.com/package/karma-junit-reporter
+      outputDir: 'test-results', // results will be saved as $outputDir/$browserName.xml
+      outputFile: undefined
+    }
   });
 };
