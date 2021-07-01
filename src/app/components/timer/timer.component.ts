@@ -2,8 +2,8 @@ import { SettingsService } from '../../services/settings/settings.service';
 import { Component, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { Participant } from '../../models/Participant';
 import { ParticipantService } from '../../services/participant/participant.service';
-import { Observable, Subscription, timer } from 'rxjs';
-import { SecondsPipe } from '../../pipes/hhmmss.pipe';
+import { Subscription, timer } from 'rxjs';
+import { SecondsPipe } from '../../pipes/Seconds.pipe';
 
 @Component({
   selector: 'app-timer',
@@ -39,7 +39,8 @@ export class TimerComponent implements OnInit {
 
   constructor(
     public participantService: ParticipantService,
-    public settingsService: SettingsService
+    public settingsService: SettingsService,
+    public Seconds: SecondsPipe
     ) {
   }
 
