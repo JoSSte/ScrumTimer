@@ -8,6 +8,7 @@ module.exports = function (config) {
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
+      require('karma-firefox-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
       require('karma-junit-reporter'),
@@ -22,8 +23,16 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['ChromeHeadless'],
     singleRun: true,
+    browsers: ['ChromeHeadless','FirefoxHeadless'],
+    customLaunchers: {
+      'FirefoxHeadless': {
+        base: 'Firefox',
+        flags: [
+          '-headless',
+        ],
+      }
+    },
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, 'test-results/coverage'), 
       reports: [ 'html', 'lcovonly' ],
