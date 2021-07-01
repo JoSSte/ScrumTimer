@@ -42,12 +42,27 @@ export class ParticipantService {
     localStorage.setItem('participants', JSON.stringify(this.participants));
   }
 
-  removeParticipant(participant: Participant) {
+  /**
+   * Remove specified participant from the
+   * @param participant Participant to be removed
+   */
+  removeParticipant(participant: Participant): boolean {
+    let removed = false;
     for (let i = 0; i < this.participants.length; i++) {
-      if (participant === this.participants[i]) {
+      if (participant.name === this.participants[i].name  && participant.init === this.participants[i].init  ) {
         this.participants.splice(i, 1);
+        removed = true;
       }
     }
+    localStorage.setItem('participants', JSON.stringify(this.participants));
+    return removed;
+  }
+
+  /**
+   * Remove all participants in the list
+   */
+  purgeParticipants() {
+    this.participants.splice(0);
     localStorage.setItem('participants', JSON.stringify(this.participants));
   }
 

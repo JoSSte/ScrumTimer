@@ -26,14 +26,14 @@ export class ParticipantListComponent implements OnInit {
 
   addParticipant() {
     if (this.init.length > 1 && this.name.length > 2){
-      this.participantService.addParticipant({ 'init': this.init, 'name': this.name, 'time':0 });
+      this.participantService.addParticipant(new Participant(this.init, this.name));
     }
     this.init = '';
     this.name = '';
   }
 
-  removeParticipant(participant: Participant) {
-    this.participantService.removeParticipant(participant);
+  removeParticipant(participant: Participant): boolean {
+    return this.participantService.removeParticipant(participant);
   }
 
   exportParticipants() {
