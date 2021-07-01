@@ -14,17 +14,16 @@ module.exports = function (config) {
       require('karma-junit-reporter'),
       require('@angular-devkit/build-angular/plugins/karma')
     ],
-    client:{
+    client: {
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
-    reporters: ['progress', 'kjhtml', 'junit','coverage-istanbul'],
-    codeCoverage: true,
+    reporters: ['progress', 'kjhtml', 'junit', 'coverage-istanbul'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
     singleRun: true,
-    browsers: ['ChromeHeadless','FirefoxHeadless'],
+    browsers: ['ChromeHeadless', 'FirefoxHeadless'],
     customLaunchers: {
       'FirefoxHeadless': {
         base: 'Firefox',
@@ -34,8 +33,8 @@ module.exports = function (config) {
       }
     },
     coverageIstanbulReporter: {
-      dir: require('path').join(__dirname, 'test-results/coverage'), 
-      reports: [ 'html', 'lcovonly' ],
+      dir: require('path').join(__dirname, 'test-results/coverage'),
+      reports: ['html', 'lcovonly'],
       fixWebpackSourcePaths: true
     },
     junitReporter: { // config: https://www.npmjs.com/package/karma-junit-reporter
