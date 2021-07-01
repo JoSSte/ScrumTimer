@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Participant, ParticipantAdapter } from '../../models/Participant';
-import { SettingsService } from "../settings/settings.service";
+import { SettingsService } from '../settings/settings.service';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class ParticipantService {
@@ -15,11 +14,11 @@ export class ParticipantService {
   }
 
   getLastSync() {
-    let localSync = localStorage.getItem('lastSync');
+    const localSync = localStorage.getItem('lastSync');
     if (localSync == null) {
-      console.log("never synced");
+      console.log('never synced');
     } else {
-      console.log("Last sync: " + localSync)
+      console.log('Last sync: ' + localSync);
     }
   }
 
@@ -32,7 +31,7 @@ export class ParticipantService {
     if (localStorage.getItem('participants') === null) {
       this.participants = [];
     } else {
-      //TODO: check if the localstorage Entry is valid JSON before returning
+      // TODO: check if the localstorage Entry is valid JSON before returning
       this.participants = JSON.parse(localStorage.getItem('participants'));
     }
     return this.participants;
@@ -45,7 +44,7 @@ export class ParticipantService {
 
   removeParticipant(participant: Participant) {
     for (let i = 0; i < this.participants.length; i++) {
-      if (participant == this.participants[i]) {
+      if (participant === this.participants[i]) {
         this.participants.splice(i, 1);
       }
     }
@@ -56,7 +55,7 @@ export class ParticipantService {
     return JSON.stringify(this.participants);
   }
 
-  //overwrite localstorage, and refresh local list of participants from there...
+  // overwrite localstorage, and refresh local list of participants from there...
   importParticipants(jsonParticipants) {
     localStorage.setItem('participants', jsonParticipants);
     this.exportParticipants();
@@ -65,32 +64,30 @@ export class ParticipantService {
   getRemoteParticipants() {
     if (this.settings.usesRemoteParticipantList()) {
       console.log('remote participant list affirmative. Checking URL');
-      let durationSinceLastSync = (Date.now()).valueOf() - this.lastSync.valueOf()
+      const durationSinceLastSync = (Date.now()).valueOf() - this.lastSync.valueOf();
 
-      //if more than 15 hours since sync, update
+      // If more than 15 hours since sync, update
       if (durationSinceLastSync > 54000) {
-        console.log("since last sync: " + durationSinceLastSync);
-        let url = this.settings.getRemoteParticipantListURL();
+        console.log('since last sync: ' + durationSinceLastSync);
+        const url = this.settings.getRemoteParticipantListURL();
         this.http.get(url).pipe(
           // Adapt each item in the raw data array
           map((data: any[]) => data.map((item) => this.adapter.adapt(item)))
         );
 
-        //  this.http.get(url).subscribe(result => {
-        //    let parts = result as Participant[];
-        //    console.log(typeof parts);
-        //    //this.importParticipants(parts);
-        //    //this.setLastSync(new Date());
-        //  }, error => console.error(error));
-        //  //TODO: update localstorage when done
-        //}
+        //   this.http.get(url).subscribe(result => {
+        //     let parts = result as Participant[];
+        //     console.log(typeof parts);
+        //     // this.importParticipants(parts);
+        //     // this.setLastSync(new Date());
+        //   }, error => console.error(error));
+        //   // TODO: update localstorage when done
+        // }
       } else {
-        console.log("not syncing");
+        console.log('not syncing');
       }
     } else {
       console.log('using local participant list');
     }
   }
-
-
 }

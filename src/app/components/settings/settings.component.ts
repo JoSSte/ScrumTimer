@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SettingsService } from "../../services/settings/settings.service";
+import { SettingsService } from '../../services/settings/settings.service';
 
 @Component({
   selector: 'app-settings',
@@ -13,14 +13,14 @@ export class SettingsComponent implements OnInit {
   remoteParticipantListURL: string;
 
   constructor(public settings: SettingsService) {
-    
+
   }
 
   ngOnInit() {
     this.useGlobalMaxTime = this.settings.getUseGlobalMaxTime();
     this.globalMaxTime = this.settings.getGlobalMaxTime();
     this.remoteParticipantListURL = this.settings.getRemoteParticipantListURL();
-    if(this.remoteParticipantListURL != ''){
+    if(this.remoteParticipantListURL !== ''){
       this.useRemoteParticipantList = true;
     }
   }
@@ -36,7 +36,7 @@ export class SettingsComponent implements OnInit {
     this.settings.saveSettings();
   }
 
-  useRemoteParticipantListChecked() :boolean{
+  useRemoteParticipantListChecked(): boolean{
     return !this.useRemoteParticipantList;
   }
 
