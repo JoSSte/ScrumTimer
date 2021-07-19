@@ -11,6 +11,8 @@ export class SettingsComponent implements OnInit {
   globalMaxTime: number;
   useRemoteParticipantList: boolean;
   remoteParticipantListURL: string;
+  jiraLinkURL: string;
+  useJiraLinkURL: boolean;
 
   constructor(public settings: SettingsService) {
 
@@ -20,8 +22,12 @@ export class SettingsComponent implements OnInit {
     this.useGlobalMaxTime = this.settings.getUseGlobalMaxTime();
     this.globalMaxTime = this.settings.getGlobalMaxTime();
     this.remoteParticipantListURL = this.settings.getRemoteParticipantListURL();
+    this.jiraLinkURL = this.settings.getJiraURL();
     if(this.remoteParticipantListURL !== ''){
       this.useRemoteParticipantList = true;
+    }
+    if(this.jiraLinkURL !== ''){
+      this.useJiraLinkURL = true;
     }
   }
 
@@ -33,11 +39,21 @@ export class SettingsComponent implements OnInit {
     }else {
       this.settings.setRemoteParticipantList('');
     }
+    if(this.useJiraLinkURL){
+      this.settings.setJiraURL(this.jiraLinkURL);
+    }else {
+      console.log('deleting jira url');
+      this.settings.setJiraURL('');
+    }
     this.settings.saveSettings();
   }
 
   useRemoteParticipantListChecked(): boolean{
     return !this.useRemoteParticipantList;
+  }
+
+  usejiraLinkChecked(): boolean {
+    return !this.useJiraLinkURL;
   }
 
 }

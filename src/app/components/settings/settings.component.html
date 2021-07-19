@@ -31,6 +31,19 @@
   </div>
   <small id="remoteParticipantListURLHelp" class="form-text text-muted">If the Remote Participant List URL checkbox is selected, the tool will try
     to download a .json file from the URL and import the participants from that</small>
-  <br>
+    <br>
+    <div class="input-group mb3">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Jira URL</span>
+        <div class="input-group-text">
+          <input type="checkbox" name="useJiraLink" aria-label="Use Jira Link"
+            [(ngModel)]="useJiraLinkURL">
+        </div>
+      </div>
+      <input name="jiraLinkURL" id="jiraLinkURL" type="url" class="form-control"
+        [(ngModel)]="jiraLinkURL" [disabled]="usejiraLinkChecked()">
+    </div>
+    <small id="jiraURLHelp" class="form-text text-muted">If the checkbox is checked, and you have a url entered, this URL will be opened in a window when using the popout function</small>
+      <br>
   <input type="submit" value="Save Settings" class="btn btn-primary form-control" (click)="saveSettings()">
 </form>

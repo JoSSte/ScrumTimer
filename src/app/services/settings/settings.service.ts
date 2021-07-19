@@ -4,6 +4,7 @@ export class SettingsService {
   private useGlobalMaxTime = true;
   private globalMaxTime: number = 60 * 15;
   private remoteParticipantList = '';
+  private jiraURL = '';
 
   constructor() { }
 
@@ -34,6 +35,15 @@ export class SettingsService {
     return this.remoteParticipantList;
   }
 
+  getJiraURL(): string {
+    if (localStorage.getItem('JiraURL') === null) {
+      this.jiraURL = '';
+    } else {
+      this.jiraURL = localStorage.getItem('JiraURL');
+    }
+    return this.jiraURL;
+  }
+
   usesRemoteParticipantList(): boolean {
     return this.getRemoteParticipantListURL() !== '';
   }
@@ -46,6 +56,15 @@ export class SettingsService {
   setRemoteParticipantList(newUrl: string) {
     this.remoteParticipantList = newUrl;
     this.saveSettings();
+  }
+
+  setJiraURL(newUrl: string) {
+    this.jiraURL = newUrl;
+    if(newUrl !== ''){
+      localStorage.setItem('JiraURL', this.jiraURL);
+    }else {
+      localStorage.removeItem('JiraURL');
+    }
   }
 
   setUseGlobelMaxTime(useGMTime: boolean) {
