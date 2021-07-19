@@ -35,12 +35,13 @@ export class NavbarComponent implements OnInit {
   }
   openJira() {
     const jwp = this.windowProps + (window.screen.availWidth - this.popupWidth - 10) + ',height=' + window.screen.availHeight;
-    let url = localStorage.getItem('JiraURL');
-    if (!url) {
-      url = 'about:blank';
+    const url = localStorage.getItem('JiraURL');
+    if (url) {
+      this.jiraTimerWindow = window.open(url, 'StoryWindowName', jwp);
+    }else{
       console.log('no JiraURL in localStorage');
     }
-    this.jiraTimerWindow = window.open(url, 'StoryWindowName', jwp);
+    
   }
   openWindows() {
     console.log('Opening windows');
