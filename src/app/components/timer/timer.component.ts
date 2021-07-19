@@ -3,7 +3,6 @@ import { Component, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { Participant } from '../../models/Participant';
 import { ParticipantService } from '../../services/participant/participant.service';
 import { Subscription, timer } from 'rxjs';
-import { SecondsPipe } from '../../pipes/Seconds.pipe';
 
 @Component({
   selector: 'app-timer',
@@ -39,8 +38,7 @@ export class TimerComponent implements OnInit {
 
   constructor(
     public participantService: ParticipantService,
-    public settingsService: SettingsService,
-    public Seconds: SecondsPipe
+    public settingsService: SettingsService
     ) {
   }
 

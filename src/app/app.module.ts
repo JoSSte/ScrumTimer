@@ -6,7 +6,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
 // import { Timer } from 'angular-timer'; // AngularJS - not 4??
 
-import { SecondsPipe } from './pipes/Seconds.pipe';
 
 // Services
 import { ParticipantService } from './services/participant/participant.service';
@@ -19,6 +18,9 @@ import { TimerComponent } from './components/timer/timer.component';
 import { ParticipantListComponent } from './components/participant-list/participant-list.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { HelpComponent } from './components/help/help.component';
+
+// Pipes
+import { SecsPipe } from './pipes/secs.pipe';
 
 
 
@@ -40,8 +42,8 @@ const appRoutes: Routes = [
     TimerComponent,
     ParticipantListComponent,
     SettingsComponent,
-    SecondsPipe,
-    HelpComponent
+    HelpComponent,
+    SecsPipe
   ],
   imports: [
     BrowserModule,

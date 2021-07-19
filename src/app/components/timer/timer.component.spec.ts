@@ -6,7 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ParticipantService } from '../../services/participant/participant.service';
 import { SettingsService } from '../../services/settings/settings.service';
 import { TimerComponent } from './timer.component';
-import { SecondsPipe } from '../../pipes/Seconds.pipe';
+import { SecsPipe } from '../../pipes/secs.pipe';
 
 describe('TimerComponent', () => {
   let component: TimerComponent;
@@ -25,7 +25,7 @@ describe('TimerComponent', () => {
       providers: [
         ParticipantService,
         SettingsService,
-        SecondsPipe
+        SecsPipe
       ]
     })
     .compileComponents();
