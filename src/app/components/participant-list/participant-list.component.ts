@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Participant } from "../../models/Participant";
-import { ParticipantService } from "../../services/participant/participant.service";
+import { Participant } from '../../models/Participant';
+import { ParticipantService } from '../../services/participant/participant.service';
 
 
 @Component({
@@ -9,10 +9,10 @@ import { ParticipantService } from "../../services/participant/participant.servi
   styleUrls: ['./participant-list.component.css']
 })
 export class ParticipantListComponent implements OnInit {
-  init: string = "";
-  name: string = "";
+  init = '';
+  name = '';
   participantList: Participant[];
-  jsonParticipants: string = "";
+  jsonParticipants = '';
 
   constructor(public participantService: ParticipantService) {
 
@@ -20,17 +20,20 @@ export class ParticipantListComponent implements OnInit {
 
   ngOnInit() {
     this.participantList = this.participantService.getParticipants();
+    // check for remote participants
+    this.participantService.getRemoteParticipants();
   }
 
   addParticipant() {
-    if (this.init.length > 1 && this.name.length > 2)
-      this.participantService.addParticipant({ "init": this.init, "name": this.name });
-    this.init = "";
-    this.name = "";
+    if (this.init.length > 1 && this.name.length > 2){
+      this.participantService.addParticipant(new Participant(this.init, this.name));
+    }
+    this.init = '';
+    this.name = '';
   }
 
-  removeParticipant(participant: Participant) {
-    this.participantService.removeParticipant(participant);
+  removeParticipant(participant: Participant): boolean {
+    return this.participantService.removeParticipant(participant);
   }
 
   exportParticipants() {
@@ -40,11 +43,11 @@ export class ParticipantListComponent implements OnInit {
   importParticipants() {
     this.participantService.importParticipants(this.jsonParticipants);
     this.participantList = this.participantService.getParticipants();
-    this.jsonParticipants = "";
+    this.jsonParticipants = '';
   }
 
   sortParticipants() {
-    console.log("[sortParticipants()] This function has not yet been implemented");
+    console.log('[sortParticipants()] This function has not yet been implemented');
   }
 
 

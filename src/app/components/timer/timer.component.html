@@ -15,7 +15,7 @@
       [ngClass]="{ 'progress-bar-animated': totalTimePercent < 100, 'bg-warning': totalTimePercent > 75 && totalTimePercent <= 95,'bg-danger': totalTimePercent > 95 }"
       [style.width]="totalTimePercent + '%'">
       <span>
-        <i class="fa fa-exclamation-triangle" [ngClass]="{'invisible' : totalTimePercent <= 95}"></i>{{totalMaxTime - currentTotalElapsed | Seconds}}</span>
+        <i class="fa fa-exclamation-triangle" [ngClass]="{'invisible' : totalTimePercent <= 95}"></i>{{totalMaxTime - currentTotalElapsed | secs}}</span>
     </div>
   </div>
   <br>
@@ -25,7 +25,7 @@
       role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" [style.width]="currentPercent + '%'">
       <span>
         <i class="fa fa-exclamation-triangle" [ngClass]="{'invisible' : currentPercent <= 95}"></i>
-        {{individualTime - currentElapsed | Seconds}}
+        {{individualTime - currentElapsed | secs}}
       </span>
     </div>
   </div>
@@ -113,7 +113,7 @@
         <i class="fa fa-minus-circle"></i>
       </button> {{ p.name }} [{{ p.init }}]</li>
     <li class="list-group-item list-group-item-secondary" *ngFor="let dp of doneParticipants"> {{ dp.name }} [{{ dp.init }}] -
-      <span [ngClass]="{'text-danger' : dp.time >= individualTime}">{{ dp.time | Seconds }}</span>
+      <span [ngClass]="{'text-danger' : dp.time >= individualTime}">{{ dp.time | secs }}</span>
     </li>
     <li class="list-group-item list-group-item-danger" *ngFor="let ap of absentParticipants">
       <button class="btn btn-outline-secondary btn-sm" (click)="markPresent(ap)" title="Mark as present">

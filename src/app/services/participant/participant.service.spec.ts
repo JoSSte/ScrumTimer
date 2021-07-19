@@ -1,11 +1,16 @@
 import { TestBed, inject } from '@angular/core/testing';
+import { HttpClientModule } from '@angular/common/http';
 
 import { ParticipantService } from './participant.service';
+import { SettingsService } from '../settings/settings.service';
 
 describe('ParticipantService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ParticipantService]
+      providers: [ParticipantService, SettingsService ],
+      imports: [
+        HttpClientModule
+      ]
     });
   });
 
