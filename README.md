@@ -31,10 +31,13 @@ There are three ways to use the Scrum Timer.
 
 ## Bookmarklets / Popin Scripts
 These scripts are used to inject scrumtimer into e.g. Jira instead of creating an inline popup (I call them pop-ins)  
-These can either be put in a tool for creating a bookmarklet like  
+These can either be put in a tool for creating a bookmarklet like the ones listed below. I do not provide direct links, to bookmarklets, since I WANT the user to be concious of what they are doing.
 * https://www.yourjs.com/bookmarklet/  
 * https://mrcoles.com/bookmarklet/  
-or pasted into the devtools console ( press **F12** and choose *console* ).  
+
+
+... or pasted into the devtools console ( press **F12** and choose *console* ).  
+*Please don't tell non-tech savvy people to do this. If they get into the habit of pasting random js into the development console all hell may break out. If I get the time and an indication of many people using this, i may create browser plugins instead.*
 
 They will create a div element in the right hand side of the screen with the scrumtimer included.  
 *REFRESHING THE PAGE REMOVES THE TIMER* - if you want the timer to stay, please use the *popout* link.  
