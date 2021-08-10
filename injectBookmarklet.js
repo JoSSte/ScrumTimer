@@ -13,3 +13,9 @@ d.class="ghx-detail-view gh-editable-detail-view ui-resizable";
 d.style="width:400px";
 document.getElementById('ghx-work').append(d);
 
+//Jira Specific - including close link
+
+let d = document.createElement("div"); 
+d.innerHTML = '<a href="javascript:d.remove()">X close ScrumTimer</a><iframe src="https://josste.github.io/ScrumTimer/" style=" width:100%; height:100%"> Hello World </iframe>';
+d.class="ghx-detail-view gh-editable-detail-view ui-resizable";
+document.getElementById('ghx-work').append(d);
