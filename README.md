@@ -40,11 +40,12 @@ There are three ways to use the Scrum Timer.
 3. Popup
    * Make sure that you have the URL of your Story management system (e.g. Jira) in the settings.
    * Open the Scrumtimer click **popout** to open a narrow scrumtimer window, and your favorite Story management URL in another.
-   * Arrange windows as you prefer.
+   * Arrange windows as you prefer.  
 5. Popin
-   * 
+   * Use one of the scripts below here to integrate the ScrumTimer with the Story management web application.  
+   * Note that this is essentially a XSS trick. You should NEVER enter Javascript that you don't understand into the Developer Console/add it to a bookmarklet.  
 
-### Bookmarklets / Popin Scripts
+## Bookmarklets / Popin Scripts
 These scripts are used to inject scrumtimer into e.g. Jira instead of creating an inline popup (I call them pop-ins)  
 These can either be put in a tool for creating a bookmarklet like  
 * https://www.yourjs.com/bookmarklet/  
@@ -52,19 +53,20 @@ These can either be put in a tool for creating a bookmarklet like
 or pasted into the devtools console ( press **F12** and choose *console* ).  
 
 They will create a div element in the right hand side of the screen with the scrumtimer included.  
-*REFRESHING THE PAGE REMOVES THE TIMER* - if you want the timer to stay, please use the *popout* link.
+*REFRESHING THE PAGE REMOVES THE TIMER* - if you want the timer to stay, please use the *popout* link.  
 
-#### Generic version
+### Popin - Generic version
 
 ``` js
-//TODO - resize window contents instead of sitting on top of the page
+//TODO: Resize window contents instead of sitting on top of the page
+//TODO: add close link
 let d = document.createElement("div");
 d.innerHTML = '<iframe src="http://localhost:4200/#/" style=" width:100%; height:100%"> Hello World </iframe>';
 d.style='position: relative; top: 0; right:0; width:250px; bottom: 0; z-index: 100; background-color: rgba(100,100,100,0.9) ';
 document.getElementsByTagName('body')[0].append(d);
 ```
 
-#### Jira version
+### Popin - Jira version
 This script will add the scrumtimer in the Jira details pane which shows details of a story, as long as you are in the "Active Sprints" view.
 ``` js
 let d = document.createElement("div");
