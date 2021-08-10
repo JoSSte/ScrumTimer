@@ -11,22 +11,6 @@ Accessible online: https://josste.github.io/ScrumTimer/
 ## Notes
 * This is built using Angular and a lot of libraries that I try to make sure do not have any vulnerabilities, by keeping them updated. The only included remote access library is [httpclient](https://angular.io/guide/http) but as in all software, you cannot be 100% sure that none of your includes haven't been compromised.
 
-## Privacy & Philosophy
-I developed this while working in a company with a very strict data protection policy, and a lengthy process for onboarding tools.  
-It is designed to **NOT** use cookies, **NOT** use any webservices and store everything in localstorage, so even if you delete cookies regularly it will persist. Unfortunately this means that you need to exchange a json string if you want to share the list with a colleague.
-The tool was developed as a response to Daily scrum meetings frequently running over time, so the main focus is to keep awareness on the time, and let everyone speak, and making the order pseudo-random so it's not always *"Adam Adamson"* who has to go first every day.
-
-### What is sent to the server?
-Nothing. Pure and simple.  
-If you have seleted the remote participant list you are in effect fetching a file from another server, so there may be some tracking there...
-
-### What is stored on my computer?
-In Localstorage (Press <kbd>F12</kbd> -  select application/storage - localstorage) there will be an entry called *settings* storing all the settings in a JSON array and an entry called *participants* also in a JSON array.
-
-#### Localstorage in Firefox
-![Firefox](src/assets/images/localstorage_firefox_0.3.0.png)
-#### Localstorage in Chrome
-![Chrome](src/assets/images/localstorage_chrome_0.3.0.png)
 
 
 ## Usage
@@ -55,18 +39,18 @@ or pasted into the devtools console ( press **F12** and choose *console* ).
 They will create a div element in the right hand side of the screen with the scrumtimer included.  
 *REFRESHING THE PAGE REMOVES THE TIMER* - if you want the timer to stay, please use the *popout* link.  
 
-### Popin - Generic version
+### Bookmarklet - Generic version
 
 ``` js
 //TODO: Resize window contents instead of sitting on top of the page
-//TODO: add close link
 let d = document.createElement("div");
-d.innerHTML = '<iframe src="https://josste.github.io/ScrumTimer/" style=" width:100%; height:100%"> Hello World </iframe>';
-d.style='position: relative; top: 0; right:0; width:250px; bottom: 0; z-index: 100; background-color: rgba(100,100,100,0.9) ';
+d.id = "ScrumTimerDiv";
+d.innerHTML = "<a href=\"javascript:console.log(document.getElementById('ScrumTimerDiv').remove())\">X close ScrumTimer</a><iframe src=\"https://josste.github.io/ScrumTimer/\" style=\"width:100%; height:100%\"> Hello World </iframe>";
+d.style='position: absolute; top: 0; right:0; width:350px; bottom: 0; z-index: 100; background-color: rgba(100,100,100,0.9) ';
 document.getElementsByTagName('body')[0].append(d);
 ```
 
-### Popin - Jira version
+### Bookmarklet - Jira version
 This script will add the scrumtimer in the Jira details pane which shows details of a story, as long as you are in the "Active Sprints" view.
 ``` js
 let d = document.createElement("div");
@@ -109,5 +93,21 @@ These can also be found at [sample.participants.json](/resources/sample.particip
 
 ```
 
+## Privacy & Philosophy
+I developed this while working in a company with a very strict data protection policy, and a lengthy process for onboarding tools.  
+It is designed to **NOT** use cookies, **NOT** use any webservices and store everything in localstorage, so even if you delete cookies regularly it will persist. Unfortunately this means that you need to exchange a json string if you want to share the list with a colleague.
+The tool was developed as a response to Daily scrum meetings frequently running over time, so the main focus is to keep awareness on the time, and let everyone speak, and making the order pseudo-random so it's not always *"Adam Adamson"* who has to go first every day.
+
+### What is sent to the server?
+Nothing. Pure and simple.  
+If you have seleted the remote participant list you are in effect fetching a file from another server, so there may be some tracking there...
+
+### What is stored on my computer?
+In Localstorage (Press <kbd>F12</kbd> -  select application/storage - localstorage) there will be an entry called *settings* storing all the settings in a JSON array and an entry called *participants* also in a JSON array.
+
+#### Localstorage in Firefox
+![Firefox](src/assets/images/localstorage_firefox_0.3.0.png)
+#### Localstorage in Chrome
+![Chrome](src/assets/images/localstorage_chrome_0.3.0.png)
 
 
