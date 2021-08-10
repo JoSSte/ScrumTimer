@@ -61,7 +61,7 @@ They will create a div element in the right hand side of the screen with the scr
 //TODO: Resize window contents instead of sitting on top of the page
 //TODO: add close link
 let d = document.createElement("div");
-d.innerHTML = '<iframe src="http://localhost:4200/#/" style=" width:100%; height:100%"> Hello World </iframe>';
+d.innerHTML = '<iframe src="https://josste.github.io/ScrumTimer/" style=" width:100%; height:100%"> Hello World </iframe>';
 d.style='position: relative; top: 0; right:0; width:250px; bottom: 0; z-index: 100; background-color: rgba(100,100,100,0.9) ';
 document.getElementsByTagName('body')[0].append(d);
 ```
