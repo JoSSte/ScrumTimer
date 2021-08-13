@@ -56,11 +56,17 @@ document.getElementsByTagName('body')[0].append(d);
 ### Bookmarklet - Jira version
 This script will add the scrumtimer in the Jira details pane which shows details of a story, as long as you are in the "Active Sprints" view.
 ``` js
-let d = document.createElement("div");
-d.id = "ScrumTimerDiv";
-d.innerHTML = "<a href=\"javascript:console.log(document.getElementById('ScrumTimerDiv').remove())\">X close ScrumTimer</a><iframe src=\"https://josste.github.io/ScrumTimer/\" style=\" width:100%; height:100%\"> Hello World </iframe>";
-d.class="ghx-detail-view gh-editable-detail-view ui-resizable";
-document.getElementById('ghx-work').append(d);
+let r = document.getElementById('ghx-work');
+if(r !== null){
+  let d = document.createElement("div");
+  d.id = "ScrumTimerDiv";
+  d.innerHTML = "<a href=\"javascript:console.log(document.getElementById('ScrumTimerDiv').remove())\">X close ScrumTimer</a><iframe src=\"https://josste.github.io/ScrumTimer/\" style=\" width:100%; height:100%\"> Hello World </iframe>";
+  d.class="ghx-detail-view gh-editable-detail-view ui-resizable";
+  r.append(d);
+} else {
+  console.log('No Div found with the id "ghx-work"... are you in Jira?');
+}
+
 ```
 
 ## Sample Data
