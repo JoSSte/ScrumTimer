@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Participant, ParticipantAdapter } from '../../models/Participant';
 import { SettingsService } from '../settings/settings.service';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable()
@@ -76,33 +77,33 @@ export class ParticipantService {
     this.exportParticipants();
   }
 
-  getRemoteParticipants() {
+  getRemoteParticipants(): Observable<Participant[]> {
     if (this.settings.usesRemoteParticipantList()) {
       console.log('remote participant list affirmative. Checking URL');
       const durationSinceLastSync = (Date.now()).valueOf() - this.lastSync.valueOf();
 
       // If more than 15 hours since sync, update
       if (durationSinceLastSync > 54000) {
-        console.log('since last sync: ' + durationSinceLastSync);
         const url = this.settings.getRemoteParticipantListURL();
-        this.http.get(url).pipe(
-          // Adapt each item in the raw data array
-          map((data: any[]) => data.map((item) => this.adapter.adapt(item)))
-        );
+        console.log('Seconds since last sync: ' + durationSinceLastSync + ' syncing from ' + url + ' . . .');
+        return this.http
+        .get(url)
+        .pipe(map((data: any[]) => data.map((item) => this.adapter.adapt(item))));
 
-        //   this.http.get(url).subscribe(result => {
-        //     let parts = result as Participant[];
-        //     console.log(typeof parts);
-        //     // this.importParticipants(parts);
-        //     // this.setLastSync(new Date());
-        //   }, error => console.error(error));
-        //   // TODO: update localstorage when done
-        // }
-      } else {
+      } else { // TODO: throw exception
         console.log('not syncing');
       }
-    } else {
+    } else { // TODO: throw exception ?
       console.log('using local participant list');
     }
+  }
+
+  updateRemoteParticipants(){
+    this.getRemoteParticipants().subscribe(resp => {
+      // display its headers
+      this.participants =  resp;
+      localStorage.setItem('participants', JSON.stringify(this.participants));
+      this.setLastSync(new Date());
+    });
   }
 }
