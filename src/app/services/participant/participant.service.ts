@@ -99,6 +99,7 @@ export class ParticipantService {
   }
 
   updateRemoteParticipants(){
+    
     this.getRemoteParticipants().subscribe(resp => {
       // display its headers
       this.participants =  resp;

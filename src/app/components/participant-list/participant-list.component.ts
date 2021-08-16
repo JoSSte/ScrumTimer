@@ -21,8 +21,9 @@ export class ParticipantListComponent implements OnInit {
   ngOnInit() {
     this.participantList = this.participantService.getParticipants();
     // check for updated remote participants
-    this.participantService.updateRemoteParticipants();
-    
+    if(this.participantService.settings.usesRemoteParticipantList()){
+      this.participantService.updateRemoteParticipants();
+    }
   }
 
   addParticipant() {
