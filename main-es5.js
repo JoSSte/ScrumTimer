@@ -880,9 +880,11 @@
         _createClass(_ParticipantListComponent, [{
           key: "ngOnInit",
           value: function ngOnInit() {
-            this.participantList = this.participantService.getParticipants(); // check for remote participants
+            this.participantList = this.participantService.getParticipants(); // check for updated remote participants
 
-            this.participantService.getRemoteParticipants();
+            if (this.participantService.settings.usesRemoteParticipantList()) {
+              this.participantService.updateRemoteParticipants();
+            }
           }
         }, {
           key: "addParticipant",
@@ -2762,27 +2764,34 @@
               var durationSinceLastSync = Date.now().valueOf() - this.lastSync.valueOf(); // If more than 15 hours since sync, update
 
               if (durationSinceLastSync > 54000) {
-                console.log('since last sync: ' + durationSinceLastSync);
                 var url = this.settings.getRemoteParticipantListURL();
-                this.http.get(url).pipe( // Adapt each item in the raw data array
-                (0, rxjs_operators__WEBPACK_IMPORTED_MODULE_2__.map)(function (data) {
+                console.log('Seconds since last sync: ' + durationSinceLastSync + ' syncing from ' + url + ' . . .');
+                return this.http.get(url).pipe((0, rxjs_operators__WEBPACK_IMPORTED_MODULE_2__.map)(function (data) {
                   return data.map(function (item) {
                     return _this2.adapter.adapt(item);
                   });
-                })); //   this.http.get(url).subscribe(result => {
-                //     let parts = result as Participant[];
-                //     console.log(typeof parts);
-                //     // this.importParticipants(parts);
-                //     // this.setLastSync(new Date());
-                //   }, error => console.error(error));
-                //   // TODO: update localstorage when done
-                // }
+                }));
               } else {
+                // TODO: throw exception
                 console.log('not syncing');
               }
             } else {
+              // TODO: throw exception ?
               console.log('using local participant list');
             }
+          }
+        }, {
+          key: "updateRemoteParticipants",
+          value: function updateRemoteParticipants() {
+            var _this3 = this;
+
+            this.getRemoteParticipants().subscribe(function (resp) {
+              // display its headers
+              _this3.participants = resp;
+              localStorage.setItem('participants', JSON.stringify(_this3.participants));
+
+              _this3.setLastSync(new Date());
+            });
           }
         }]);
 
@@ -3046,7 +3055,7 @@
     function _(module) {
       "use strict";
 
-      module.exports = JSON.parse('{"name":"scrum-timer","version":"0.3.1","license":"MIT","scripts":{"ng":"ng","start":"node server.js","build":"ng build","test":"ng test","lint":"eslint -c .eslintrc.js --ext .ts src","lint:fix":"eslint -c .eslintrc.js --fix --ext .ts src","e2e":"ng e2e","bump-version":"npm version patch -m \\"Bump version to %s\\" && git push --tags","deploy":"ng build --base-href \\"https://josste.github.io/ScrumTimer/\\" && cp ./dist/index.html ./dist/404.html && angular-cli-ghpages –-no-silent"},"private":true,"dependencies":{"@angular/animations":"^12.1.0","@angular/common":"^12.1.0","@angular/compiler":"^12.1.0","@angular/core":"^12.1.0","@angular/forms":"^12.1.0","@angular/platform-browser":"^12.1.0","@angular/platform-browser-dynamic":"^12.1.0","@babel/polyfill":"^7.12.1","bootstrap":"^4.5.3","core-js":"^3.15.1","diff":"^5.0.0","font-awesome":"^4.7.0","jquery":"^3.6.0","npm":"^7.19.0","popper.js":"^1.16.0","rxjs":"^6.6.7","rxjs-compat":"^6.6.7","tether":"^1.4.7","tslib":"^2.2.0","zone.js":"~0.11.4"},"devDependencies":{"@angular-devkit/build-angular":"^12.1.0","@angular-eslint/eslint-plugin":"^12.2.0","@angular/cli":"^12.1.0","@angular/compiler-cli":"^12.1.0","@angular/language-service":"^12.1.0","@angular/router":"^12.1.0","@types/jasmine":"~3.6.0","@types/jasminewd2":"^2.0.8","@types/node":"^13.13.34","@typescript-eslint/eslint-plugin":"^4.28.1","@typescript-eslint/eslint-plugin-tslint":"^4.28.1","@typescript-eslint/parser":"^4.28.1","angular-cli-ghpages":"^0.6.2","codelyzer":"^6.0.0","eslint":"^7.29.0","jasmine-core":"~3.6.0","jasmine-spec-reporter":"~5.0.0","karma":"~6.3.2","karma-chrome-launcher":"~3.1.0","karma-cli":"~2.0.0","karma-coverage":"^2.0.3","karma-coverage-istanbul-reporter":"~3.0.2","karma-firefox-launcher":"^2.1.1","karma-jasmine":"~4.0.0","karma-jasmine-html-reporter":"^1.5.0","karma-junit-reporter":"^2.0.1","protractor":"~7.0.0","ts-node":"~8.8.2","typescript":"~4.3.4"}}');
+      module.exports = JSON.parse('{"name":"scrum-timer","version":"0.3.2","license":"MIT","scripts":{"ng":"ng","start":"node server.js","build":"ng build","test":"ng test","lint":"eslint -c .eslintrc.js --ext .ts src","lint:fix":"eslint -c .eslintrc.js --fix --ext .ts src","e2e":"ng e2e","bump-version":"npm version patch -m \\"Bump version to %s\\" && git push --tags","deploy":"ng build --base-href \\"https://josste.github.io/ScrumTimer/\\" && cp ./dist/index.html ./dist/404.html && angular-cli-ghpages –-no-silent"},"private":true,"dependencies":{"@angular/animations":"^12.1.0","@angular/common":"^12.1.0","@angular/compiler":"^12.1.0","@angular/core":"^12.1.0","@angular/forms":"^12.1.0","@angular/platform-browser":"^12.1.0","@angular/platform-browser-dynamic":"^12.1.0","@babel/polyfill":"^7.12.1","bootstrap":"^4.5.3","core-js":"^3.15.2","diff":"^5.0.0","font-awesome":"^4.7.0","jquery":"^3.6.0","npm":"^7.19.1","popper.js":"^1.16.0","rxjs":"^6.6.7","rxjs-compat":"^6.6.7","tether":"^1.4.7","tslib":"^2.3.0","zone.js":"~0.11.4"},"devDependencies":{"@angular-devkit/build-angular":"^12.1.0","@angular-eslint/eslint-plugin":"^12.2.0","@angular/cli":"^12.1.0","@angular/compiler-cli":"^12.1.0","@angular/language-service":"^12.1.0","@angular/router":"^12.1.0","@types/jasmine":"~3.6.0","@types/jasminewd2":"^2.0.8","@types/node":"^13.13.34","@typescript-eslint/eslint-plugin":"^4.28.1","@typescript-eslint/eslint-plugin-tslint":"^4.28.1","@typescript-eslint/parser":"^4.28.1","angular-cli-ghpages":"^0.6.2","codelyzer":"^6.0.0","eslint":"^7.29.0","jasmine-core":"~3.6.0","jasmine-spec-reporter":"~5.0.0","karma":"~6.3.2","karma-chrome-launcher":"~3.1.0","karma-cli":"~2.0.0","karma-coverage":"^2.0.3","karma-coverage-istanbul-reporter":"~3.0.2","karma-firefox-launcher":"^2.1.1","karma-jasmine":"~4.0.0","karma-jasmine-html-reporter":"^1.5.0","karma-junit-reporter":"^2.0.1","protractor":"~7.0.0","ts-node":"~8.8.2","typescript":"~4.3.4"}}');
       /***/
     }
   },
