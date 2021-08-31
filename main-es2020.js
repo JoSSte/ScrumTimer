@@ -285,7 +285,8 @@ const _c1 = function () { return ["timer"]; };
 const _c2 = function () { return ["participants"]; };
 const _c3 = function () { return ["settings"]; };
 class NavbarComponent {
-    constructor() {
+    constructor(router) {
+        this.router = router;
         this.noOpener = true;
         this.scrumTimerWindow = null;
         this.jiraTimerWindow = null;
@@ -306,13 +307,14 @@ class NavbarComponent {
         catch (e) {
             console.log(e);
             openerMessage = 'Not Displaying popout link. Already popped out (exception)';
+            console.log(this.router.url);
             this.noOpener = false;
         }
         console.log(openerMessage);
     }
     openScrumTimer() {
         const swp = this.windowProps + this.popupWidth + ',height=' + window.screen.availHeight;
-        this.scrumTimerWindow = window.open('/#/timer', 'TimerWindowName', swp);
+        this.scrumTimerWindow = window.open(window.location.origin + window.location.pathname + 'timer', 'TimerWindowName', swp);
     }
     openJira() {
         const jwp = this.windowProps + (window.screen.availWidth - this.popupWidth - 10) + ',height=' + window.screen.availHeight;
@@ -329,10 +331,9 @@ class NavbarComponent {
         this.openJira();
         this.openScrumTimer();
     }
-    ngOnInit() {
-    }
+    ngOnInit() { }
 }
-NavbarComponent.ɵfac = function NavbarComponent_Factory(t) { return new (t || NavbarComponent)(); };
+NavbarComponent.ɵfac = function NavbarComponent_Factory(t) { return new (t || NavbarComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_1__.Router)); };
 NavbarComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: NavbarComponent, selectors: [["app-navbar"]], decls: 24, vars: 15, consts: [[1, "navbar", "navbar-dark", "bg-dark", "navbar-expand-md"], ["href", "#", 1, "navbar-brand"], ["type", "button", "data-toggle", "collapse", "data-target", "#ScrumNavBar", "aria-controls", "ScrumNavBar", "aria-expanded", "false", "aria-label", "Toggle navigation", 1, "navbar-toggler"], [1, "navbar-toggler-icon"], ["id", "ScrumNavBar", 1, "collapse", "navbar-collapse"], [1, "navbar-nav", "mr-auto"], [1, "nav-item", 3, "routerLinkActive"], ["href", "#", 1, "nav-link", 3, "routerLink"], [1, "fa", "fa-clock-o"], [1, "fa", "fa-users"], [1, "fa", "fa-cog"], ["href", "#", "routerLink", "/help", 1, "nav-link"], [1, "fa", "fa-question-circle"], ["class", "nav-item", 3, "routerLinkActive", 4, "ngIf"], ["href", "#", 1, "nav-link", 3, "click"], [1, "fa", "fa-external-link-alt"]], template: function NavbarComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "nav", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "a", 1);

@@ -613,9 +613,10 @@
       };
 
       var _NavbarComponent = /*#__PURE__*/function () {
-        function _NavbarComponent() {
+        function _NavbarComponent(router) {
           _classCallCheck(this, _NavbarComponent);
 
+          this.router = router;
           this.noOpener = true;
           this.scrumTimerWindow = null;
           this.jiraTimerWindow = null;
@@ -635,6 +636,7 @@
           } catch (e) {
             console.log(e);
             openerMessage = 'Not Displaying popout link. Already popped out (exception)';
+            console.log(this.router.url);
             this.noOpener = false;
           }
 
@@ -645,7 +647,7 @@
           key: "openScrumTimer",
           value: function openScrumTimer() {
             var swp = this.windowProps + this.popupWidth + ',height=' + window.screen.availHeight;
-            this.scrumTimerWindow = window.open('/#/timer', 'TimerWindowName', swp);
+            this.scrumTimerWindow = window.open(window.location.origin + window.location.pathname + 'timer', 'TimerWindowName', swp);
           }
         }, {
           key: "openJira",
@@ -675,7 +677,7 @@
       }();
 
       _NavbarComponent.ɵfac = function NavbarComponent_Factory(t) {
-        return new (t || _NavbarComponent)();
+        return new (t || _NavbarComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_1__.Router));
       };
 
       _NavbarComponent.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({
