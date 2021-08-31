@@ -2,7 +2,9 @@ import { SettingsService } from '../../services/settings/settings.service';
 import { Component, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { Participant } from '../../models/Participant';
 import { ParticipantService } from '../../services/participant/participant.service';
+import { NavbarService } from '../../services/navbar/navbar.service';
 import { Subscription, timer } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-timer',
@@ -37,6 +39,8 @@ export class TimerComponent implements OnInit {
   timerActive = false;
 
   constructor(
+    private activatedRoute : ActivatedRoute,
+    private nav : NavbarService,
     public participantService: ParticipantService,
     public settingsService: SettingsService
     ) {
@@ -52,6 +56,12 @@ export class TimerComponent implements OnInit {
       );
     } else {
       this.individualTime = this.individualMaxTime;
+    }
+    console.log('[Scrumtimer] Timer init');
+    if(this.activatedRoute['_routerState'].snapshot.url == '/popin'){
+      this.nav.hide();
+    }else{
+      this.nav.show();
     }
   }
 
@@ -227,7 +237,6 @@ export class TimerComponent implements OnInit {
     const idx: number = this.absentParticipants.indexOf(participant);
     this.participantList.push(participant);
     this.absentParticipants.splice(idx, 1);
-    // console.log(this.absentParticipants);
   }
 
 
