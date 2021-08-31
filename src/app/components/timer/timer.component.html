@@ -114,7 +114,7 @@
   </h4>
   <ul class="participant-list list-group">
     <li class="list-group-item" *ngFor="let p of participantList; let i=index" [ngClass]="{'text-success' : i == 0, 'text-primary': i == 1}">
-      <button class="btn btn-outline-secondary btn-sm" (click)="markAbsent(p)" title="Mark as absent" [disabled]="participantList.length <= 2 || i==0">
+      <button class="btn btn-outline-secondary btn-sm" (click)="markAbsent(p)" title="Mark as absent" [disabled]="participantList.length <= 2 || (i == 0 && timerActive)">
         <i class="fa fa-minus-circle"></i>
       </button> {{ p.name }} [{{ p.init }}]</li>
     <li class="list-group-item list-group-item-secondary" *ngFor="let dp of doneParticipants"> {{ dp.name }} [{{ dp.init }}] -
