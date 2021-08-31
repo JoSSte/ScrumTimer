@@ -44,7 +44,7 @@
     </div>
     <div *ngIf="!timerActive" class="btn-group mr-2" role="group">
       <button class="btn btn-outline-success" (click)="startTimer()" title="Start Timer" [disabled]="participantList.length == 0 || timerActive">
-        <i class="fa fa-hourglass-start"></i> {{ participantList[0].init }}
+        <i class="fa fa-hourglass-start"></i> {{ currentParticipant.init }}
       </button>
     </div>
     <div *ngIf="timerActive" class="btn-group mr-2" role="group"> <!--  -->
