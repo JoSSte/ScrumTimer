@@ -50,7 +50,7 @@
     <div *ngIf="timerActive" class="btn-group mr-2" role="group"> <!--  -->
       <button class="btn btn-outline-primary" (click)="nextParticipant()" [disabled]="participantList.length <= 1 || !timerActive"
         title="Next participant">
-        <i class="fa fa-step-forward"></i> {{ (participantList.length > 1)?("(" + participantList[1].init)+")":"" }}
+        <i class="fa fa-step-forward"></i> Next <!-- {{ (participantList.length > 1)?("(" + participantList[1].init)+")":"" }} -->
       </button>
     </div>
     <div class="btn-group mr-2" role="group">
@@ -112,7 +112,7 @@
       <i class="fa fa-sort-amount-asc"></i>
     </button>
   </h4>
-  <ul class="list-group">
+  <ul class="participant-list list-group">
     <li class="list-group-item" *ngFor="let p of participantList">
       <button class="btn btn-outline-secondary btn-sm" (click)="markAbsent(p)" title="Mark as absent" [disabled]="participantList.length <= 2">
         <i class="fa fa-minus-circle"></i>
