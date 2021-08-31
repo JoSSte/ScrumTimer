@@ -31,7 +31,7 @@ export class NavbarComponent implements OnInit {
   }
   openScrumTimer() {
     const swp = this.windowProps+ this.popupWidth + ',height=' + window.screen.availHeight;
-    this.scrumTimerWindow = window.open(window.document.URL, 'TimerWindowName', swp );
+    this.scrumTimerWindow = window.open('/#/timer', 'TimerWindowName', swp );
   }
   openJira() {
     const jwp = this.windowProps + (window.screen.availWidth - this.popupWidth - 10) + ',height=' + window.screen.availHeight;
