@@ -71,7 +71,8 @@ if(r !== null){
 ```
 
 ## Sample Data
-These can also be found at [sample.participants.json](/resources/sample.participants.json) if you want to test the centralized JSON option  
+These can also be found at [sample.participants.json](/resources/sample.participants.json) if you want to test the centralized JSON option.  
+To test locally use http://localhost:4200/assets/json/participants_andeby.json  
 
 ``` json
 [
