@@ -116,7 +116,6 @@
       }
     }
   },
-  "defaultProject": "scrum-timer",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
