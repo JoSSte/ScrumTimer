@@ -10,6 +10,7 @@ Accessible online: https://josste.github.io/ScrumTimer/
 
 ## Notes
 * This is built using Angular and a lot of libraries that I try to make sure do not have any vulnerabilities, by keeping them updated. The only included remote access library is [httpclient](https://angular.io/guide/http) but as in all software, you cannot be 100% sure that none of your includes haven't been compromised.
+* Originally I used this to learn some Angular, so it is probably bloated compared to the function it provides.
 
 
 
