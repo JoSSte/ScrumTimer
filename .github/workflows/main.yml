@@ -1,5 +1,9 @@
 on: push
 name: Build Angular Application
+permissions:
+  contents: read
+  issues: read
+  checks: write
 jobs:
   build:
     if: github.ref != 'refs/heads/master'
@@ -33,10 +37,10 @@ jobs:
           artifacts: "dist/angular-githubaction/*"
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
+        uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
-          files: test-results/*.xml
+          junit_files: test-results/*.xml
       #- name: Deploy to GH pages
       #  if: startsWith(github.ref, 'refs/tags/v')
       # uses: JamesIves/github-pages-deploy-action@v4
