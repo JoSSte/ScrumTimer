@@ -40,7 +40,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
-          files: test-results/*.xml
+          junit_files: test-results/*.xml
       #- name: Deploy to GH pages
       #  if: startsWith(github.ref, 'refs/tags/v')
       # uses: JamesIves/github-pages-deploy-action@v4
