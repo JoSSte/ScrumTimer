@@ -4,7 +4,13 @@ This is a *decentral* Daily Scrum Timer based on localstorage, with a database o
 
 Accessible online: https://josste.github.io/ScrumTimer/
 
-[![Build Angular](https://github.com/JoSSte/ScrumTimer/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/JoSSte/ScrumTimer/actions/workflows/main.yml)
+[![Build Angular](https://github.com/JoSSte/ScrumTimer/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/JoSSte/ScrumTimer/actions/workflows/main.yml)  
+![GitHub top language](https://img.shields.io/github/languages/top/JoSSte/ScrumTimer) 
+![GitHub repo file count](https://img.shields.io/github/directory-file-count/JoSSte/ScrumTimer) 
+![GitHub repo size](https://img.shields.io/github/repo-size/JoSSte/ScrumTimer)   
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/JoSSte/ScrumTimer/master) 
+![GitHub commits since tagged version](https://img.shields.io/github/commits-since/JoSSte/ScrumTimer/latest) 
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/JoSSte/ScrumTimer)
 
 ## How to use it
 
