@@ -51,7 +51,7 @@ const appRoutes: Routes = [
     BrowserModule,
     HttpClientModule,
     FormsModule,
-    RouterModule.forRoot(appRoutes, { relativeLinkResolution: 'legacy' })
+    RouterModule.forRoot(appRoutes, {})
   ],
   providers: [
     ParticipantService,
