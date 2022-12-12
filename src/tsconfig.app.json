@@ -6,9 +6,6 @@
     "resolveJsonModule": true,
     "types": []
   },
-  "angularCompilerOptions": {
-    "enableIvy": true
-  },
   "files": [
     "main.ts",
     "polyfills.ts"
