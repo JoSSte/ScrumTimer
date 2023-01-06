@@ -3903,7 +3903,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ 2560);
 /**
- * @license Angular v15.0.3
+ * @license Angular v15.0.4
  * (c) 2010-2022 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -4540,6 +4540,12 @@ class Location {
     this._urlChangeSubscription = null;
     this._locationStrategy = locationStrategy;
     const baseHref = this._locationStrategy.getBaseHref();
+    // Note: This class's interaction with base HREF does not fully follow the rules
+    // outlined in the spec https://www.freesoft.org/CIE/RFC/1808/18.htm.
+    // Instead of trying to fix individual bugs with more and more code, we should
+    // investigate using the URL constructor and providing the base as a second
+    // argument.
+    // https://developer.mozilla.org/en-US/docs/Web/API/URL/URL#parameters
     this._basePath = _stripOrigin(stripTrailingSlash(_stripIndexHtml(baseHref)));
     this._locationStrategy.onPopState(ev => {
       this._subject.emit({
@@ -4775,7 +4781,13 @@ function _stripIndexHtml(url) {
   return url.replace(/\/index.html$/, '');
 }
 function _stripOrigin(baseHref) {
-  if (/^(https?:)?\/\//.test(baseHref)) {
+  // DO NOT REFACTOR! Previously, this check looked like this:
+  // `/^(https?:)?\/\//.test(baseHref)`, but that resulted in
+  // syntactically incorrect code after Closure Compiler minification.
+  // This was likely caused by a bug in Closure Compiler, but
+  // for now, the check is rewritten to use `new RegExp` instead.
+  const isAbsoluteUrl = new RegExp('^(https?:)?//').test(baseHref);
+  if (isAbsoluteUrl) {
     const [, pathname] = baseHref.split(/\/\/[^\/]+/);
     return pathname;
   }
@@ -9811,7 +9823,7 @@ function isPlatformWorkerUi(platformId) {
 /**
  * @publicApi
  */
-const VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.Version('15.0.3');
+const VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.Version('15.0.4');
 
 /**
  * @license
@@ -11506,7 +11518,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs/operators */ 9151);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs/operators */ 6942);
 /**
- * @license Angular v15.0.3
+ * @license Angular v15.0.4
  * (c) 2010-2022 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -12659,7 +12671,7 @@ function addBody(options, body) {
 
  *
  * @usageNotes
- * Sample HTTP requests for the [Tour of Heroes](/tutorial/toh-pt0) application.
+ * Sample HTTP requests for the [Tour of Heroes](/tutorial/tour-of-heroes/toh-pt0) application.
  *
  * ### HTTP Request Example
  *
@@ -14523,7 +14535,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs */ 8623);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs/operators */ 4514);
 /**
- * @license Angular v15.0.3
+ * @license Angular v15.0.4
  * (c) 2010-2022 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -22886,7 +22898,7 @@ class R3Injector extends EnvironmentInjector {
     try {
       const initializers = this.get(ENVIRONMENT_INITIALIZER.multi, EMPTY_ARRAY, InjectFlags.Self);
       if (ngDevMode && !Array.isArray(initializers)) {
-        throw new RuntimeError(209 /* RuntimeErrorCode.INVALID_MULTI_PROVIDER */, 'Unexpected type of the `ENVIRONMENT_INITIALIZER` token value ' + `(expected an array, but got ${typeof initializers}). ` + 'Please check that the `ENVIRONMENT_INITIALIZER` token is configured as a ' + '`multi: true` provider.');
+        throw new RuntimeError(-209 /* RuntimeErrorCode.INVALID_MULTI_PROVIDER */, 'Unexpected type of the `ENVIRONMENT_INITIALIZER` token value ' + `(expected an array, but got ${typeof initializers}). ` + 'Please check that the `ENVIRONMENT_INITIALIZER` token is configured as a ' + '`multi: true` provider.');
       }
       for (const initializer of initializers) {
         initializer();
@@ -23290,7 +23302,7 @@ class Version {
 /**
  * @publicApi
  */
-const VERSION = new Version('15.0.3');
+const VERSION = new Version('15.0.4');
 
 /**
  * @license
@@ -38592,6 +38604,7 @@ class ApplicationInitStatus {
     this.reject = noop;
     this.initialized = false;
     this.done = false;
+    // TODO: Throw RuntimeErrorCode.INVALID_MULTI_PROVIDER if appInits is not an array
     this.donePromise = new Promise((res, rej) => {
       this.resolve = res;
       this.reject = rej;
@@ -40728,7 +40741,11 @@ class ApplicationRef {
     this.tick();
     this.components.push(componentRef);
     // Get the listeners lazily to prevent DI cycles.
-    const listeners = this._injector.get(APP_BOOTSTRAP_LISTENER, []).concat(this._bootstrapListeners);
+    const listeners = this._injector.get(APP_BOOTSTRAP_LISTENER, []);
+    if (ngDevMode && !Array.isArray(listeners)) {
+      throw new RuntimeError(-209 /* RuntimeErrorCode.INVALID_MULTI_PROVIDER */, 'Unexpected type of the `APP_BOOTSTRAP_LISTENER` token value ' + `(expected an array, but got ${typeof listeners}). ` + 'Please check that the `APP_BOOTSTRAP_LISTENER` token is configured as a ' + '`multi: true` provider.');
+    }
+    listeners.push(...this._bootstrapListeners);
     listeners.forEach(listener => listener(componentRef));
   }
   /** @internal */
@@ -43153,7 +43170,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs */ 4350);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs/operators */ 6942);
 /**
- * @license Angular v15.0.3
+ * @license Angular v15.0.4
  * (c) 2010-2022 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -51407,7 +51424,7 @@ UntypedFormBuilder.ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODUL
 /**
  * @publicApi
  */
-const VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.Version('15.0.3');
+const VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.Version('15.0.4');
 
 /**
  * @license
@@ -51493,7 +51510,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/common */ 4666);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ 2560);
 /**
- * @license Angular v15.0.3
+ * @license Angular v15.0.4
  * (c) 2010-2022 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -53894,7 +53911,7 @@ DomSanitizerImpl.ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_
 /**
  * @publicApi
  */
-const VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_1__.Version('15.0.3');
+const VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_1__.Version('15.0.4');
 
 /**
  * @license
@@ -54037,7 +54054,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! rxjs/operators */ 6675);
 /* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! @angular/platform-browser */ 4497);
 /**
- * @license Angular v15.0.3
+ * @license Angular v15.0.4
  * (c) 2010-2022 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -54237,7 +54254,7 @@ function wrapIntoObservable(value) {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-const NG_DEV_MODE$a = typeof ngDevMode === 'undefined' || ngDevMode;
+const NG_DEV_MODE$b = typeof ngDevMode === 'undefined' || ngDevMode;
 const pathCompareMap = {
   'exact': equalSegmentGroups,
   'subset': containsSegmentGroup
@@ -54341,7 +54358,7 @@ class UrlTree {
     this.root = root;
     this.queryParams = queryParams;
     this.fragment = fragment;
-    if (NG_DEV_MODE$a) {
+    if (NG_DEV_MODE$b) {
       if (root.segments.length > 0) {
         throw new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](4015 /* RuntimeErrorCode.INVALID_ROOT_URL_SEGMENT */, 'The root `UrlSegmentGroup` should not contain `segments`. ' + 'Instead, these segments belong in the `children` so they can be associated with a named outlet.');
       }
@@ -54682,7 +54699,7 @@ class UrlParser {
   parseSegment() {
     const path = matchSegments(this.remaining);
     if (path === '' && this.peekStartsWith(';')) {
-      throw new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](4009 /* RuntimeErrorCode.EMPTY_PATH_WITH_PARAMS */, NG_DEV_MODE$a && `Empty path url segment cannot have parameters: '${this.remaining}'.`);
+      throw new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](4009 /* RuntimeErrorCode.EMPTY_PATH_WITH_PARAMS */, NG_DEV_MODE$b && `Empty path url segment cannot have parameters: '${this.remaining}'.`);
     }
     this.capture(path);
     return new UrlSegment(decode(path), this.parseMatrixParams());
@@ -54750,7 +54767,7 @@ class UrlParser {
       // if is is not one of these characters, then the segment was unescaped
       // or the group was not closed
       if (next !== '/' && next !== ')' && next !== ';') {
-        throw new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](4010 /* RuntimeErrorCode.UNPARSABLE_URL */, NG_DEV_MODE$a && `Cannot parse url '${this.url}'`);
+        throw new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](4010 /* RuntimeErrorCode.UNPARSABLE_URL */, NG_DEV_MODE$b && `Cannot parse url '${this.url}'`);
       }
       let outletName = undefined;
       if (path.indexOf(':') > -1) {
@@ -54779,7 +54796,7 @@ class UrlParser {
   }
   capture(str) {
     if (!this.consumeOptional(str)) {
-      throw new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](4011 /* RuntimeErrorCode.UNEXPECTED_VALUE_IN_URL */, NG_DEV_MODE$a && `Expected "${str}".`);
+      throw new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](4011 /* RuntimeErrorCode.UNEXPECTED_VALUE_IN_URL */, NG_DEV_MODE$b && `Expected "${str}".`);
     }
   }
 }
@@ -54832,7 +54849,7 @@ function isUrlTree(v) {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-const NG_DEV_MODE$9 = typeof ngDevMode === 'undefined' || ngDevMode;
+const NG_DEV_MODE$a = typeof ngDevMode === 'undefined' || ngDevMode;
 /**
  * Creates a `UrlTree` relative to an `ActivatedRouteSnapshot`.
  *
@@ -54995,11 +55012,11 @@ class Navigation {
     this.numberOfDoubleDots = numberOfDoubleDots;
     this.commands = commands;
     if (isAbsolute && commands.length > 0 && isMatrixParams(commands[0])) {
-      throw new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](4003 /* RuntimeErrorCode.ROOT_SEGMENT_MATRIX_PARAMS */, NG_DEV_MODE$9 && 'Root segment cannot have matrix parameters');
+      throw new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](4003 /* RuntimeErrorCode.ROOT_SEGMENT_MATRIX_PARAMS */, NG_DEV_MODE$a && 'Root segment cannot have matrix parameters');
     }
     const cmdWithOutlet = commands.find(isCommandWithOutlets);
     if (cmdWithOutlet && cmdWithOutlet !== last(commands)) {
-      throw new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](4004 /* RuntimeErrorCode.MISPLACED_OUTLETS_COMMAND */, NG_DEV_MODE$9 && '{outlets:{}} has to be the last command');
+      throw new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](4004 /* RuntimeErrorCode.MISPLACED_OUTLETS_COMMAND */, NG_DEV_MODE$a && '{outlets:{}} has to be the last command');
     }
   }
   toRoot() {
@@ -55099,7 +55116,7 @@ function createPositionApplyingDoubleDots(group, index, numberOfDoubleDots) {
     dd -= ci;
     g = g.parent;
     if (!g) {
-      throw new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](4005 /* RuntimeErrorCode.INVALID_DOUBLE_DOTS */, NG_DEV_MODE$9 && 'Invalid number of \'../\'');
+      throw new _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵRuntimeError"](4005 /* RuntimeErrorCode.INVALID_DOUBLE_DOTS */, NG_DEV_MODE$a && 'Invalid number of \'../\'');
     }
     ci = g.segments.length;
   }
@@ -55686,6 +55703,95 @@ function stringifyEvent(routerEvent) {
       return `Scroll(anchor: '${routerEvent.anchor}', position: '${pos}')`;
   }
 }
+
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+const NG_DEV_MODE$9 = typeof ngDevMode === 'undefined' || ngDevMode;
+class LegacyCreateUrlTree {
+  createUrlTree(relativeTo, currentState, currentUrlTree, commands, queryParams, fragment) {
+    const a = relativeTo || currentState.root;
+    return createUrlTree(a, currentUrlTree, commands, queryParams, fragment);
+  }
+}
+LegacyCreateUrlTree.ɵfac = function LegacyCreateUrlTree_Factory(t) {
+  return new (t || LegacyCreateUrlTree)();
+};
+LegacyCreateUrlTree.ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({
+  token: LegacyCreateUrlTree,
+  factory: LegacyCreateUrlTree.ɵfac
+});
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](LegacyCreateUrlTree, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injectable
+  }], null, null);
+})();
+class CreateUrlTreeUsingSnapshot {
+  createUrlTree(relativeTo, currentState, currentUrlTree, commands, queryParams, fragment) {
+    let relativeToUrlSegmentGroup;
+    try {
+      const relativeToSnapshot = relativeTo ? relativeTo.snapshot : currentState.snapshot.root;
+      relativeToUrlSegmentGroup = createSegmentGroupFromRoute(relativeToSnapshot);
+    } catch (e) {
+      // This is strictly for backwards compatibility with tests that create
+      // invalid `ActivatedRoute` mocks.
+      // Note: the difference between having this fallback for invalid `ActivatedRoute` setups and
+      // just throwing is ~500 test failures. Fixing all of those tests by hand is not feasible at
+      // the moment.
+      if (NG_DEV_MODE$9) {
+        console.warn(`The ActivatedRoute has an invalid structure. This is likely due to an incomplete mock in tests.`);
+      }
+      if (typeof commands[0] !== 'string' || !commands[0].startsWith('/')) {
+        // Navigations that were absolute in the old way of creating UrlTrees
+        // would still work because they wouldn't attempt to match the
+        // segments in the `ActivatedRoute` to the `currentUrlTree` but
+        // instead just replace the root segment with the navigation result.
+        // Non-absolute navigations would fail to apply the commands because
+        // the logic could not find the segment to replace (so they'd act like there were no
+        // commands).
+        commands = [];
+      }
+      relativeToUrlSegmentGroup = currentUrlTree.root;
+    }
+    return createUrlTreeFromSegmentGroup(relativeToUrlSegmentGroup, commands, queryParams, fragment);
+  }
+}
+CreateUrlTreeUsingSnapshot.ɵfac = function CreateUrlTreeUsingSnapshot_Factory(t) {
+  return new (t || CreateUrlTreeUsingSnapshot)();
+};
+CreateUrlTreeUsingSnapshot.ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({
+  token: CreateUrlTreeUsingSnapshot,
+  factory: CreateUrlTreeUsingSnapshot.ɵfac
+});
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](CreateUrlTreeUsingSnapshot, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injectable
+  }], null, null);
+})();
+class CreateUrlTreeStrategy {}
+CreateUrlTreeStrategy.ɵfac = function CreateUrlTreeStrategy_Factory(t) {
+  return new (t || CreateUrlTreeStrategy)();
+};
+CreateUrlTreeStrategy.ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({
+  token: CreateUrlTreeStrategy,
+  factory: function (t) {
+    return LegacyCreateUrlTree.ɵfac(t);
+  },
+  providedIn: 'root'
+});
+(function () {
+  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](CreateUrlTreeStrategy, [{
+    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injectable,
+    args: [{
+      providedIn: 'root',
+      useClass: LegacyCreateUrlTree
+    }]
+  }], null, null);
+})();
 
 /**
  * @license
@@ -58332,7 +58438,7 @@ const NG_DEV_MODE$5 = typeof ngDevMode === 'undefined' || !!ngDevMode;
  * `ROUTES` is a low level API for router configuration via dependency injection.
  *
  * We recommend that in almost all cases to use higher level APIs such as `RouterModule.forRoot()`,
- * `RouterModule.forChild()`, `provideRoutes`, or `Router.resetConfig()`.
+ * `provideRouter`, or `Router.resetConfig()`.
  *
  * @publicApi
  */
@@ -59230,6 +59336,8 @@ class Router {
      * A strategy for re-using routes.
      */
     this.routeReuseStrategy = (0,_angular_core__WEBPACK_IMPORTED_MODULE_0__.inject)(RouteReuseStrategy);
+    /** Strategy used to create a UrlTree. */
+    this.urlCreationStrategy = (0,_angular_core__WEBPACK_IMPORTED_MODULE_0__.inject)(CreateUrlTreeStrategy);
     /**
      * A strategy for setting the title based on the `routerState`.
      */
@@ -59499,7 +59607,6 @@ class Router {
       queryParamsHandling,
       preserveFragment
     } = navigationExtras;
-    const a = relativeTo || this.routerState.root;
     const f = preserveFragment ? this.currentUrlTree.fragment : fragment;
     let q = null;
     switch (queryParamsHandling) {
@@ -59518,7 +59625,7 @@ class Router {
     if (q !== null) {
       q = this.removeEmptyProps(q);
     }
-    return createUrlTree(a, this.currentUrlTree, commands, q, f ?? null);
+    return this.urlCreationStrategy.createUrlTree(relativeTo, this.routerState, this.currentUrlTree, commands, q, f ?? null);
   }
   /**
    * Navigates to a view using an absolute route path.
@@ -61394,7 +61501,7 @@ function provideRouterInitializer() {
 /**
  * @publicApi
  */
-const VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.Version('15.0.3');
+const VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.Version('15.0.4');
 
 /**
  * @license
