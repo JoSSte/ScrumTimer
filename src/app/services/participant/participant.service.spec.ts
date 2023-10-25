@@ -52,7 +52,7 @@ describe('ParticipantService', () => {
 //
 //    /**
 //     * Using .flush()
-//      The request captured by the httpTestingController, req, 
+//      The request captured by the httpTestingController, req,
 //      has a flush method on it which takes in whatever response you would like to provide for that request as an argument.
 //     */
 //    request.flush(mockUserList);

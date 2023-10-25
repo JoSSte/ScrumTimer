@@ -39,8 +39,8 @@ export class TimerComponent implements OnInit {
   timerActive = false;
 
   constructor(
-    private activatedRoute : ActivatedRoute,
-    private nav : NavbarService,
+    private activatedRoute: ActivatedRoute,
+    private nav: NavbarService,
     public participantService: ParticipantService,
     public settingsService: SettingsService
     ) {
@@ -58,7 +58,7 @@ export class TimerComponent implements OnInit {
       this.individualTime = this.individualMaxTime;
     }
     console.log('[Scrumtimer] Timer init');
-    if(this.activatedRoute['_routerState'].snapshot.url == '/popin'){
+    if(this.activatedRoute['_routerState'].snapshot.url === '/popin'){
       this.nav.hide();
     }else{
       this.nav.show();
