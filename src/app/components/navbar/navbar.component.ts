@@ -48,7 +48,6 @@ export class NavbarComponent implements OnInit {
     }else{
       console.log('no JiraURL in localStorage');
     }
-    
   }
 
   openWindows() {
