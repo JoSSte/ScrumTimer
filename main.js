@@ -21,27 +21,27 @@ class AppComponent {
   constructor() {
     this.title = 'ScrumTimer';
   }
+  static #_ = this.ɵfac = function AppComponent_Factory(t) {
+    return new (t || AppComponent)();
+  };
+  static #_2 = this.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({
+    type: AppComponent,
+    selectors: [["app-root"]],
+    decls: 3,
+    vars: 0,
+    consts: [[1, "container"]],
+    template: function AppComponent_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](0, "app-navbar");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](1, "div", 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](2, "router-outlet");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+      }
+    },
+    dependencies: [_angular_router__WEBPACK_IMPORTED_MODULE_2__.RouterOutlet, _components_navbar_navbar_component__WEBPACK_IMPORTED_MODULE_0__.NavbarComponent],
+    styles: ["\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsInNvdXJjZVJvb3QiOiIifQ== */"]
+  });
 }
-AppComponent.ɵfac = function AppComponent_Factory(t) {
-  return new (t || AppComponent)();
-};
-AppComponent.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({
-  type: AppComponent,
-  selectors: [["app-root"]],
-  decls: 3,
-  vars: 0,
-  consts: [[1, "container"]],
-  template: function AppComponent_Template(rf, ctx) {
-    if (rf & 1) {
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](0, "app-navbar");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](1, "div", 0);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](2, "router-outlet");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-    }
-  },
-  dependencies: [_angular_router__WEBPACK_IMPORTED_MODULE_2__.RouterOutlet, _components_navbar_navbar_component__WEBPACK_IMPORTED_MODULE_0__.NavbarComponent],
-  styles: ["\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsInNvdXJjZVJvb3QiOiIifQ== */"]
-});
 
 /***/ }),
 
@@ -114,21 +114,22 @@ const appRoutes = [{
 // { path: '', component: Component }
 ];
 
-class AppModule {}
-AppModule.ɵfac = function AppModule_Factory(t) {
-  return new (t || AppModule)();
-};
-AppModule.ɵmod = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_10__["ɵɵdefineNgModule"]({
-  type: AppModule,
-  bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_3__.AppComponent]
-});
-AppModule.ɵinj = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_10__["ɵɵdefineInjector"]({
-  providers: [_services_participant_participant_service__WEBPACK_IMPORTED_MODULE_0__.ParticipantService, _services_settings_settings_service__WEBPACK_IMPORTED_MODULE_1__.SettingsService, _services_navbar_navbar_service__WEBPACK_IMPORTED_MODULE_2__.NavbarService, _angular_common__WEBPACK_IMPORTED_MODULE_11__.Location, {
-    provide: _angular_common__WEBPACK_IMPORTED_MODULE_11__.LocationStrategy,
-    useClass: _angular_common__WEBPACK_IMPORTED_MODULE_11__.HashLocationStrategy
-  }],
-  imports: [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_12__.BrowserModule, _angular_common_http__WEBPACK_IMPORTED_MODULE_13__.HttpClientModule, _angular_forms__WEBPACK_IMPORTED_MODULE_14__.FormsModule, _angular_router__WEBPACK_IMPORTED_MODULE_15__.RouterModule.forRoot(appRoutes, {})]
-});
+class AppModule {
+  static #_ = this.ɵfac = function AppModule_Factory(t) {
+    return new (t || AppModule)();
+  };
+  static #_2 = this.ɵmod = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_10__["ɵɵdefineNgModule"]({
+    type: AppModule,
+    bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_3__.AppComponent]
+  });
+  static #_3 = this.ɵinj = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_10__["ɵɵdefineInjector"]({
+    providers: [_services_participant_participant_service__WEBPACK_IMPORTED_MODULE_0__.ParticipantService, _services_settings_settings_service__WEBPACK_IMPORTED_MODULE_1__.SettingsService, _services_navbar_navbar_service__WEBPACK_IMPORTED_MODULE_2__.NavbarService, _angular_common__WEBPACK_IMPORTED_MODULE_11__.Location, {
+      provide: _angular_common__WEBPACK_IMPORTED_MODULE_11__.LocationStrategy,
+      useClass: _angular_common__WEBPACK_IMPORTED_MODULE_11__.HashLocationStrategy
+    }],
+    imports: [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_12__.BrowserModule, _angular_common_http__WEBPACK_IMPORTED_MODULE_13__.HttpClientModule, _angular_forms__WEBPACK_IMPORTED_MODULE_14__.FormsModule, _angular_router__WEBPACK_IMPORTED_MODULE_15__.RouterModule.forRoot(appRoutes, {})]
+  });
+}
 (function () {
   (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_10__["ɵɵsetNgModuleScope"](AppModule, {
     declarations: [_app_component__WEBPACK_IMPORTED_MODULE_3__.AppComponent, _components_navbar_navbar_component__WEBPACK_IMPORTED_MODULE_4__.NavbarComponent, _components_timer_timer_component__WEBPACK_IMPORTED_MODULE_5__.TimerComponent, _components_participant_list_participant_list_component__WEBPACK_IMPORTED_MODULE_6__.ParticipantListComponent, _components_settings_settings_component__WEBPACK_IMPORTED_MODULE_7__.SettingsComponent, _components_help_help_component__WEBPACK_IMPORTED_MODULE_8__.HelpComponent, _pipes_secs_pipe__WEBPACK_IMPORTED_MODULE_9__.SecsPipe],
@@ -157,102 +158,102 @@ class HelpComponent {
     this.version = _package_json__WEBPACK_IMPORTED_MODULE_0__.version;
   }
   ngOnInit() {}
+  static #_ = this.ɵfac = function HelpComponent_Factory(t) {
+    return new (t || HelpComponent)();
+  };
+  static #_2 = this.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({
+    type: HelpComponent,
+    selectors: [["app-help"]],
+    decls: 57,
+    vars: 1,
+    consts: [[1, "container"], ["href", "https://en.wikipedia.org/wiki/Scrum_(software_development)#Daily_scrum", "target", "_blank"], [1, "fa", "fa-users"], [1, "fa", "fa-clock-o"], [1, "btn", "btn-outline-success"], [1, "fa", "fa-hourglass-start"], ["href", "https://github.com/JoSSte/ScrumTimer/releases", "target", "_blank"], [1, "badge", "badge-secondary"], ["href", "https://github.com/JoSSte/ScrumTimer/issues", "target", "_blank"]],
+    template: function HelpComponent_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](0, "div", 0)(1, "h3");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](2, "What is it?");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](3, "p");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](4, " A Timer to keep ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](5, "a", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](6, "Daily Scrum");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](7, " meetings short. ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](8, "p");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](9, " A lot of developers do not like to spend too much time on Scrum \"ceremonies\". This tool is meant to help you get a viual indication of time spent to avoid it drawing out for online daily Scrum meetings. ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](10, "h3");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](11, "How to use");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](12, "ol")(13, "li");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](14, "Go to ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](15, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](16, "i", 2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](17, " Participants");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](18, " and make sure that everyone you want in the Scrum Timer ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](19, "li");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](20, " Go to the ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](21, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](22, "i", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](23, " Timer");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](24, " and mark anyone who is not present as absent. ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](25, "li");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](26, "click the ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](27, "span", 4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](28, "i", 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](29, " start button to start the timer ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](30, "li");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](31, "Click the next button for each subsequent participant, and finally the stop button");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](32, "h3");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](33, "Notes");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](34, "ul")(35, "li");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](36, "If Max time is selected, the time left is distrubuted among the rest of the people in the meeting.");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](37, "li");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](38, "If the version badge below this list is older than the version of the newest ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](39, "a", 6);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](40, "release");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](41, " press ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](42, "kbd");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](43, "CTRL");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](44, " + ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](45, "kbd");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](46, "F5");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](47, " to refresh the page.");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](48, "div", 7);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](49);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](50, "h3");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](51, "Bugs / requests for features");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](52, "p");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](53, "If you find a bug/want a new feature, please report it on the ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](54, "a", 8);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](55, "issues");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](56, " page");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()();
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵadvance"](49);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtextInterpolate1"]("Version ", ctx.version, "");
+      }
+    },
+    styles: ["\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsInNvdXJjZVJvb3QiOiIifQ== */"]
+  });
 }
-HelpComponent.ɵfac = function HelpComponent_Factory(t) {
-  return new (t || HelpComponent)();
-};
-HelpComponent.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({
-  type: HelpComponent,
-  selectors: [["app-help"]],
-  decls: 57,
-  vars: 1,
-  consts: [[1, "container"], ["href", "https://en.wikipedia.org/wiki/Scrum_(software_development)#Daily_scrum", "target", "_blank"], [1, "fa", "fa-users"], [1, "fa", "fa-clock-o"], [1, "btn", "btn-outline-success"], [1, "fa", "fa-hourglass-start"], ["href", "https://github.com/JoSSte/ScrumTimer/releases", "target", "_blank"], [1, "badge", "badge-secondary"], ["href", "https://github.com/JoSSte/ScrumTimer/issues", "target", "_blank"]],
-  template: function HelpComponent_Template(rf, ctx) {
-    if (rf & 1) {
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](0, "div", 0)(1, "h3");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](2, "What is it?");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](3, "p");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](4, " A Timer to keep ");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](5, "a", 1);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](6, "Daily Scrum");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](7, " meetings short. ");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](8, "p");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](9, " A lot of developers do not like to spend too much time on Scrum \"ceremonies\". This tool is meant to help you get a viual indication of time spent to avoid it drawing out for online daily Scrum meetings. ");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](10, "h3");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](11, "How to use");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](12, "ol")(13, "li");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](14, "Go to ");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](15, "strong");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](16, "i", 2);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](17, " Participants");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](18, " and make sure that everyone you want in the Scrum Timer ");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](19, "li");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](20, " Go to the ");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](21, "strong");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](22, "i", 3);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](23, " Timer");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](24, " and mark anyone who is not present as absent. ");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](25, "li");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](26, "click the ");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](27, "span", 4);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](28, "i", 5);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](29, " start button to start the timer ");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](30, "li");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](31, "Click the next button for each subsequent participant, and finally the stop button");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](32, "h3");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](33, "Notes");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](34, "ul")(35, "li");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](36, "If Max time is selected, the time left is distrubuted among the rest of the people in the meeting.");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](37, "li");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](38, "If the version badge below this list is older than the version of the newest ");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](39, "a", 6);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](40, "release");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](41, " press ");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](42, "kbd");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](43, "CTRL");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](44, " + ");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](45, "kbd");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](46, "F5");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](47, " to refresh the page.");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](48, "div", 7);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](49);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](50, "h3");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](51, "Bugs / requests for features");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](52, "p");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](53, "If you find a bug/want a new feature, please report it on the ");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](54, "a", 8);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](55, "issues");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](56, " page");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()();
-    }
-    if (rf & 2) {
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵadvance"](49);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtextInterpolate1"]("Version ", ctx.version, "");
-    }
-  },
-  styles: ["\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsInNvdXJjZVJvb3QiOiIifQ== */"]
-});
 
 /***/ }),
 
@@ -398,27 +399,27 @@ class NavbarComponent {
   ngOnInit() {
     console.log('[Scrumtimer] Navbar init');
   }
+  static #_ = this.ɵfac = function NavbarComponent_Factory(t) {
+    return new (t || NavbarComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdirectiveInject"](_services_navbar_navbar_service__WEBPACK_IMPORTED_MODULE_0__.NavbarService));
+  };
+  static #_2 = this.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({
+    type: NavbarComponent,
+    selectors: [["app-navbar"]],
+    decls: 1,
+    vars: 1,
+    consts: [["class", "navbar navbar-dark bg-dark navbar-expand-md", 4, "ngIf"], [1, "navbar", "navbar-dark", "bg-dark", "navbar-expand-md"], ["href", "#", 1, "navbar-brand"], ["type", "button", "data-toggle", "collapse", "data-target", "#ScrumNavBar", "aria-controls", "ScrumNavBar", "aria-expanded", "false", "aria-label", "Toggle navigation", 1, "navbar-toggler"], [1, "navbar-toggler-icon"], ["id", "ScrumNavBar", 1, "collapse", "navbar-collapse"], [1, "navbar-nav", "mr-auto"], [1, "nav-item", 3, "routerLinkActive"], ["href", "#", 1, "nav-link", 3, "routerLink"], [1, "fa", "fa-clock-o"], [1, "fa", "fa-users"], [1, "fa", "fa-cog"], ["href", "#", "routerLink", "/help", 1, "nav-link"], [1, "fa", "fa-question-circle"], ["class", "nav-item", 3, "routerLinkActive", 4, "ngIf"], ["href", "#", 1, "nav-link", 3, "click"], [1, "fa", "fa-external-link-alt"]],
+    template: function NavbarComponent_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtemplate"](0, NavbarComponent_nav_0_Template, 24, 15, "nav", 0);
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("ngIf", ctx.nav.visible);
+      }
+    },
+    dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_2__.NgIf, _angular_router__WEBPACK_IMPORTED_MODULE_3__.RouterLink, _angular_router__WEBPACK_IMPORTED_MODULE_3__.RouterLinkActive],
+    styles: ["\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsInNvdXJjZVJvb3QiOiIifQ== */"]
+  });
 }
-NavbarComponent.ɵfac = function NavbarComponent_Factory(t) {
-  return new (t || NavbarComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdirectiveInject"](_services_navbar_navbar_service__WEBPACK_IMPORTED_MODULE_0__.NavbarService));
-};
-NavbarComponent.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({
-  type: NavbarComponent,
-  selectors: [["app-navbar"]],
-  decls: 1,
-  vars: 1,
-  consts: [["class", "navbar navbar-dark bg-dark navbar-expand-md", 4, "ngIf"], [1, "navbar", "navbar-dark", "bg-dark", "navbar-expand-md"], ["href", "#", 1, "navbar-brand"], ["type", "button", "data-toggle", "collapse", "data-target", "#ScrumNavBar", "aria-controls", "ScrumNavBar", "aria-expanded", "false", "aria-label", "Toggle navigation", 1, "navbar-toggler"], [1, "navbar-toggler-icon"], ["id", "ScrumNavBar", 1, "collapse", "navbar-collapse"], [1, "navbar-nav", "mr-auto"], [1, "nav-item", 3, "routerLinkActive"], ["href", "#", 1, "nav-link", 3, "routerLink"], [1, "fa", "fa-clock-o"], [1, "fa", "fa-users"], [1, "fa", "fa-cog"], ["href", "#", "routerLink", "/help", 1, "nav-link"], [1, "fa", "fa-question-circle"], ["class", "nav-item", 3, "routerLinkActive", 4, "ngIf"], ["href", "#", 1, "nav-link", 3, "click"], [1, "fa", "fa-external-link-alt"]],
-  template: function NavbarComponent_Template(rf, ctx) {
-    if (rf & 1) {
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtemplate"](0, NavbarComponent_nav_0_Template, 24, 15, "nav", 0);
-    }
-    if (rf & 2) {
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("ngIf", ctx.nav.visible);
-    }
-  },
-  dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_2__.NgIf, _angular_router__WEBPACK_IMPORTED_MODULE_3__.RouterLink, _angular_router__WEBPACK_IMPORTED_MODULE_3__.RouterLinkActive],
-  styles: ["\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsInNvdXJjZVJvb3QiOiIifQ== */"]
-});
 
 /***/ }),
 
@@ -512,98 +513,98 @@ class ParticipantListComponent {
     }
     return true;
   }
+  static #_ = this.ɵfac = function ParticipantListComponent_Factory(t) {
+    return new (t || ParticipantListComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_services_participant_participant_service__WEBPACK_IMPORTED_MODULE_1__.ParticipantService));
+  };
+  static #_2 = this.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineComponent"]({
+    type: ParticipantListComponent,
+    selectors: [["app-participant-list"]],
+    decls: 35,
+    vars: 9,
+    consts: [[1, "row"], [1, "col-md-10", "offset-md-3"], [3, "submit"], [1, "table", "table-striped"], [4, "ngFor", "ngForOf"], ["type", "text", "id", "init", "name", "init", 1, "form-control", 3, "ngModel", "ngModelChange"], ["type", "text", "id", "name", "name", "name", 1, "form-control", 3, "ngModel", "ngModelChange"], ["type", "submit", 1, "btn", "btn-sm", "btn-outline-primary", 3, "disabled"], [1, "fa", "fa-plus"], ["cols", "50", "rows", "5", "id", "jsonParticipants", "name", "jsonParticipants", 1, "form-control", 3, "ngModel", "ngModelChange"], [1, "container"], [1, "btn", "btn-sm", "btn-outline-dark", 3, "disabled", "click"], [1, "fa", "fa-upload"], [1, "btn", "btn-sm", "btn-outline-success", 3, "disabled", "click"], [1, "fa", "fa-download"], [1, "btn", "btn-sm", "btn-outline-danger", 3, "disabled", "click"], [1, "fa", "fa-eraser"], [1, "btn", "btn-outline-danger", "btn-sm", 3, "click"], [1, "fa", "fa-trash-o", "fa-lg"]],
+    template: function ParticipantListComponent_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](0, "div", 0)(1, "div", 1)(2, "form", 2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("submit", function ParticipantListComponent_Template_form_submit_2_listener() {
+          return ctx.addParticipant();
+        });
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](3, "table", 3)(4, "thead")(5, "tr")(6, "th");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtext"](7, "Initials");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](8, "th");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtext"](9, "Name");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](10, "th");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](11, "tbody");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtemplate"](12, ParticipantListComponent_tr_12_Template, 8, 2, "tr", 4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](13, "tfoot")(14, "tr")(15, "td")(16, "input", 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("ngModelChange", function ParticipantListComponent_Template_input_ngModelChange_16_listener($event) {
+          return ctx.init = $event;
+        });
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](17, "td")(18, "input", 6);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("ngModelChange", function ParticipantListComponent_Template_input_ngModelChange_18_listener($event) {
+          return ctx.name = $event;
+        });
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](19, "td")(20, "button", 7);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](21, "i", 8);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtext"](22, " Add");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()()()()()()()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](23, "div", 0)(24, "textarea", 9);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("ngModelChange", function ParticipantListComponent_Template_textarea_ngModelChange_24_listener($event) {
+          return ctx.jsonParticipants = $event;
+        });
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](25, "div", 10)(26, "button", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("click", function ParticipantListComponent_Template_button_click_26_listener() {
+          return ctx.exportParticipants();
+        });
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](27, "i", 12);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtext"](28);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](29, "button", 13);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("click", function ParticipantListComponent_Template_button_click_29_listener() {
+          return ctx.importParticipants();
+        });
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](30, "i", 14);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtext"](31, " Import List");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](32, "button", 15);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("click", function ParticipantListComponent_Template_button_click_32_listener() {
+          return ctx.jsonParticipants = "";
+        });
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](33, "i", 16);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtext"](34, " Clear");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()();
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](12);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("ngForOf", ctx.participantList);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("ngModel", ctx.init);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("ngModel", ctx.name);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("disabled", ctx.name == "" || ctx.init == "");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("ngModel", ctx.jsonParticipants);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("disabled", ctx.participantList.length == 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtextInterpolate1"](" Export list (", ctx.participantList.length, ")");
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("disabled", !ctx.isJsonString(ctx.jsonParticipants));
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("disabled", ctx.jsonParticipants.length == 0);
+      }
+    },
+    dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_3__.NgForOf, _angular_forms__WEBPACK_IMPORTED_MODULE_4__["ɵNgNoValidate"], _angular_forms__WEBPACK_IMPORTED_MODULE_4__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_4__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_4__.NgControlStatusGroup, _angular_forms__WEBPACK_IMPORTED_MODULE_4__.NgModel, _angular_forms__WEBPACK_IMPORTED_MODULE_4__.NgForm],
+    styles: ["\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsInNvdXJjZVJvb3QiOiIifQ== */"]
+  });
 }
-ParticipantListComponent.ɵfac = function ParticipantListComponent_Factory(t) {
-  return new (t || ParticipantListComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdirectiveInject"](_services_participant_participant_service__WEBPACK_IMPORTED_MODULE_1__.ParticipantService));
-};
-ParticipantListComponent.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineComponent"]({
-  type: ParticipantListComponent,
-  selectors: [["app-participant-list"]],
-  decls: 35,
-  vars: 9,
-  consts: [[1, "row"], [1, "col-md-10", "offset-md-3"], [3, "submit"], [1, "table", "table-striped"], [4, "ngFor", "ngForOf"], ["type", "text", "id", "init", "name", "init", 1, "form-control", 3, "ngModel", "ngModelChange"], ["type", "text", "id", "name", "name", "name", 1, "form-control", 3, "ngModel", "ngModelChange"], ["type", "submit", 1, "btn", "btn-sm", "btn-outline-primary", 3, "disabled"], [1, "fa", "fa-plus"], ["cols", "50", "rows", "5", "id", "jsonParticipants", "name", "jsonParticipants", 1, "form-control", 3, "ngModel", "ngModelChange"], [1, "container"], [1, "btn", "btn-sm", "btn-outline-dark", 3, "disabled", "click"], [1, "fa", "fa-upload"], [1, "btn", "btn-sm", "btn-outline-success", 3, "disabled", "click"], [1, "fa", "fa-download"], [1, "btn", "btn-sm", "btn-outline-danger", 3, "disabled", "click"], [1, "fa", "fa-eraser"], [1, "btn", "btn-outline-danger", "btn-sm", 3, "click"], [1, "fa", "fa-trash-o", "fa-lg"]],
-  template: function ParticipantListComponent_Template(rf, ctx) {
-    if (rf & 1) {
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](0, "div", 0)(1, "div", 1)(2, "form", 2);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("submit", function ParticipantListComponent_Template_form_submit_2_listener() {
-        return ctx.addParticipant();
-      });
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](3, "table", 3)(4, "thead")(5, "tr")(6, "th");
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtext"](7, "Initials");
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](8, "th");
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtext"](9, "Name");
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](10, "th");
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](11, "tbody");
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtemplate"](12, ParticipantListComponent_tr_12_Template, 8, 2, "tr", 4);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](13, "tfoot")(14, "tr")(15, "td")(16, "input", 5);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("ngModelChange", function ParticipantListComponent_Template_input_ngModelChange_16_listener($event) {
-        return ctx.init = $event;
-      });
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](17, "td")(18, "input", 6);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("ngModelChange", function ParticipantListComponent_Template_input_ngModelChange_18_listener($event) {
-        return ctx.name = $event;
-      });
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](19, "td")(20, "button", 7);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](21, "i", 8);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtext"](22, " Add");
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()()()()()()()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](23, "div", 0)(24, "textarea", 9);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("ngModelChange", function ParticipantListComponent_Template_textarea_ngModelChange_24_listener($event) {
-        return ctx.jsonParticipants = $event;
-      });
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](25, "div", 10)(26, "button", 11);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("click", function ParticipantListComponent_Template_button_click_26_listener() {
-        return ctx.exportParticipants();
-      });
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](27, "i", 12);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtext"](28);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](29, "button", 13);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("click", function ParticipantListComponent_Template_button_click_29_listener() {
-        return ctx.importParticipants();
-      });
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](30, "i", 14);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtext"](31, " Import List");
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementStart"](32, "button", 15);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵlistener"]("click", function ParticipantListComponent_Template_button_click_32_listener() {
-        return ctx.jsonParticipants = "";
-      });
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelement"](33, "i", 16);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtext"](34, " Clear");
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵelementEnd"]()();
-    }
-    if (rf & 2) {
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](12);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("ngForOf", ctx.participantList);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](4);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("ngModel", ctx.init);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](2);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("ngModel", ctx.name);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](2);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("disabled", ctx.name == "" || ctx.init == "");
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](4);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("ngModel", ctx.jsonParticipants);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](2);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("disabled", ctx.participantList.length == 0);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](2);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵtextInterpolate1"](" Export list (", ctx.participantList.length, ")");
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](1);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("disabled", !ctx.isJsonString(ctx.jsonParticipants));
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](3);
-      _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("disabled", ctx.jsonParticipants.length == 0);
-    }
-  },
-  dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_3__.NgForOf, _angular_forms__WEBPACK_IMPORTED_MODULE_4__["ɵNgNoValidate"], _angular_forms__WEBPACK_IMPORTED_MODULE_4__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_4__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_4__.NgControlStatusGroup, _angular_forms__WEBPACK_IMPORTED_MODULE_4__.NgModel, _angular_forms__WEBPACK_IMPORTED_MODULE_4__.NgForm],
-  styles: ["\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsInNvdXJjZVJvb3QiOiIifQ== */"]
-});
 
 /***/ }),
 
@@ -661,99 +662,99 @@ class SettingsComponent {
   usejiraLinkChecked() {
     return !this.useJiraLinkURL;
   }
+  static #_ = this.ɵfac = function SettingsComponent_Factory(t) {
+    return new (t || SettingsComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdirectiveInject"](_services_settings_settings_service__WEBPACK_IMPORTED_MODULE_0__.SettingsService));
+  };
+  static #_2 = this.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({
+    type: SettingsComponent,
+    selectors: [["app-settings"]],
+    decls: 36,
+    vars: 8,
+    consts: [["action", ""], [1, "input-group", "mb-3"], [1, "input-group-prepend"], [1, "input-group-text"], ["type", "checkbox", "name", "useGlobalMaxTime", "aria-label", "Use Global max Time", "size", "3", 3, "ngModel", "ngModelChange"], ["name", "globalMaxTime", "id", "globalMaxTime", "type", "number", 1, "form-control", 3, "ngModel", "ngModelChange"], ["id", "globalMaxTimeHelp", 1, "form-text", "text-muted"], [1, "input-group", "mb3"], ["type", "checkbox", "name", "useRemoteParticipantList", "aria-label", "Use Remote Participant List", 3, "ngModel", "ngModelChange"], ["name", "remoteParticipantListURL", "id", "remoteParticipantListURL", "type", "url", 1, "form-control", 3, "ngModel", "disabled", "ngModelChange"], ["id", "remoteParticipantListURLHelp", 1, "form-text", "text-muted"], ["type", "checkbox", "name", "useJiraLink", "aria-label", "Use Jira Link", 3, "ngModel", "ngModelChange"], ["name", "jiraLinkURL", "id", "jiraLinkURL", "type", "url", 1, "form-control", 3, "ngModel", "disabled", "ngModelChange"], ["id", "jiraURLHelp", 1, "form-text", "text-muted"], ["type", "submit", "value", "Save Settings", 1, "btn", "btn-primary", "form-control", 3, "click"]],
+    template: function SettingsComponent_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](0, "h3");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](1, "Settings");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](2, "p");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](3, " From here, you will be able to choose whether you want an overall time goal (e.g. 15 minutes), or a static time-per-person. ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](4, "form", 0)(5, "div", 1)(6, "div", 2)(7, "span", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](8, "Total Max Time");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](9, "div", 3)(10, "input", 4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵlistener"]("ngModelChange", function SettingsComponent_Template_input_ngModelChange_10_listener($event) {
+          return ctx.useGlobalMaxTime = $event;
+        });
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](11, "input", 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵlistener"]("ngModelChange", function SettingsComponent_Template_input_ngModelChange_11_listener($event) {
+          return ctx.globalMaxTime = $event;
+        });
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](12, "small", 6);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](13, "If the Total Max Time checkbox is selected, the time (in seconds) is used to define the max length of the Scrum meeting. The time for each participant is scaled to fit. If it is left unchecked, each participant is given the time shown in seconds.");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](14, "br");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](15, "div", 7)(16, "div", 2)(17, "span", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](18, "Remote Participant list");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](19, "div", 3)(20, "input", 8);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵlistener"]("ngModelChange", function SettingsComponent_Template_input_ngModelChange_20_listener($event) {
+          return ctx.useRemoteParticipantList = $event;
+        });
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](21, "input", 9);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵlistener"]("ngModelChange", function SettingsComponent_Template_input_ngModelChange_21_listener($event) {
+          return ctx.remoteParticipantListURL = $event;
+        });
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](22, "small", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](23, "If the Remote Participant List URL checkbox is selected, the tool will try to download a .json file from the URL and import the participants from that");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](24, "br");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](25, "div", 7)(26, "div", 2)(27, "span", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](28, "Jira URL");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](29, "div", 3)(30, "input", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵlistener"]("ngModelChange", function SettingsComponent_Template_input_ngModelChange_30_listener($event) {
+          return ctx.useJiraLinkURL = $event;
+        });
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](31, "input", 12);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵlistener"]("ngModelChange", function SettingsComponent_Template_input_ngModelChange_31_listener($event) {
+          return ctx.jiraLinkURL = $event;
+        });
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](32, "small", 13);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](33, "If the checkbox is checked, and you have a url entered, this URL will be opened in a window when using the popout function");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](34, "br");
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](35, "input", 14);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵlistener"]("click", function SettingsComponent_Template_input_click_35_listener() {
+          return ctx.saveSettings();
+        });
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()();
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵadvance"](10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("ngModel", ctx.useGlobalMaxTime);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("ngModel", ctx.globalMaxTime);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵadvance"](9);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("ngModel", ctx.useRemoteParticipantList);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("ngModel", ctx.remoteParticipantListURL)("disabled", ctx.useRemoteParticipantListChecked());
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵadvance"](9);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("ngModel", ctx.useJiraLinkURL);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("ngModel", ctx.jiraLinkURL)("disabled", ctx.usejiraLinkChecked());
+      }
+    },
+    dependencies: [_angular_forms__WEBPACK_IMPORTED_MODULE_2__["ɵNgNoValidate"], _angular_forms__WEBPACK_IMPORTED_MODULE_2__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.NumberValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.CheckboxControlValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.NgControlStatusGroup, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.NgModel, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.NgForm],
+    styles: ["\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsInNvdXJjZVJvb3QiOiIifQ== */"]
+  });
 }
-SettingsComponent.ɵfac = function SettingsComponent_Factory(t) {
-  return new (t || SettingsComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdirectiveInject"](_services_settings_settings_service__WEBPACK_IMPORTED_MODULE_0__.SettingsService));
-};
-SettingsComponent.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineComponent"]({
-  type: SettingsComponent,
-  selectors: [["app-settings"]],
-  decls: 36,
-  vars: 8,
-  consts: [["action", ""], [1, "input-group", "mb-3"], [1, "input-group-prepend"], [1, "input-group-text"], ["type", "checkbox", "name", "useGlobalMaxTime", "aria-label", "Use Global max Time", "size", "3", 3, "ngModel", "ngModelChange"], ["name", "globalMaxTime", "id", "globalMaxTime", "type", "number", 1, "form-control", 3, "ngModel", "ngModelChange"], ["id", "globalMaxTimeHelp", 1, "form-text", "text-muted"], [1, "input-group", "mb3"], ["type", "checkbox", "name", "useRemoteParticipantList", "aria-label", "Use Remote Participant List", 3, "ngModel", "ngModelChange"], ["name", "remoteParticipantListURL", "id", "remoteParticipantListURL", "type", "url", 1, "form-control", 3, "ngModel", "disabled", "ngModelChange"], ["id", "remoteParticipantListURLHelp", 1, "form-text", "text-muted"], ["type", "checkbox", "name", "useJiraLink", "aria-label", "Use Jira Link", 3, "ngModel", "ngModelChange"], ["name", "jiraLinkURL", "id", "jiraLinkURL", "type", "url", 1, "form-control", 3, "ngModel", "disabled", "ngModelChange"], ["id", "jiraURLHelp", 1, "form-text", "text-muted"], ["type", "submit", "value", "Save Settings", 1, "btn", "btn-primary", "form-control", 3, "click"]],
-  template: function SettingsComponent_Template(rf, ctx) {
-    if (rf & 1) {
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](0, "h3");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](1, "Settings");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](2, "p");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](3, " From here, you will be able to choose whether you want an overall time goal (e.g. 15 minutes), or a static time-per-person. ");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](4, "form", 0)(5, "div", 1)(6, "div", 2)(7, "span", 3);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](8, "Total Max Time");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](9, "div", 3)(10, "input", 4);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵlistener"]("ngModelChange", function SettingsComponent_Template_input_ngModelChange_10_listener($event) {
-        return ctx.useGlobalMaxTime = $event;
-      });
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](11, "input", 5);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵlistener"]("ngModelChange", function SettingsComponent_Template_input_ngModelChange_11_listener($event) {
-        return ctx.globalMaxTime = $event;
-      });
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](12, "small", 6);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](13, "If the Total Max Time checkbox is selected, the time (in seconds) is used to define the max length of the Scrum meeting. The time for each participant is scaled to fit. If it is left unchecked, each participant is given the time shown in seconds.");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](14, "br");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](15, "div", 7)(16, "div", 2)(17, "span", 3);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](18, "Remote Participant list");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](19, "div", 3)(20, "input", 8);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵlistener"]("ngModelChange", function SettingsComponent_Template_input_ngModelChange_20_listener($event) {
-        return ctx.useRemoteParticipantList = $event;
-      });
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](21, "input", 9);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵlistener"]("ngModelChange", function SettingsComponent_Template_input_ngModelChange_21_listener($event) {
-        return ctx.remoteParticipantListURL = $event;
-      });
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](22, "small", 10);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](23, "If the Remote Participant List URL checkbox is selected, the tool will try to download a .json file from the URL and import the participants from that");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](24, "br");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](25, "div", 7)(26, "div", 2)(27, "span", 3);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](28, "Jira URL");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](29, "div", 3)(30, "input", 11);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵlistener"]("ngModelChange", function SettingsComponent_Template_input_ngModelChange_30_listener($event) {
-        return ctx.useJiraLinkURL = $event;
-      });
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](31, "input", 12);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵlistener"]("ngModelChange", function SettingsComponent_Template_input_ngModelChange_31_listener($event) {
-        return ctx.jiraLinkURL = $event;
-      });
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](32, "small", 13);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵtext"](33, "If the checkbox is checked, and you have a url entered, this URL will be opened in a window when using the popout function");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]();
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelement"](34, "br");
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementStart"](35, "input", 14);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵlistener"]("click", function SettingsComponent_Template_input_click_35_listener() {
-        return ctx.saveSettings();
-      });
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵelementEnd"]()();
-    }
-    if (rf & 2) {
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵadvance"](10);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("ngModel", ctx.useGlobalMaxTime);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵadvance"](1);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("ngModel", ctx.globalMaxTime);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵadvance"](9);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("ngModel", ctx.useRemoteParticipantList);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵadvance"](1);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("ngModel", ctx.remoteParticipantListURL)("disabled", ctx.useRemoteParticipantListChecked());
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵadvance"](9);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("ngModel", ctx.useJiraLinkURL);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵadvance"](1);
-      _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵproperty"]("ngModel", ctx.jiraLinkURL)("disabled", ctx.usejiraLinkChecked());
-    }
-  },
-  dependencies: [_angular_forms__WEBPACK_IMPORTED_MODULE_2__["ɵNgNoValidate"], _angular_forms__WEBPACK_IMPORTED_MODULE_2__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.NumberValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.CheckboxControlValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.NgControlStatusGroup, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.NgModel, _angular_forms__WEBPACK_IMPORTED_MODULE_2__.NgForm],
-  styles: ["\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsInNvdXJjZVJvb3QiOiIifQ== */"]
-});
 
 /***/ }),
 
@@ -1324,30 +1325,30 @@ class TimerComponent {
     this.participantList.push(participant);
     this.absentParticipants.splice(idx, 1);
   }
+  static #_ = this.ɵfac = function TimerComponent_Factory(t) {
+    return new (t || TimerComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_7__.ActivatedRoute), _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdirectiveInject"](_services_navbar_navbar_service__WEBPACK_IMPORTED_MODULE_1__.NavbarService), _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdirectiveInject"](_services_participant_participant_service__WEBPACK_IMPORTED_MODULE_2__.ParticipantService), _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdirectiveInject"](_services_settings_settings_service__WEBPACK_IMPORTED_MODULE_3__.SettingsService));
+  };
+  static #_2 = this.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdefineComponent"]({
+    type: TimerComponent,
+    selectors: [["app-timer"]],
+    decls: 2,
+    vars: 2,
+    consts: [["class", "container", 4, "ngIf"], ["class", "jumbotron", 4, "ngIf"], [1, "container"], [1, "progress"], ["role", "progressbar", "aria-valuenow", "40", "aria-valuemin", "0", "aria-valuemax", "100", 1, "progress-bar", "progress-bar-striped", "bg-success"], ["role", "progressbar", "aria-valuenow", "40", "aria-valuemin", "0", "aria-valuemax", "100", 1, "progress-bar", "progress-bar-striped", "bg-info", 3, "ngClass"], [1, "fa", "fa-exclamation-triangle", 3, "ngClass"], ["role", "progressbar", "aria-valuenow", "0", "aria-valuemin", "0", "aria-valuemax", "100", 1, "progress-bar", "progress-bar-striped", 3, "ngClass"], ["role", "toolbar", "aria-label", "Toolbar", 1, "btn-toolbar"], ["role", "group", 1, "btn-group", "mr-2"], ["title", "Stop Timer", 1, "btn", "btn-outline-danger", 3, "disabled", "click"], [1, "fa", "fa-hourglass-end"], ["title", "Reset", 1, "btn", "btn-outline-secondary", 3, "click"], [1, "fa", "fa-undo"], ["class", "btn-group mr-2", "role", "group", 4, "ngIf"], ["id", "btnGroupDrop1", "type", "button", "data-toggle", "dropdown", "aria-haspopup", "true", "aria-expanded", "false", 1, "btn", "btn-outline-secondary", "dropdown-toggle"], [1, "fa", "fa-ellipsis-v"], [1, "dropdown-menu"], ["href", "#", "data-toggle", "collapse", "data-target", "#Questions", "aria-expanded", "false", "aria-controls", "Questions", 1, "dropdown-item"], [1, "fa", "fa-question"], ["href", "#", "data-toggle", "collapse", "data-target", "#Debug", "aria-expanded", "false", "aria-controls", "Debug", 1, "dropdown-item"], [1, "fa", "fa-bug"], ["id", "Debug", 1, "collapse"], [1, "card", "card-body"], ["id", "Questions", 1, "collapse"], ["title", "Shuffle Participants", 1, "btn", "btn-sm", "btn-info", 3, "disabled", "click"], [1, "fa", "fa-random"], ["title", "Sort Participants", 1, "btn", "btn-sm", "btn-info", 3, "disabled", "click"], [1, "fa", "fa-sort-amount-asc"], [1, "participant-list", "list-group"], ["class", "list-group-item", 3, "ngClass", 4, "ngFor", "ngForOf"], ["class", "list-group-item list-group-item-secondary", 4, "ngFor", "ngForOf"], ["class", "list-group-item list-group-item-danger", 4, "ngFor", "ngForOf"], ["title", "Start Timer", 1, "btn", "btn-outline-success", 3, "disabled", "click"], [1, "fa", "fa-hourglass-start"], ["title", "Next participant", 1, "btn", "btn-outline-primary", 3, "disabled", "click"], [1, "fa", "fa-step-forward"], [1, "list-group-item", 3, "ngClass"], ["title", "Mark as absent", 1, "btn", "btn-outline-secondary", "btn-sm", 3, "disabled", "click"], [1, "fa", "fa-minus-circle"], [1, "list-group-item", "list-group-item-secondary"], [3, "ngClass"], [1, "list-group-item", "list-group-item-danger"], ["title", "Mark as present", 1, "btn", "btn-outline-secondary", "btn-sm", 3, "click"], [1, "fa", "fa-plus-circle"], [1, "jumbotron"], ["href", "#", 3, "routerLink"]],
+    template: function TimerComponent_Template(rf, ctx) {
+      if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵtemplate"](0, TimerComponent_div_0_Template, 99, 51, "div", 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵtemplate"](1, TimerComponent_div_1_Template, 10, 2, "div", 1);
+      }
+      if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵproperty"]("ngIf", ctx.participantList.length > 0 || ctx.doneParticipants.length > 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵproperty"]("ngIf", ctx.participantList.length == 0 && ctx.doneParticipants.length == 0);
+      }
+    },
+    dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_8__.NgClass, _angular_common__WEBPACK_IMPORTED_MODULE_8__.NgForOf, _angular_common__WEBPACK_IMPORTED_MODULE_8__.NgIf, _angular_router__WEBPACK_IMPORTED_MODULE_7__.RouterLink, _pipes_secs_pipe__WEBPACK_IMPORTED_MODULE_4__.SecsPipe],
+    styles: [".progress[_ngcontent-%COMP%] {\n    position: relative;\n}\n\n.progress[_ngcontent-%COMP%] {\n    height: 40px;\n}\n\n.progress-bar[_ngcontent-%COMP%] {\n    height: 40px;\n}\n\n.progress[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n    position: absolute;\n    display: block;\n    width: 100%;\n    top: 50%;\n    margin-top: -10px;\n    color: black;\n    font-weight: bold;\n }\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy9hcHAvY29tcG9uZW50cy90aW1lci90aW1lci5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOztFQUVFOztBQUVGO0lBQ0ksa0JBQWtCO0FBQ3RCOztBQUVBO0lBQ0ksWUFBWTtBQUNoQjs7QUFFQTtJQUNJLFlBQVk7QUFDaEI7O0FBRUE7SUFDSSxrQkFBa0I7SUFDbEIsY0FBYztJQUNkLFdBQVc7SUFDWCxRQUFRO0lBQ1IsaUJBQWlCO0lBQ2pCLFlBQVk7SUFDWixpQkFBaUI7Q0FDcEIiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIFByb2dyZXNzIGJhcnMgd2l0aCBjZW50ZXJlZCB0ZXh0XG4gKi9cblxuLnByb2dyZXNzIHtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG59XG5cbi5wcm9ncmVzcyB7XG4gICAgaGVpZ2h0OiA0MHB4O1xufVxuXG4ucHJvZ3Jlc3MtYmFyIHtcbiAgICBoZWlnaHQ6IDQwcHg7XG59XG5cbi5wcm9ncmVzcyBzcGFuIHtcbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgZGlzcGxheTogYmxvY2s7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgdG9wOiA1MCU7XG4gICAgbWFyZ2luLXRvcDogLTEwcHg7XG4gICAgY29sb3I6IGJsYWNrO1xuICAgIGZvbnQtd2VpZ2h0OiBib2xkO1xuIH1cblxuIl0sInNvdXJjZVJvb3QiOiIifQ== */"]
+  });
 }
-TimerComponent.ɵfac = function TimerComponent_Factory(t) {
-  return new (t || TimerComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_7__.ActivatedRoute), _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdirectiveInject"](_services_navbar_navbar_service__WEBPACK_IMPORTED_MODULE_1__.NavbarService), _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdirectiveInject"](_services_participant_participant_service__WEBPACK_IMPORTED_MODULE_2__.ParticipantService), _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdirectiveInject"](_services_settings_settings_service__WEBPACK_IMPORTED_MODULE_3__.SettingsService));
-};
-TimerComponent.ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdefineComponent"]({
-  type: TimerComponent,
-  selectors: [["app-timer"]],
-  decls: 2,
-  vars: 2,
-  consts: [["class", "container", 4, "ngIf"], ["class", "jumbotron", 4, "ngIf"], [1, "container"], [1, "progress"], ["role", "progressbar", "aria-valuenow", "40", "aria-valuemin", "0", "aria-valuemax", "100", 1, "progress-bar", "progress-bar-striped", "bg-success"], ["role", "progressbar", "aria-valuenow", "40", "aria-valuemin", "0", "aria-valuemax", "100", 1, "progress-bar", "progress-bar-striped", "bg-info", 3, "ngClass"], [1, "fa", "fa-exclamation-triangle", 3, "ngClass"], ["role", "progressbar", "aria-valuenow", "0", "aria-valuemin", "0", "aria-valuemax", "100", 1, "progress-bar", "progress-bar-striped", 3, "ngClass"], ["role", "toolbar", "aria-label", "Toolbar", 1, "btn-toolbar"], ["role", "group", 1, "btn-group", "mr-2"], ["title", "Stop Timer", 1, "btn", "btn-outline-danger", 3, "disabled", "click"], [1, "fa", "fa-hourglass-end"], ["title", "Reset", 1, "btn", "btn-outline-secondary", 3, "click"], [1, "fa", "fa-undo"], ["class", "btn-group mr-2", "role", "group", 4, "ngIf"], ["id", "btnGroupDrop1", "type", "button", "data-toggle", "dropdown", "aria-haspopup", "true", "aria-expanded", "false", 1, "btn", "btn-outline-secondary", "dropdown-toggle"], [1, "fa", "fa-ellipsis-v"], [1, "dropdown-menu"], ["href", "#", "data-toggle", "collapse", "data-target", "#Questions", "aria-expanded", "false", "aria-controls", "Questions", 1, "dropdown-item"], [1, "fa", "fa-question"], ["href", "#", "data-toggle", "collapse", "data-target", "#Debug", "aria-expanded", "false", "aria-controls", "Debug", 1, "dropdown-item"], [1, "fa", "fa-bug"], ["id", "Debug", 1, "collapse"], [1, "card", "card-body"], ["id", "Questions", 1, "collapse"], ["title", "Shuffle Participants", 1, "btn", "btn-sm", "btn-info", 3, "disabled", "click"], [1, "fa", "fa-random"], ["title", "Sort Participants", 1, "btn", "btn-sm", "btn-info", 3, "disabled", "click"], [1, "fa", "fa-sort-amount-asc"], [1, "participant-list", "list-group"], ["class", "list-group-item", 3, "ngClass", 4, "ngFor", "ngForOf"], ["class", "list-group-item list-group-item-secondary", 4, "ngFor", "ngForOf"], ["class", "list-group-item list-group-item-danger", 4, "ngFor", "ngForOf"], ["title", "Start Timer", 1, "btn", "btn-outline-success", 3, "disabled", "click"], [1, "fa", "fa-hourglass-start"], ["title", "Next participant", 1, "btn", "btn-outline-primary", 3, "disabled", "click"], [1, "fa", "fa-step-forward"], [1, "list-group-item", 3, "ngClass"], ["title", "Mark as absent", 1, "btn", "btn-outline-secondary", "btn-sm", 3, "disabled", "click"], [1, "fa", "fa-minus-circle"], [1, "list-group-item", "list-group-item-secondary"], [3, "ngClass"], [1, "list-group-item", "list-group-item-danger"], ["title", "Mark as present", 1, "btn", "btn-outline-secondary", "btn-sm", 3, "click"], [1, "fa", "fa-plus-circle"], [1, "jumbotron"], ["href", "#", 3, "routerLink"]],
-  template: function TimerComponent_Template(rf, ctx) {
-    if (rf & 1) {
-      _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵtemplate"](0, TimerComponent_div_0_Template, 99, 51, "div", 0);
-      _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵtemplate"](1, TimerComponent_div_1_Template, 10, 2, "div", 1);
-    }
-    if (rf & 2) {
-      _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵproperty"]("ngIf", ctx.participantList.length > 0 || ctx.doneParticipants.length > 0);
-      _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵadvance"](1);
-      _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵproperty"]("ngIf", ctx.participantList.length == 0 && ctx.doneParticipants.length == 0);
-    }
-  },
-  dependencies: [_angular_common__WEBPACK_IMPORTED_MODULE_8__.NgClass, _angular_common__WEBPACK_IMPORTED_MODULE_8__.NgForOf, _angular_common__WEBPACK_IMPORTED_MODULE_8__.NgIf, _angular_router__WEBPACK_IMPORTED_MODULE_7__.RouterLink, _pipes_secs_pipe__WEBPACK_IMPORTED_MODULE_4__.SecsPipe],
-  styles: [".progress[_ngcontent-%COMP%] {\n    position: relative;\n}\n\n.progress[_ngcontent-%COMP%] {\n    height: 40px;\n}\n\n.progress-bar[_ngcontent-%COMP%] {\n    height: 40px;\n}\n\n.progress[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n    position: absolute;\n    display: block;\n    width: 100%;\n    top: 50%;\n    margin-top: -10px;\n    color: black;\n    font-weight: bold;\n }\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy9hcHAvY29tcG9uZW50cy90aW1lci90aW1lci5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOztFQUVFOztBQUVGO0lBQ0ksa0JBQWtCO0FBQ3RCOztBQUVBO0lBQ0ksWUFBWTtBQUNoQjs7QUFFQTtJQUNJLFlBQVk7QUFDaEI7O0FBRUE7SUFDSSxrQkFBa0I7SUFDbEIsY0FBYztJQUNkLFdBQVc7SUFDWCxRQUFRO0lBQ1IsaUJBQWlCO0lBQ2pCLFlBQVk7SUFDWixpQkFBaUI7Q0FDcEIiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIFByb2dyZXNzIGJhcnMgd2l0aCBjZW50ZXJlZCB0ZXh0XG4gKi9cblxuLnByb2dyZXNzIHtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG59XG5cbi5wcm9ncmVzcyB7XG4gICAgaGVpZ2h0OiA0MHB4O1xufVxuXG4ucHJvZ3Jlc3MtYmFyIHtcbiAgICBoZWlnaHQ6IDQwcHg7XG59XG5cbi5wcm9ncmVzcyBzcGFuIHtcbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgZGlzcGxheTogYmxvY2s7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgdG9wOiA1MCU7XG4gICAgbWFyZ2luLXRvcDogLTEwcHg7XG4gICAgY29sb3I6IGJsYWNrO1xuICAgIGZvbnQtd2VpZ2h0OiBib2xkO1xuIH1cblxuIl0sInNvdXJjZVJvb3QiOiIifQ== */"]
-});
 
 /***/ }),
 
@@ -1375,15 +1376,15 @@ class ParticipantAdapter {
   adapt(item) {
     return new Participant(item.init, item.name, item.time);
   }
+  static #_ = this.ɵfac = function ParticipantAdapter_Factory(t) {
+    return new (t || ParticipantAdapter)();
+  };
+  static #_2 = this.ɵprov = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({
+    token: ParticipantAdapter,
+    factory: ParticipantAdapter.ɵfac,
+    providedIn: 'root'
+  });
 }
-ParticipantAdapter.ɵfac = function ParticipantAdapter_Factory(t) {
-  return new (t || ParticipantAdapter)();
-};
-ParticipantAdapter.ɵprov = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({
-  token: ParticipantAdapter,
-  factory: ParticipantAdapter.ɵfac,
-  providedIn: 'root'
-});
 
 /***/ }),
 
@@ -1410,15 +1411,15 @@ class SecsPipe {
     const seconds = totalseconds % 60;
     return prefix + ('00' + minutes).slice(-2) + ':' + ('00' + seconds).slice(-2);
   }
+  static #_ = this.ɵfac = function SecsPipe_Factory(t) {
+    return new (t || SecsPipe)();
+  };
+  static #_2 = this.ɵpipe = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefinePipe"]({
+    name: "secs",
+    type: SecsPipe,
+    pure: true
+  });
 }
-SecsPipe.ɵfac = function SecsPipe_Factory(t) {
-  return new (t || SecsPipe)();
-};
-SecsPipe.ɵpipe = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefinePipe"]({
-  name: "secs",
-  type: SecsPipe,
-  pure: true
-});
 
 /***/ }),
 
@@ -1447,15 +1448,15 @@ class NavbarService {
   toggle() {
     this.visible = !this.visible;
   }
+  static #_ = this.ɵfac = function NavbarService_Factory(t) {
+    return new (t || NavbarService)();
+  };
+  static #_2 = this.ɵprov = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({
+    token: NavbarService,
+    factory: NavbarService.ɵfac,
+    providedIn: 'root'
+  });
 }
-NavbarService.ɵfac = function NavbarService_Factory(t) {
-  return new (t || NavbarService)();
-};
-NavbarService.ɵprov = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({
-  token: NavbarService,
-  factory: NavbarService.ɵfac,
-  providedIn: 'root'
-});
 
 /***/ }),
 
@@ -1567,14 +1568,14 @@ class ParticipantService {
       this.setLastSync(new Date());
     });
   }
+  static #_ = this.ɵfac = function ParticipantService_Factory(t) {
+    return new (t || ParticipantService)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"](_settings_settings_service__WEBPACK_IMPORTED_MODULE_0__.SettingsService), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_4__.HttpClient), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"](_models_Participant__WEBPACK_IMPORTED_MODULE_1__.ParticipantAdapter));
+  };
+  static #_2 = this.ɵprov = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineInjectable"]({
+    token: ParticipantService,
+    factory: ParticipantService.ɵfac
+  });
 }
-ParticipantService.ɵfac = function ParticipantService_Factory(t) {
-  return new (t || ParticipantService)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"](_settings_settings_service__WEBPACK_IMPORTED_MODULE_0__.SettingsService), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_4__.HttpClient), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵinject"](_models_Participant__WEBPACK_IMPORTED_MODULE_1__.ParticipantAdapter));
-};
-ParticipantService.ɵprov = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineInjectable"]({
-  token: ParticipantService,
-  factory: ParticipantService.ɵfac
-});
 
 /***/ }),
 
@@ -1663,14 +1664,14 @@ class SettingsService {
     localStorage.setItem('participants', jsonSettings);
     this.exportSettings();
   }
+  static #_ = this.ɵfac = function SettingsService_Factory(t) {
+    return new (t || SettingsService)();
+  };
+  static #_2 = this.ɵprov = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({
+    token: SettingsService,
+    factory: SettingsService.ɵfac
+  });
 }
-SettingsService.ɵfac = function SettingsService_Factory(t) {
-  return new (t || SettingsService)();
-};
-SettingsService.ɵprov = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({
-  token: SettingsService,
-  factory: SettingsService.ɵfac
-});
 
 /***/ }),
 
@@ -1722,7 +1723,7 @@ _angular_platform_browser__WEBPACK_IMPORTED_MODULE_3__.platformBrowser().bootstr
   \**********************/
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"name":"scrum-timer","version":"1.1.1","license":"MIT","scripts":{"ng":"ng","start":"ng serve --host 0.0.0.0","build":"ng build","test":"ng test","lint":"eslint -c .eslintrc.js --ext .ts src","lint:fix":"eslint -c .eslintrc.js --fix --ext .ts src","e2e":"ng e2e","bump-version":"npm version patch -m \\"Bump version to %s\\" && git push --tags","bump-version-major":"npm version major -m \\"Bump version to %s (Major release)\\" && git push --tags","bump-version-minor":"npm version minor -m \\"Bump version to %s\\" && git push --tags","deploy":"ng build --base-href \\"https://josste.github.io/ScrumTimer/\\" && cp ./dist/index.html ./dist/404.html && angular-cli-ghpages --no-silent"},"private":true,"dependencies":{"@angular/animations":"^15.0.4","@angular/common":"^15.0.4","@angular/compiler":"^15.0.4","@angular/core":"^15.0.4","@angular/forms":"^15.0.4","@angular/platform-browser":"^15.0.4","@angular/platform-browser-dynamic":"^15.0.4","@babel/polyfill":"^7.12.1","bootstrap":"^4.6.1","core-js":"^3.33.0","diff":"^5.0.0","font-awesome":"^4.7.0","jquery":"^3.7.1","npm":"^9.1.1","popper.js":"^1.16.0","rxjs":"^6.6.7","rxjs-compat":"^6.6.7","tether":"^1.4.7","tslib":"^2.6.2","zone.js":"~0.12.0"},"devDependencies":{"@angular-devkit/build-angular":"^15.0.3","@angular-eslint/eslint-plugin":"^12.2.0","@angular/cli":"^15.0.3","@angular/compiler-cli":"^15.0.3","@angular/language-service":"^15.0.3","@angular/router":"^15.0.3","@types/jasmine":"~3.6.0","@types/jasminewd2":"^2.0.8","@types/node":"^13.13.34","@typescript-eslint/eslint-plugin":"^5.52.0","@typescript-eslint/eslint-plugin-tslint":"^5.52.0","@typescript-eslint/parser":"^5.52.0","angular-cli-ghpages":"^0.6.2","codelyzer":"^6.0.2","eslint":"^7.29.0","jasmine-core":"~3.8.0","jasmine-spec-reporter":"~5.0.0","karma":"~6.3.2","karma-chrome-launcher":"~3.1.0","karma-cli":"~2.0.0","karma-coverage":"^2.0.3","karma-coverage-istanbul-reporter":"~3.0.2","karma-firefox-launcher":"^2.1.1","karma-jasmine":"~4.0.0","karma-jasmine-html-reporter":"^1.7.0","karma-junit-reporter":"^2.0.1","protractor":"^7.0.0","ts-node":"~8.8.2","typescript":"~4.8.4"}}');
+module.exports = JSON.parse('{"name":"scrum-timer","version":"1.1.2","license":"MIT","scripts":{"ng":"ng","start":"ng serve --host 0.0.0.0","build":"ng build","test":"ng test","lint":"eslint -c .eslintrc.js --ext .ts src","lint:fix":"eslint -c .eslintrc.js --fix --ext .ts src","e2e":"ng e2e","bump-version":"npm version patch -m \\"Bump version to %s\\" && git push --tags","bump-version-major":"npm version major -m \\"Bump version to %s (Major release)\\" && git push --tags","bump-version-minor":"npm version minor -m \\"Bump version to %s\\" && git push --tags","deploy":"ng build --base-href \\"https://josste.github.io/ScrumTimer/\\" && cp ./dist/index.html ./dist/404.html && angular-cli-ghpages --no-silent"},"private":true,"dependencies":{"@angular/animations":"^15.0.4","@angular/common":"^15.0.4","@angular/compiler":"^15.0.4","@angular/core":"^15.0.4","@angular/forms":"^15.0.4","@angular/platform-browser":"^15.0.4","@angular/platform-browser-dynamic":"^15.0.4","@babel/polyfill":"^7.12.1","bootstrap":"^4.6.1","core-js":"^3.33.0","diff":"^5.0.0","font-awesome":"^4.7.0","jquery":"^3.7.1","npm":"^9.1.1","popper.js":"^1.16.0","rxjs":"^6.6.7","rxjs-compat":"^6.6.7","tether":"^1.4.7","tslib":"^2.6.2","zone.js":"~0.12.0"},"devDependencies":{"@angular-devkit/build-angular":"^15.0.3","@angular-eslint/eslint-plugin":"^12.2.0","@angular/cli":"^15.0.3","@angular/compiler-cli":"^15.0.3","@angular/language-service":"^15.0.3","@angular/router":"^15.0.3","@types/jasmine":"~3.6.0","@types/jasminewd2":"^2.0.8","@types/node":"^13.13.34","@typescript-eslint/eslint-plugin":"^5.52.0","@typescript-eslint/eslint-plugin-tslint":"^5.52.0","@typescript-eslint/parser":"^5.52.0","angular-cli-ghpages":"^0.6.2","codelyzer":"^6.0.2","eslint":"^7.29.0","jasmine-core":"~3.8.0","jasmine-spec-reporter":"~5.0.0","karma":"~6.3.2","karma-chrome-launcher":"~3.1.0","karma-cli":"~2.0.0","karma-coverage":"^2.0.3","karma-coverage-istanbul-reporter":"~3.0.2","karma-firefox-launcher":"^2.1.1","karma-jasmine":"~4.0.0","karma-jasmine-html-reporter":"^1.7.0","karma-junit-reporter":"^2.0.1","protractor":"^7.0.0","ts-node":"~8.8.2","typescript":"~4.8.4"}}');
 
 /***/ })
 
