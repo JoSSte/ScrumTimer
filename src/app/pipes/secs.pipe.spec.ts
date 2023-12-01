@@ -14,4 +14,8 @@ describe('SecsPipe', () => {
     expect(pipe.transform(10)).toBe('00:10');
   });
 
+  it('transforms -70 to "-01:10"', () => {
+    expect(pipe.transform(-70)).toBe('-01:10');
+  });
+
 });

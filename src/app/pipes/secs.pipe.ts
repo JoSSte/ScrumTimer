@@ -1,8 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'secs', 
-  standalone: true, 
+  name: 'secs',
+  standalone: true,
   pure: true
 })
 export class SecsPipe implements PipeTransform {
@@ -15,7 +15,7 @@ export class SecsPipe implements PipeTransform {
     }
     const minutes: number = Math.floor(totalseconds / 60);
     const seconds: number = totalseconds % 60;
-    return prefix + ('00'+minutes).slice(-2) + ':' + ('00'+seconds).slice(-2);
+    return prefix + ('00' + minutes).slice(-2) + ':' + ('00' + seconds).slice(-2);
   }
 
 }
