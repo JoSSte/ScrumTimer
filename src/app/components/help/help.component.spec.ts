@@ -18,7 +18,7 @@ describe('HelpComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-
+  // TODO: improve tests https://angular.io/guide/testing-components-basics
   it('should create', () => {
     expect(component).toBeTruthy();
   });
