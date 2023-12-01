@@ -1,7 +1,7 @@
 "use strict";
 (self["webpackChunkscrum_timer"] = self["webpackChunkscrum_timer"] || []).push([["main"],{
 
-/***/ 6401:
+/***/ 8641:
 /*!**********************************!*\
   !*** ./src/app/app.component.ts ***!
   \**********************************/
@@ -13,7 +13,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ 1699);
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ 7947);
-/* harmony import */ var _components_navbar_navbar_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/navbar/navbar.component */ 953);
+/* harmony import */ var _components_navbar_navbar_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/navbar/navbar.component */ 8977);
 
 
 
@@ -45,7 +45,7 @@ class AppComponent {
 
 /***/ }),
 
-/***/ 8629:
+/***/ 3574:
 /*!*******************************!*\
   !*** ./src/app/app.module.ts ***!
   \*******************************/
@@ -60,16 +60,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @angular/forms */ 8849);
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @angular/router */ 7947);
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @angular/common */ 6575);
-/* harmony import */ var _services_participant_participant_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./services/participant/participant.service */ 157);
-/* harmony import */ var _services_settings_settings_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./services/settings/settings.service */ 3660);
-/* harmony import */ var _services_navbar_navbar_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./services/navbar/navbar.service */ 5867);
-/* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./app.component */ 6401);
-/* harmony import */ var _components_navbar_navbar_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/navbar/navbar.component */ 953);
-/* harmony import */ var _components_timer_timer_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/timer/timer.component */ 1131);
-/* harmony import */ var _components_participant_list_participant_list_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/participant-list/participant-list.component */ 8172);
-/* harmony import */ var _components_settings_settings_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/settings/settings.component */ 7866);
-/* harmony import */ var _components_help_help_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/help/help.component */ 69);
-/* harmony import */ var _pipes_secs_pipe__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./pipes/secs.pipe */ 2386);
+/* harmony import */ var _services_participant_participant_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./services/participant/participant.service */ 2930);
+/* harmony import */ var _services_settings_settings_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./services/settings/settings.service */ 8374);
+/* harmony import */ var _services_navbar_navbar_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./services/navbar/navbar.service */ 515);
+/* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./app.component */ 8641);
+/* harmony import */ var _components_navbar_navbar_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/navbar/navbar.component */ 8977);
+/* harmony import */ var _components_timer_timer_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/timer/timer.component */ 4792);
+/* harmony import */ var _components_participant_list_participant_list_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/participant-list/participant-list.component */ 5981);
+/* harmony import */ var _components_settings_settings_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/settings/settings.component */ 3847);
+/* harmony import */ var _components_help_help_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/help/help.component */ 3450);
+/* harmony import */ var _pipes_secs_pipe__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./pipes/secs.pipe */ 6126);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @angular/core */ 1699);
 
 
@@ -131,14 +131,14 @@ class AppModule {
 }
 (function () {
   (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_10__["ɵɵsetNgModuleScope"](AppModule, {
-    declarations: [_app_component__WEBPACK_IMPORTED_MODULE_3__.AppComponent, _components_navbar_navbar_component__WEBPACK_IMPORTED_MODULE_4__.NavbarComponent, _components_timer_timer_component__WEBPACK_IMPORTED_MODULE_5__.TimerComponent, _components_participant_list_participant_list_component__WEBPACK_IMPORTED_MODULE_6__.ParticipantListComponent, _components_settings_settings_component__WEBPACK_IMPORTED_MODULE_7__.SettingsComponent, _components_help_help_component__WEBPACK_IMPORTED_MODULE_8__.HelpComponent, _pipes_secs_pipe__WEBPACK_IMPORTED_MODULE_9__.SecsPipe],
-    imports: [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_12__.BrowserModule, _angular_common_http__WEBPACK_IMPORTED_MODULE_13__.HttpClientModule, _angular_forms__WEBPACK_IMPORTED_MODULE_14__.FormsModule, _angular_router__WEBPACK_IMPORTED_MODULE_15__.RouterModule]
+    declarations: [_app_component__WEBPACK_IMPORTED_MODULE_3__.AppComponent, _components_navbar_navbar_component__WEBPACK_IMPORTED_MODULE_4__.NavbarComponent, _components_timer_timer_component__WEBPACK_IMPORTED_MODULE_5__.TimerComponent, _components_participant_list_participant_list_component__WEBPACK_IMPORTED_MODULE_6__.ParticipantListComponent, _components_settings_settings_component__WEBPACK_IMPORTED_MODULE_7__.SettingsComponent, _components_help_help_component__WEBPACK_IMPORTED_MODULE_8__.HelpComponent],
+    imports: [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_12__.BrowserModule, _angular_common_http__WEBPACK_IMPORTED_MODULE_13__.HttpClientModule, _angular_forms__WEBPACK_IMPORTED_MODULE_14__.FormsModule, _angular_router__WEBPACK_IMPORTED_MODULE_15__.RouterModule, _pipes_secs_pipe__WEBPACK_IMPORTED_MODULE_9__.SecsPipe]
   });
 })();
 
 /***/ }),
 
-/***/ 69:
+/***/ 3450:
 /*!***************************************************!*\
   !*** ./src/app/components/help/help.component.ts ***!
   \***************************************************/
@@ -256,7 +256,7 @@ class HelpComponent {
 
 /***/ }),
 
-/***/ 953:
+/***/ 8977:
 /*!*******************************************************!*\
   !*** ./src/app/components/navbar/navbar.component.ts ***!
   \*******************************************************/
@@ -267,7 +267,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   NavbarComponent: () => (/* binding */ NavbarComponent)
 /* harmony export */ });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ 1699);
-/* harmony import */ var _services_navbar_navbar_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/navbar/navbar.service */ 5867);
+/* harmony import */ var _services_navbar_navbar_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/navbar/navbar.service */ 515);
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common */ 6575);
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/router */ 7947);
 
@@ -414,7 +414,7 @@ class NavbarComponent {
 
 /***/ }),
 
-/***/ 8172:
+/***/ 5981:
 /*!***************************************************************************!*\
   !*** ./src/app/components/participant-list/participant-list.component.ts ***!
   \***************************************************************************/
@@ -424,9 +424,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   ParticipantListComponent: () => (/* binding */ ParticipantListComponent)
 /* harmony export */ });
-/* harmony import */ var _models_Participant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/Participant */ 5145);
+/* harmony import */ var _models_Participant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/Participant */ 1117);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 1699);
-/* harmony import */ var _services_participant_participant_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../services/participant/participant.service */ 157);
+/* harmony import */ var _services_participant_participant_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../services/participant/participant.service */ 2930);
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common */ 6575);
 /* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/forms */ 8849);
 
@@ -599,7 +599,7 @@ class ParticipantListComponent {
 
 /***/ }),
 
-/***/ 7866:
+/***/ 3847:
 /*!***********************************************************!*\
   !*** ./src/app/components/settings/settings.component.ts ***!
   \***********************************************************/
@@ -610,7 +610,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   SettingsComponent: () => (/* binding */ SettingsComponent)
 /* harmony export */ });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ 1699);
-/* harmony import */ var _services_settings_settings_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/settings/settings.service */ 3660);
+/* harmony import */ var _services_settings_settings_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/settings/settings.service */ 8374);
 /* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/forms */ 8849);
 
 
@@ -749,7 +749,7 @@ class SettingsComponent {
 
 /***/ }),
 
-/***/ 1131:
+/***/ 4792:
 /*!*****************************************************!*\
   !*** ./src/app/components/timer/timer.component.ts ***!
   \*****************************************************/
@@ -759,15 +759,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   TimerComponent: () => (/* binding */ TimerComponent)
 /* harmony export */ });
-/* harmony import */ var _models_Participant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/Participant */ 5145);
+/* harmony import */ var _models_Participant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/Participant */ 1117);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs */ 8435);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/core */ 1699);
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/router */ 7947);
-/* harmony import */ var _services_navbar_navbar_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../services/navbar/navbar.service */ 5867);
-/* harmony import */ var _services_participant_participant_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/participant/participant.service */ 157);
-/* harmony import */ var _services_settings_settings_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/settings/settings.service */ 3660);
+/* harmony import */ var _services_navbar_navbar_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../services/navbar/navbar.service */ 515);
+/* harmony import */ var _services_participant_participant_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/participant/participant.service */ 2930);
+/* harmony import */ var _services_settings_settings_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/settings/settings.service */ 8374);
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/common */ 6575);
-/* harmony import */ var _pipes_secs_pipe__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../pipes/secs.pipe */ 2386);
+/* harmony import */ var _pipes_secs_pipe__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../pipes/secs.pipe */ 6126);
 
 
 
@@ -1329,7 +1329,7 @@ class TimerComponent {
 
 /***/ }),
 
-/***/ 5145:
+/***/ 1117:
 /*!***************************************!*\
   !*** ./src/app/models/Participant.ts ***!
   \***************************************/
@@ -1365,7 +1365,7 @@ class ParticipantAdapter {
 
 /***/ }),
 
-/***/ 2386:
+/***/ 6126:
 /*!************************************!*\
   !*** ./src/app/pipes/secs.pipe.ts ***!
   \************************************/
@@ -1394,13 +1394,14 @@ class SecsPipe {
   static #_2 = this.ɵpipe = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefinePipe"]({
     name: "secs",
     type: SecsPipe,
-    pure: true
+    pure: true,
+    standalone: true
   });
 }
 
 /***/ }),
 
-/***/ 5867:
+/***/ 515:
 /*!***************************************************!*\
   !*** ./src/app/services/navbar/navbar.service.ts ***!
   \***************************************************/
@@ -1437,7 +1438,7 @@ class NavbarService {
 
 /***/ }),
 
-/***/ 157:
+/***/ 2930:
 /*!*************************************************************!*\
   !*** ./src/app/services/participant/participant.service.ts ***!
   \*************************************************************/
@@ -1449,9 +1450,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs/operators */ 7422);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/core */ 1699);
-/* harmony import */ var _settings_settings_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../settings/settings.service */ 3660);
+/* harmony import */ var _settings_settings_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../settings/settings.service */ 8374);
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/common/http */ 4860);
-/* harmony import */ var _models_Participant__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../models/Participant */ 5145);
+/* harmony import */ var _models_Participant__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../models/Participant */ 1117);
 
 
 
@@ -1556,7 +1557,7 @@ class ParticipantService {
 
 /***/ }),
 
-/***/ 3660:
+/***/ 8374:
 /*!*******************************************************!*\
   !*** ./src/app/services/settings/settings.service.ts ***!
   \*******************************************************/
@@ -1652,7 +1653,7 @@ class SettingsService {
 
 /***/ }),
 
-/***/ 553:
+/***/ 108:
 /*!*****************************************!*\
   !*** ./src/environments/environment.ts ***!
   \*****************************************/
@@ -1672,7 +1673,7 @@ const environment = {
 
 /***/ }),
 
-/***/ 4913:
+/***/ 6792:
 /*!*********************!*\
   !*** ./src/main.ts ***!
   \*********************/
@@ -1681,8 +1682,8 @@ const environment = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/platform-browser */ 6480);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 1699);
-/* harmony import */ var _app_app_module__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./app/app.module */ 8629);
-/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./environments/environment */ 553);
+/* harmony import */ var _app_app_module__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./app/app.module */ 3574);
+/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./environments/environment */ 108);
 
 
 
@@ -1700,14 +1701,14 @@ _angular_platform_browser__WEBPACK_IMPORTED_MODULE_3__.platformBrowser().bootstr
   \**********************/
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"name":"scrum-timer","version":"1.2.0","license":"MIT","scripts":{"ng":"ng","start":"ng serve --host 0.0.0.0","build":"ng build","test":"ng test","lint":"eslint -c .eslintrc.js --ext .ts src","lint:fix":"eslint -c .eslintrc.js --fix --ext .ts src","e2e":"ng e2e","bump-version":"npm version patch -m \\"Bump version to %s\\" && git push --tags","bump-version-major":"npm version major -m \\"Bump version to %s (Major release)\\" && git push --tags","bump-version-minor":"npm version minor -m \\"Bump version to %s\\" && git push --tags","deploy":"ng build --base-href \\"https://josste.github.io/ScrumTimer/\\" && cp ./dist/index.html ./dist/404.html && angular-cli-ghpages --no-silent"},"private":true,"dependencies":{"@angular/animations":"^17.0.5","@angular/common":"^17.0.5","@angular/compiler":"^17.0.5","@angular/core":"^17.0.5","@angular/forms":"^17.0.5","@angular/platform-browser":"^17.0.5","@angular/platform-browser-dynamic":"^17.0.5","@babel/polyfill":"^7.12.1","bootstrap":"^4.6.1","core-js":"^3.33.2","diff":"^5.0.0","font-awesome":"^4.7.0","jquery":"^3.7.1","npm":"^10.2.2","popper.js":"^1.16.0","rxjs":"^6.6.7","rxjs-compat":"^6.6.7","tether":"^1.4.7","tslib":"^2.6.2","zone.js":"~0.14.2"},"devDependencies":{"@angular-devkit/build-angular":"^17.0.5","@angular-eslint/eslint-plugin":"^12.2.0","@angular/cli":"^17.0.5","@angular/compiler-cli":"^17.0.5","@angular/language-service":"^17.0.5","@angular/router":"^17.0.5","@types/jasmine":"~3.6.0","@types/jasminewd2":"^2.0.8","@types/node":"^13.13.34","@typescript-eslint/eslint-plugin":"^5.52.0","@typescript-eslint/eslint-plugin-tslint":"^5.52.0","@typescript-eslint/parser":"^5.52.0","angular-cli-ghpages":"^0.6.2","codelyzer":"^6.0.2","eslint":"^7.29.0","jasmine-core":"~3.8.0","jasmine-spec-reporter":"~5.0.0","karma":"~6.3.2","karma-chrome-launcher":"~3.1.0","karma-cli":"~2.0.0","karma-coverage":"^2.0.3","karma-coverage-istanbul-reporter":"~3.0.2","karma-firefox-launcher":"^2.1.1","karma-jasmine":"~4.0.0","karma-jasmine-html-reporter":"^1.7.0","karma-junit-reporter":"^2.0.1","protractor":"^7.0.0","ts-node":"~8.8.2","typescript":"~5.2.2"}}');
+module.exports = JSON.parse('{"name":"scrum-timer","version":"1.2.1","license":"MIT","scripts":{"ng":"ng","start":"ng serve --host 0.0.0.0","build":"ng build","test":"ng test","lint":"eslint -c .eslintrc.js --ext .ts src","lint:fix":"eslint -c .eslintrc.js --fix --ext .ts src","e2e":"ng e2e","bump-version":"npm version patch -m \\"Bump version to %s\\" && git push --tags","bump-version-major":"npm version major -m \\"Bump version to %s (Major release)\\" && git push --tags","bump-version-minor":"npm version minor -m \\"Bump version to %s\\" && git push --tags","deploy":"ng build --base-href \\"https://josste.github.io/ScrumTimer/\\" && cp ./dist/index.html ./dist/404.html && angular-cli-ghpages --no-silent"},"private":true,"dependencies":{"@angular/animations":"^17.0.5","@angular/common":"^17.0.5","@angular/compiler":"^17.0.5","@angular/core":"^17.0.5","@angular/forms":"^17.0.5","@angular/platform-browser":"^17.0.5","@angular/platform-browser-dynamic":"^17.0.5","@babel/polyfill":"^7.12.1","bootstrap":"^5.3.2","core-js":"^3.33.3","diff":"^5.1.0","font-awesome":"^4.7.0","jquery":"^3.7.1","npm":"^10.2.4","popper.js":"^1.16.1","rxjs":"^6.6.7","rxjs-compat":"^6.6.7","tether":"^2.0.0","tslib":"^2.6.2","zone.js":"~0.14.2"},"devDependencies":{"@angular-devkit/build-angular":"^17.0.5","@angular-eslint/eslint-plugin":"^12.2.0","@angular/cli":"^17.0.5","@angular/compiler-cli":"^17.0.5","@angular/language-service":"^17.0.5","@angular/router":"^17.0.5","@types/jasmine":"~5.1.4","@types/jasminewd2":"^2.0.13","@types/node":"^20.10.2","@typescript-eslint/eslint-plugin":"^6.13.1","@typescript-eslint/eslint-plugin-tslint":"^6.13.1","@typescript-eslint/parser":"^6.13.1","angular-cli-ghpages":"^1.0.7","codelyzer":"^6.0.2","eslint":"^8.54.0","jasmine-core":"~5.1.1","jasmine-spec-reporter":"~7.0.0","karma":"~6.4.2","karma-chrome-launcher":"~3.2.0","karma-cli":"~2.0.0","karma-coverage":"^2.2.1","karma-coverage-istanbul-reporter":"~3.0.3","karma-firefox-launcher":"^2.1.2","karma-jasmine":"~5.1.0","karma-jasmine-html-reporter":"^2.1.0","karma-junit-reporter":"^2.0.1","protractor":"^7.0.0","ts-node":"~10.9.1","typescript":"~5.2.2"}}');
 
 /***/ })
 
 },
 /******/ __webpack_require__ => { // webpackRuntimeModules
 /******/ var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-/******/ __webpack_require__.O(0, ["vendor"], () => (__webpack_exec__(4913)));
+/******/ __webpack_require__.O(0, ["vendor"], () => (__webpack_exec__(6792)));
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);

@@ -1,7 +1,7 @@
 "use strict";
 (self["webpackChunkscrum_timer"] = self["webpackChunkscrum_timer"] || []).push([["polyfills"],{
 
-/***/ 5321:
+/***/ 9732:
 /*!**************************!*\
   !*** ./src/polyfills.ts ***!
   \**************************/
@@ -2721,7 +2721,7 @@ Zone.__load_patch('queueMicrotask', (global, Zone, api) => {
 
 
 __webpack_require__(/*! ../../modules/es.object.to-string */ 7250);
-__webpack_require__(/*! ../../modules/es.reflect.apply */ 8977);
+__webpack_require__(/*! ../../modules/es.reflect.apply */ 3502);
 __webpack_require__(/*! ../../modules/es.reflect.construct */ 2318);
 __webpack_require__(/*! ../../modules/es.reflect.define-property */ 2139);
 __webpack_require__(/*! ../../modules/es.reflect.delete-property */ 1540);
@@ -3574,8 +3574,9 @@ module.exports =
   // eslint-disable-next-line no-restricted-globals -- safe
   check(typeof self == 'object' && self) ||
   check(typeof global == 'object' && global) ||
+  check(typeof this == 'object' && this) ||
   // eslint-disable-next-line no-new-func -- fallback
-  (function () { return this; })() || this || Function('return this')();
+  (function () { return this; })() || Function('return this')();
 
 
 /***/ }),
@@ -4703,10 +4704,10 @@ var store = __webpack_require__(/*! ../internals/shared-store */ 5111);
 (module.exports = function (key, value) {
   return store[key] || (store[key] = value !== undefined ? value : {});
 })('versions', []).push({
-  version: '3.33.2',
+  version: '3.33.3',
   mode: IS_PURE ? 'pure' : 'global',
   copyright: '© 2014-2023 Denis Pushkarev (zloirock.ru)',
-  license: 'https://github.com/zloirock/core-js/blob/v3.33.2/LICENSE',
+  license: 'https://github.com/zloirock/core-js/blob/v3.33.3/LICENSE',
   source: 'https://github.com/zloirock/core-js'
 });
 
@@ -5064,7 +5065,7 @@ if (!TO_STRING_TAG_SUPPORT) {
 
 /***/ }),
 
-/***/ 8977:
+/***/ 3502:
 /*!**********************************************************!*\
   !*** ./node_modules/core-js/modules/es.reflect.apply.js ***!
   \**********************************************************/
@@ -5509,7 +5510,7 @@ setToStringTag(global.Reflect, 'Reflect', true);
 },
 /******/ __webpack_require__ => { // webpackRuntimeModules
 /******/ var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-/******/ var __webpack_exports__ = (__webpack_exec__(5321));
+/******/ var __webpack_exports__ = (__webpack_exec__(9732));
 /******/ }
 ]);
 //# sourceMappingURL=polyfills.js.map
