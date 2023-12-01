@@ -20,6 +20,7 @@ describe('TimerComponent', () => {
       imports: [
         RouterTestingModule.withRoutes([]),
         HttpClientModule,
+        SecsPipe,
         FormsModule
       ],
       providers: [
@@ -36,8 +37,8 @@ describe('TimerComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-
-  // it('should create', () => {
-  //   expect(component).toBeTruthy();
-  // });
+  // TODO: improve tests https://angular.io/guide/testing-components-basics
+   it('should create', () => {
+     expect(component).toBeTruthy();
+   });
 });
