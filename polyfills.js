@@ -1,7 +1,7 @@
 "use strict";
 (self["webpackChunkscrum_timer"] = self["webpackChunkscrum_timer"] || []).push([["polyfills"],{
 
-/***/ 7435:
+/***/ 5321:
 /*!**************************!*\
   !*** ./src/polyfills.ts ***!
   \**************************/
@@ -10,7 +10,7 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_es_reflect__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/es/reflect */ 5749);
 /* harmony import */ var core_js_es_reflect__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_es_reflect__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var zone_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! zone.js */ 4924);
+/* harmony import */ var zone_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! zone.js */ 6657);
 /* harmony import */ var zone_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(zone_js__WEBPACK_IMPORTED_MODULE_1__);
 /**
  * This file includes polyfills needed by Angular and is loaded before the app.
@@ -51,7 +51,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ 4924:
+/***/ 6657:
 /*!***********************************************!*\
   !*** ./node_modules/zone.js/fesm2015/zone.js ***!
   \***********************************************/
@@ -60,16 +60,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /**
- * @license Angular v15.1.0-next.0
+ * @license Angular v<unknown>
  * (c) 2010-2022 Google LLC. https://angular.io/
  * License: MIT
- */
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
  */
 (function (global) {
   const performance = global['performance'];
@@ -105,12 +98,8 @@ __webpack_require__.r(__webpack_exports__);
     }
   }
   class Zone {
-    constructor(parent, zoneSpec) {
-      this._parent = parent;
-      this._name = zoneSpec ? zoneSpec.name || 'unnamed' : '<root>';
-      this._properties = zoneSpec && zoneSpec.properties || {};
-      this._zoneDelegate = new _ZoneDelegate(this, this._parent && this._parent._zoneDelegate, zoneSpec);
-    }
+    // tslint:disable-next-line:require-internal-with-underscore
+    static #_ = this.__symbol__ = __symbol__;
     static assertZonePatched() {
       if (global['Promise'] !== patches['ZoneAwarePromise']) {
         throw new Error('Zone.js has detected that ZoneAwarePromise `(window|global).Promise` ' + 'has been overwritten.\n' + 'Most likely cause is that a Promise polyfill has been loaded ' + 'after Zone.js (Polyfilling Promise api is not necessary when zone.js is loaded. ' + 'If you must load one, do so before loading zone.js.)');
@@ -150,6 +139,12 @@ __webpack_require__.r(__webpack_exports__);
     }
     get name() {
       return this._name;
+    }
+    constructor(parent, zoneSpec) {
+      this._parent = parent;
+      this._name = zoneSpec ? zoneSpec.name || 'unnamed' : '<root>';
+      this._properties = zoneSpec && zoneSpec.properties || {};
+      this._zoneDelegate = new _ZoneDelegate(this, this._parent && this._parent._zoneDelegate, zoneSpec);
     }
     get(key) {
       const zone = this.getZoneWith(key);
@@ -326,8 +321,6 @@ __webpack_require__.r(__webpack_exports__);
       }
     }
   }
-  // tslint:disable-next-line:require-internal-with-underscore
-  Zone.__symbol__ = __symbol__;
   const DELEGATE_ZS = {
     name: '',
     onHasTask: (delegate, _, target, hasTaskState) => delegate.hasTask(target, hasTaskState),
@@ -665,15 +658,8 @@ __webpack_require__.r(__webpack_exports__);
   function noop() {}
   performanceMeasure('Zone', 'Zone');
   return global['Zone'] = Zone;
-})(typeof window !== 'undefined' && window || typeof self !== 'undefined' && self || global);
+})(globalThis);
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 /**
  * Suppress closure compiler errors about unknown 'Zone' variable
  * @fileoverview
@@ -714,7 +700,7 @@ function scheduleMacroTaskWithCurrentZone(source, callback, data, customSchedule
 const zoneSymbol = Zone.__symbol__;
 const isWindowExists = typeof window !== 'undefined';
 const internalWindow = isWindowExists ? window : undefined;
-const _global = isWindowExists && internalWindow || typeof self === 'object' && self || global;
+const _global = isWindowExists && internalWindow || globalThis;
 const REMOVE_ATTRIBUTE = 'removeAttribute';
 function bindArguments(args, source) {
   for (let i = args.length - 1; i >= 0; i--) {
@@ -1046,14 +1032,6 @@ function isIEOrEdge() {
   } catch (error) {}
   return ieOrEdge;
 }
-
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 Zone.__load_patch('ZoneAwarePromise', (global, Zone, api) => {
   const ObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
   const ObjectDefineProperty = Object.defineProperty;
@@ -1066,7 +1044,7 @@ Zone.__load_patch('ZoneAwarePromise', (global, Zone, api) => {
   }
   const __symbol__ = api.symbol;
   const _uncaughtPromiseErrors = [];
-  const isDisableWrappingUncaughtPromiseRejection = global[__symbol__('DISABLE_WRAPPING_UNCAUGHT_PROMISE_REJECTION')] === true;
+  const isDisableWrappingUncaughtPromiseRejection = global[__symbol__('DISABLE_WRAPPING_UNCAUGHT_PROMISE_REJECTION')] !== false;
   const symbolPromise = __symbol__('Promise');
   const symbolThen = __symbol__('then');
   const creationTrace = '__creationTrace__';
@@ -1134,7 +1112,6 @@ Zone.__load_patch('ZoneAwarePromise', (global, Zone, api) => {
       // Do not return value or you will break the Promise spec.
     };
   }
-
   const once = function () {
     let wasCalled = false;
     return function wrapper(wrappedFunction) {
@@ -1442,7 +1419,6 @@ Zone.__load_patch('ZoneAwarePromise', (global, Zone, api) => {
       return ZoneAwarePromise;
     }
     then(onFulfilled, onRejected) {
-      var _a;
       // We must read `Symbol.species` safely because `this` may be anything. For instance, `this`
       // may be an object without a prototype (created through `Object.create(null)`); thus
       // `this.constructor` will be undefined. One of the use cases is SystemJS creating
@@ -1451,7 +1427,7 @@ Zone.__load_patch('ZoneAwarePromise', (global, Zone, api) => {
       // function). The zone.js then checks if the resolved value has the `then` method and invokes
       // it with the `value` context. Otherwise, this will throw an error: `TypeError: Cannot read
       // properties of undefined (reading 'Symbol(Symbol.species)')`.
-      let C = (_a = this.constructor) === null || _a === void 0 ? void 0 : _a[Symbol.species];
+      let C = this.constructor?.[Symbol.species];
       if (!C || typeof C !== 'function') {
         C = this.constructor || ZoneAwarePromise;
       }
@@ -1468,9 +1444,8 @@ Zone.__load_patch('ZoneAwarePromise', (global, Zone, api) => {
       return this.then(null, onRejected);
     }
     finally(onFinally) {
-      var _a;
       // See comment on the call to `then` about why thee `Symbol.species` is safely accessed.
-      let C = (_a = this.constructor) === null || _a === void 0 ? void 0 : _a[Symbol.species];
+      let C = this.constructor?.[Symbol.species];
       if (!C || typeof C !== 'function') {
         C = ZoneAwarePromise;
       }
@@ -1536,13 +1511,6 @@ Zone.__load_patch('ZoneAwarePromise', (global, Zone, api) => {
   return ZoneAwarePromise;
 });
 
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 // override Function.prototype.toString to make zone.js patched function
 // look like native function
 Zone.__load_patch('toString', global => {
@@ -1590,11 +1558,8 @@ Zone.__load_patch('toString', global => {
 });
 
 /**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * @fileoverview
+ * @suppress {missingRequire}
  */
 let passiveSupported = false;
 if (typeof window !== 'undefined') {
@@ -1793,9 +1758,10 @@ function patchEventTarget(_global, api, apis, patchOptions) {
         };
       }
       if (typeof options === 'object' && options.passive !== false) {
-        return Object.assign(Object.assign({}, options), {
+        return {
+          ...options,
           passive: true
-        });
+        };
       }
       return options;
     }
@@ -2175,14 +2141,6 @@ function patchEventPrototype(global, api) {
     });
   }
 }
-
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 function patchCallbacks(api, target, targetName, method, callbacks) {
   const symbol = Zone.__symbol__(method);
   if (target[symbol]) {
@@ -2214,7 +2172,7 @@ function patchCallbacks(api, target, targetName, method, callbacks) {
           } else if (prototype[callback]) {
             prototype[callback] = api.wrapWithCurrentZone(prototype[callback], source);
           }
-        } catch (_a) {
+        } catch {
           // Note: we leave the catch block empty since there's no way to handle the error related
           // to non-writable property.
         }
@@ -2226,11 +2184,8 @@ function patchCallbacks(api, target, targetName, method, callbacks) {
 }
 
 /**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * @fileoverview
+ * @suppress {globalThis}
  */
 function filterProperties(target, onProperties, ignoreProperties) {
   if (!ignoreProperties || ignoreProperties.length === 0) {
@@ -2287,14 +2242,6 @@ function propertyDescriptorPatch(api, _global) {
     target && target.prototype && patchFilteredProperties(target.prototype, getOnEventNames(target.prototype), ignoreProperties);
   }
 }
-
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 Zone.__load_patch('util', (global, Zone, api) => {
   // Collect native event names by looking at properties
   // on the global namespace, e.g. 'onclick'.
@@ -2346,11 +2293,20 @@ Zone.__load_patch('util', (global, Zone, api) => {
 });
 
 /**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * @fileoverview
+ * @suppress {missingRequire}
+ */
+function patchQueueMicrotask(global, api) {
+  api.patchMethod(global, 'queueMicrotask', delegate => {
+    return function (self, args) {
+      Zone.current.scheduleMicroTask('queueMicrotask', args[0]);
+    };
+  });
+}
+
+/**
+ * @fileoverview
+ * @suppress {missingRequire}
  */
 const taskSymbol = zoneSymbol('zoneTask');
 function patchTimer(window, setName, cancelName, nameSuffix) {
@@ -2462,14 +2418,6 @@ function patchTimer(window, setName, cancelName, nameSuffix) {
     }
   });
 }
-
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 function patchCustomElements(_global, api) {
   const {
     isBrowser,
@@ -2481,14 +2429,6 @@ function patchCustomElements(_global, api) {
   const callbacks = ['connectedCallback', 'disconnectedCallback', 'adoptedCallback', 'attributeChangedCallback'];
   api.patchCallbacks(api, _global.customElements, 'customElements', 'define', callbacks);
 }
-
-/**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
- */
 function eventTargetPatch(_global, api) {
   if (Zone[api.symbol('patchEventTarget')]) {
     // EventTarget is already patched.
@@ -2524,24 +2464,14 @@ function patchEvent(global, api) {
 }
 
 /**
- * @license
- * Copyright Google LLC All Rights Reserved.
- *
- * Use of this source code is governed by an MIT-style license that can be
- * found in the LICENSE file at https://angular.io/license
+ * @fileoverview
+ * @suppress {missingRequire}
  */
 Zone.__load_patch('legacy', global => {
   const legacyPatch = global[Zone.__symbol__('legacyPatch')];
   if (legacyPatch) {
     legacyPatch();
   }
-});
-Zone.__load_patch('queueMicrotask', (global, Zone, api) => {
-  api.patchMethod(global, 'queueMicrotask', delegate => {
-    return function (self, args) {
-      Zone.current.scheduleMicroTask('queueMicrotask', args[0]);
-    };
-  });
 });
 Zone.__load_patch('timers', global => {
   const set = 'set';
@@ -2747,7 +2677,6 @@ Zone.__load_patch('XHR', (global, Zone) => {
     });
   }
 });
-
 Zone.__load_patch('geolocation', global => {
   /// GEO_LOCATION
   if (global['navigator'] && global['navigator'].geolocation) {
@@ -2777,6 +2706,9 @@ Zone.__load_patch('PromiseRejectionEvent', (global, Zone) => {
     Zone[zoneSymbol('unhandledPromiseRejectionHandler')] = findPromiseRejectionHandler('unhandledrejection');
     Zone[zoneSymbol('rejectionHandledHandler')] = findPromiseRejectionHandler('rejectionhandled');
   }
+});
+Zone.__load_patch('queueMicrotask', (global, Zone, api) => {
+  patchQueueMicrotask(global, api);
 });
 
 /***/ }),
@@ -3287,7 +3219,7 @@ module.exports = version;
 
 /***/ }),
 
-/***/ 5142:
+/***/ 2524:
 /*!*********************************************************!*\
   !*** ./node_modules/core-js/internals/enum-bug-keys.js ***!
   \*********************************************************/
@@ -3718,7 +3650,7 @@ module.exports = !DESCRIPTORS && !fails(function () {
 
 /***/ }),
 
-/***/ 4555:
+/***/ 7830:
 /*!**********************************************************!*\
   !*** ./node_modules/core-js/internals/indexed-object.js ***!
   \**********************************************************/
@@ -4171,7 +4103,7 @@ module.exports = Math.trunc || function trunc(x) {
 /* global ActiveXObject -- old IE, WSH */
 var anObject = __webpack_require__(/*! ../internals/an-object */ 858);
 var definePropertiesModule = __webpack_require__(/*! ../internals/object-define-properties */ 8324);
-var enumBugKeys = __webpack_require__(/*! ../internals/enum-bug-keys */ 5142);
+var enumBugKeys = __webpack_require__(/*! ../internals/enum-bug-keys */ 2524);
 var hiddenKeys = __webpack_require__(/*! ../internals/hidden-keys */ 2561);
 var html = __webpack_require__(/*! ../internals/html */ 9390);
 var documentCreateElement = __webpack_require__(/*! ../internals/document-create-element */ 3082);
@@ -4381,7 +4313,7 @@ exports.f = DESCRIPTORS ? $getOwnPropertyDescriptor : function getOwnPropertyDes
 
 
 var internalObjectKeys = __webpack_require__(/*! ../internals/object-keys-internal */ 2637);
-var enumBugKeys = __webpack_require__(/*! ../internals/enum-bug-keys */ 5142);
+var enumBugKeys = __webpack_require__(/*! ../internals/enum-bug-keys */ 2524);
 
 var hiddenKeys = enumBugKeys.concat('length', 'prototype');
 
@@ -4520,7 +4452,7 @@ module.exports = function (object, names) {
 
 
 var internalObjectKeys = __webpack_require__(/*! ../internals/object-keys-internal */ 2637);
-var enumBugKeys = __webpack_require__(/*! ../internals/enum-bug-keys */ 5142);
+var enumBugKeys = __webpack_require__(/*! ../internals/enum-bug-keys */ 2524);
 
 // `Object.keys` method
 // https://tc39.es/ecma262/#sec-object.keys
@@ -4771,10 +4703,10 @@ var store = __webpack_require__(/*! ../internals/shared-store */ 5111);
 (module.exports = function (key, value) {
   return store[key] || (store[key] = value !== undefined ? value : {});
 })('versions', []).push({
-  version: '3.33.1',
+  version: '3.33.2',
   mode: IS_PURE ? 'pure' : 'global',
   copyright: '© 2014-2023 Denis Pushkarev (zloirock.ru)',
-  license: 'https://github.com/zloirock/core-js/blob/v3.33.1/LICENSE',
+  license: 'https://github.com/zloirock/core-js/blob/v3.33.2/LICENSE',
   source: 'https://github.com/zloirock/core-js'
 });
 
@@ -4841,7 +4773,7 @@ module.exports = function (index, length) {
 
 
 // toObject with fallback for non-array-like ES3 strings
-var IndexedObject = __webpack_require__(/*! ../internals/indexed-object */ 4555);
+var IndexedObject = __webpack_require__(/*! ../internals/indexed-object */ 7830);
 var requireObjectCoercible = __webpack_require__(/*! ../internals/require-object-coercible */ 5028);
 
 module.exports = function (it) {
@@ -5577,7 +5509,7 @@ setToStringTag(global.Reflect, 'Reflect', true);
 },
 /******/ __webpack_require__ => { // webpackRuntimeModules
 /******/ var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-/******/ var __webpack_exports__ = (__webpack_exec__(7435));
+/******/ var __webpack_exports__ = (__webpack_exec__(5321));
 /******/ }
 ]);
 //# sourceMappingURL=polyfills.js.map
