@@ -32,9 +32,6 @@
   <br>
   <div class="btn-toolbar" role="toolbar" aria-label="Toolbar">
     <div class="btn-group mr-2" role="group">
-      <!-- <button class="btn btn-outline-success" (click)="startTimer()" title="Start Timer" [disabled]="participantList.length == 0 || timerActive">
-        <i class="fa fa-hourglass-start"></i>
-      </button> -->
       <button class="btn btn-outline-danger " (click)="stopTimer()" title="Stop Timer" [disabled]="totalPercent == 0 && currentPercent == 0 || !timerActive">
         <i class="fa fa-hourglass-end"></i>
       </button>
