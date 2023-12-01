@@ -20,7 +20,7 @@ describe('SecsPipe', () => {
       { testId: 7, inputValue:   100, expectedOutput:  '01:40' }
   ]) {
     it(`Verify seconds to minutes display [${testId}: ${inputValue} → ${expectedOutput}]`, () => {
-      console.log(inputValue + ' → ' + pipe.transform(inputValue));
+      //console.log(inputValue + ' → ' + pipe.transform(inputValue));
       expect(pipe.transform(inputValue)).toBe(expectedOutput);
     });
   }

@@ -24,8 +24,7 @@ module.exports = {
     },
     "plugins": [
         "@angular-eslint/eslint-plugin",
-        "@typescript-eslint",
-        "@typescript-eslint/tslint"
+        "@typescript-eslint"
     ],
     "rules": {
         "@angular-eslint/component-class-suffix": "error",
@@ -186,16 +185,6 @@ module.exports = {
                 ]
             }
         ],
-        "valid-typeof": "error",
-        "@typescript-eslint/tslint/config": [
-            "error",
-            {
-                "rules": {
-                    "import-spacing": true,
-                    "invoke-injectable": true,
-                    "whitespace": true
-                }
-            }
-        ]
+        "valid-typeof": "error"
     }
 };
