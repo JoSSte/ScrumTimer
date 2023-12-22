@@ -42,7 +42,6 @@ export class SettingsComponent implements OnInit {
     if(this.useJiraLinkURL){
       this.settings.setJiraURL(this.jiraLinkURL);
     }else {
-      console.log('deleting jira url');
       this.settings.setJiraURL('');
     }
     this.settings.saveSettings();

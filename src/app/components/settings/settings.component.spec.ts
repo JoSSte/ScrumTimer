@@ -11,13 +11,13 @@ describe('SettingsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ SettingsComponent ],
-      providers: [ SettingsService ],
+      declarations: [SettingsComponent],
+      providers: [SettingsService],
       imports: [
         FormsModule
       ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -62,12 +62,21 @@ describe('SettingsComponent', () => {
     expect(lsMt).toEqual(bTime);
   });
 
-it('should save settings - remote participant list', () => {
+  it('should save settings - remote participant list', () => {
     const url = 'https://josste.github.io/ScrumTimer/assets/json/participants_andeby.json';
     component.remoteParticipantListURL = url;
     component.useRemoteParticipantList = true;
     component.saveSettings();
     const lsUrl = JSON.parse(localStorage.getItem('settings'))[2];
     expect(lsUrl).toEqual(url);
+  });
+
+  it('should have a Jira URL', () => {
+    const jiraUrl = 'http://httpbin.org/get';
+    component.useJiraLinkURL = true;
+    component.jiraLinkURL = jiraUrl;
+    component.saveSettings();
+    const jUrl = localStorage.getItem('JiraURL');
+    expect(jUrl).toEqual(jiraUrl);
   });
 });
