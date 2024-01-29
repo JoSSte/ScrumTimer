@@ -37,6 +37,12 @@ describe('TimerComponent', () => {
     fixture = TestBed.createComponent(TimerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    if (component.participantList.length === 0) {
+      component.participantList.push(new Participant('JVA', 'Joakim von And'));
+      component.participantList.push(new Participant('AA', 'Anders And'));
+      component.participantList.push(new Participant('DSY', 'Andersine And'));
+    }
+    console.info("Participantlist Length:\t" + component.participantList.length);
   });
   // TODO: improve tests https://angular.io/guide/testing-components-basics
   it('should create', () => {
@@ -87,4 +93,45 @@ describe('TimerComponent', () => {
   //   component.stopTimer();
   //   expect(component.doneParticipants.length).toEqual(initialList);
   // });
+  it('Reset works', () => {
+    component.participantList.push(new Participant('TIM', 'Tim Timer'));
+    expect(component.totalElapsed).toEqual(0);
+    component.startTimer();
+    // tweak since i cannot figure out how to pause the test to increment totalElapsed
+    component.totalElapsed = 22;
+    component.stopTimer();
+    expect(component.totalElapsed).toBeGreaterThan(0);
+    component.resetTimer();
+    expect(component.totalElapsed).toEqual(0);
+  });
+  it('Shuffle works', () => {
+    component.participantList.push(new Participant('TIM', 'Tim Timer'));
+    component.participantList.push(new Participant('MIT', 'Mittle Minimas'));
+    const partListJSON = JSON.stringify(component.participantList);
+    component.shuffleParticipants();
+    expect(JSON.stringify(component.participantList)).not.toEqual(partListJSON);
+  });
+  it('Handles absent participant', () => {
+    const absentee = new Participant('CHR', 'Chris Sjokolade');
+    component.participantList.push(absentee);
+    component.participantList.push(new Participant('TT', 'Tintin'));
+    component.participantList.push(new Participant('CPT', 'Kaptajn Haddock'));
+    expect(component.absentParticipants.length).toEqual(0);
+    expect(component.doneParticipants.length).toEqual(0);
+    component.markAbsent(absentee);
+    expect(component.absentParticipants.length).toEqual(1);
+  });
+  // unstable test
+  it('Handles attempt to mark all participants absent', () => {
+    const startList = component.participantList;
+    component.participantList.push(new Participant('CHR', 'Chris Sjokolade'));
+    expect(component.absentParticipants.length).toEqual(0);
+    expect(component.doneParticipants.length).toEqual(0);
+    // Attempt to mark all participants as absent
+    for (let i = 1; i < startList.length; i++) {
+      component.markAbsent(startList[i]);
+    }
+    console.debug('Participants:\t' + component.participantList.length);
+    expect(component.markAbsent(startList[0])).toBeFalsy();
+  });
 });
