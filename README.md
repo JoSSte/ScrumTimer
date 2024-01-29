@@ -71,7 +71,7 @@ if(r !== null){
   d.class="ghx-detail-view gh-editable-detail-view ui-resizable";
   r.append(d);
 } else {
-  console.log('[Scrumtimer] No Div found with the id "ghx-work"... Are you in Jira?');
+  console.error('[Scrumtimer] No Div found with the id "ghx-work"... Are you in Jira?');
   alert('Scrumtimer could not find the right html element.... Are you in Jira?');
 }
 

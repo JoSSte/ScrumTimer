@@ -27,12 +27,12 @@ export class NavbarComponent implements OnInit {
         openerMessage = 'Displaying pop out link';
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
       openerMessage = 'Not Displaying popout link. Already popped out (exception)';
       this.noOpener = false;
       this.nav.hide();
     }
-    console.log(openerMessage);
+    console.info(openerMessage);
   }
 
   openScrumTimer() {
@@ -46,12 +46,12 @@ export class NavbarComponent implements OnInit {
     if (url) {
       this.jiraTimerWindow = window.open(url, 'StoryWindowName', jwp);
     }else{
-      console.log('no JiraURL in localStorage');
+      console.warn('no JiraURL in localStorage');
     }
   }
 
   openWindows() {
-    console.log('Opening windows');
+    console.debug('Opening windows');
     this.openJira();
     this.openScrumTimer();
   }

@@ -17,9 +17,9 @@ export class ParticipantService {
   getLastSync() {
     const localSync = localStorage.getItem('lastSync');
     if (localSync == null) {
-      console.log('never synced');
+      console.debug('never synced');
     } else {
-      console.log('Last sync: ' + localSync);
+      console.info('Last sync: ' + localSync);
     }
   }
 
@@ -79,22 +79,22 @@ export class ParticipantService {
 
   getRemoteParticipants(): Observable<Participant[]> {
     if (this.settings.usesRemoteParticipantList()) {
-      console.log('remote participant list affirmative. Checking URL');
+      console.debug('remote participant list affirmative. Checking URL');
       const durationSinceLastSync = (Date.now()).valueOf() - this.lastSync.valueOf();
 
       // If more than 15 hours since sync, update
       if (durationSinceLastSync > 54000) {
         const url = this.settings.getRemoteParticipantListURL();
-        console.log('Seconds since last sync: ' + durationSinceLastSync + ' syncing from ' + url + ' . . .');
+        console.debug('Seconds since last sync: ' + durationSinceLastSync + ' syncing from ' + url + ' . . .');
         return this.http
         .get(url)
         .pipe(map((data: any[]) => data.map((item) => this.adapter.adapt(item))));
 
       } else { // TODO: throw exception
-        console.log('not syncing');
+        console.error('not syncing');
       }
     } else { // TODO: throw exception ?
-      console.log('using local participant list');
+      console.info('using local participant list');
     }
   }
 
