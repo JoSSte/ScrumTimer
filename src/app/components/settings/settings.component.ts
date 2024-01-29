@@ -33,7 +33,7 @@ export class SettingsComponent implements OnInit {
 
   saveSettings() {
     this.settings.setGlobalMaxTime(this.globalMaxTime);
-    this.settings.setUseGlobelMaxTime(this.useGlobalMaxTime);
+    this.settings.setUseGlobalMaxTime(this.useGlobalMaxTime);
     if(this.useRemoteParticipantList){
       this.settings.setRemoteParticipantList(this.remoteParticipantListURL);
     }else {

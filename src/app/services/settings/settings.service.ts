@@ -67,7 +67,7 @@ export class SettingsService {
     }
   }
 
-  setUseGlobelMaxTime(useGMTime: boolean) {
+  setUseGlobalMaxTime(useGMTime: boolean) {
     this.useGlobalMaxTime = useGMTime;
     this.saveSettings();
   }
