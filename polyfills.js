@@ -1,7 +1,7 @@
 "use strict";
 (self["webpackChunkscrum_timer"] = self["webpackChunkscrum_timer"] || []).push([["polyfills"],{
 
-/***/ 9732:
+/***/ 5321:
 /*!**************************!*\
   !*** ./src/polyfills.ts ***!
   \**************************/
@@ -1112,6 +1112,7 @@ Zone.__load_patch('ZoneAwarePromise', (global, Zone, api) => {
       // Do not return value or you will break the Promise spec.
     };
   }
+
   const once = function () {
     let wasCalled = false;
     return function wrapper(wrappedFunction) {
@@ -2677,6 +2678,7 @@ Zone.__load_patch('XHR', (global, Zone) => {
     });
   }
 });
+
 Zone.__load_patch('geolocation', global => {
   /// GEO_LOCATION
   if (global['navigator'] && global['navigator'].geolocation) {
@@ -2721,7 +2723,7 @@ Zone.__load_patch('queueMicrotask', (global, Zone, api) => {
 
 
 __webpack_require__(/*! ../../modules/es.object.to-string */ 7250);
-__webpack_require__(/*! ../../modules/es.reflect.apply */ 3502);
+__webpack_require__(/*! ../../modules/es.reflect.apply */ 8977);
 __webpack_require__(/*! ../../modules/es.reflect.construct */ 2318);
 __webpack_require__(/*! ../../modules/es.reflect.define-property */ 2139);
 __webpack_require__(/*! ../../modules/es.reflect.delete-property */ 1540);
@@ -2791,13 +2793,13 @@ module.exports = function (argument) {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 
-var isCallable = __webpack_require__(/*! ../internals/is-callable */ 337);
+var isPossiblePrototype = __webpack_require__(/*! ../internals/is-possible-prototype */ 4221);
 
 var $String = String;
 var $TypeError = TypeError;
 
 module.exports = function (argument) {
-  if (typeof argument == 'object' || isCallable(argument)) return argument;
+  if (isPossiblePrototype(argument)) return argument;
   throw new $TypeError("Can't set " + $String(argument) + ' as a prototype');
 };
 
@@ -3123,27 +3125,6 @@ module.exports = !fails(function () {
   // eslint-disable-next-line es/no-object-defineproperty -- required for testing
   return Object.defineProperty({}, 1, { get: function () { return 7; } })[1] !== 7;
 });
-
-
-/***/ }),
-
-/***/ 9658:
-/*!********************************************************!*\
-  !*** ./node_modules/core-js/internals/document-all.js ***!
-  \********************************************************/
-/***/ ((module) => {
-
-
-var documentAll = typeof document == 'object' && document.all;
-
-// https://tc39.es/ecma262/#sec-IsHTMLDDA-internal-slot
-// eslint-disable-next-line unicorn/no-typeof-undefined -- required for testing
-var IS_HTMLDDA = typeof documentAll == 'undefined' && documentAll !== undefined;
-
-module.exports = {
-  all: documentAll,
-  IS_HTMLDDA: IS_HTMLDDA
-};
 
 
 /***/ }),
@@ -3787,16 +3768,16 @@ module.exports = {
 /*!*******************************************************!*\
   !*** ./node_modules/core-js/internals/is-callable.js ***!
   \*******************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((module) => {
 
 
-var $documentAll = __webpack_require__(/*! ../internals/document-all */ 9658);
-
-var documentAll = $documentAll.all;
+// https://tc39.es/ecma262/#sec-IsHTMLDDA-internal-slot
+var documentAll = typeof document == 'object' && document.all;
 
 // `IsCallable` abstract operation
 // https://tc39.es/ecma262/#sec-iscallable
-module.exports = $documentAll.IS_HTMLDDA ? function (argument) {
+// eslint-disable-next-line unicorn/no-typeof-undefined -- required for testing
+module.exports = typeof documentAll == 'undefined' && documentAll !== undefined ? function (argument) {
   return typeof argument == 'function' || argument === documentAll;
 } : function (argument) {
   return typeof argument == 'function';
@@ -3941,14 +3922,25 @@ module.exports = function (it) {
 
 
 var isCallable = __webpack_require__(/*! ../internals/is-callable */ 337);
-var $documentAll = __webpack_require__(/*! ../internals/document-all */ 9658);
 
-var documentAll = $documentAll.all;
-
-module.exports = $documentAll.IS_HTMLDDA ? function (it) {
-  return typeof it == 'object' ? it !== null : isCallable(it) || it === documentAll;
-} : function (it) {
+module.exports = function (it) {
   return typeof it == 'object' ? it !== null : isCallable(it);
+};
+
+
+/***/ }),
+
+/***/ 4221:
+/*!*****************************************************************!*\
+  !*** ./node_modules/core-js/internals/is-possible-prototype.js ***!
+  \*****************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+
+var isObject = __webpack_require__(/*! ../internals/is-object */ 6833);
+
+module.exports = function (argument) {
+  return isObject(argument) || argument === null;
 };
 
 
@@ -4704,10 +4696,10 @@ var store = __webpack_require__(/*! ../internals/shared-store */ 5111);
 (module.exports = function (key, value) {
   return store[key] || (store[key] = value !== undefined ? value : {});
 })('versions', []).push({
-  version: '3.33.3',
+  version: '3.35.0',
   mode: IS_PURE ? 'pure' : 'global',
   copyright: '© 2014-2023 Denis Pushkarev (zloirock.ru)',
-  license: 'https://github.com/zloirock/core-js/blob/v3.33.3/LICENSE',
+  license: 'https://github.com/zloirock/core-js/blob/v3.35.0/LICENSE',
   source: 'https://github.com/zloirock/core-js'
 });
 
@@ -5065,7 +5057,7 @@ if (!TO_STRING_TAG_SUPPORT) {
 
 /***/ }),
 
-/***/ 3502:
+/***/ 8977:
 /*!**********************************************************!*\
   !*** ./node_modules/core-js/modules/es.reflect.apply.js ***!
   \**********************************************************/
@@ -5510,7 +5502,7 @@ setToStringTag(global.Reflect, 'Reflect', true);
 },
 /******/ __webpack_require__ => { // webpackRuntimeModules
 /******/ var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-/******/ var __webpack_exports__ = (__webpack_exec__(9732));
+/******/ var __webpack_exports__ = (__webpack_exec__(5321));
 /******/ }
 ]);
 //# sourceMappingURL=polyfills.js.map

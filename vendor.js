@@ -1494,44 +1494,6 @@ function fromArray(input, scheduler) {
 
 /***/ }),
 
-/***/ 9718:
-/*!*****************************************************************!*\
-  !*** ./node_modules/rxjs/_esm2015/internal/observable/merge.js ***!
-  \*****************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   merge: () => (/* binding */ merge)
-/* harmony export */ });
-/* harmony import */ var _Observable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Observable */ 3064);
-/* harmony import */ var _util_isScheduler__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../util/isScheduler */ 9054);
-/* harmony import */ var _operators_mergeAll__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../operators/mergeAll */ 2600);
-/* harmony import */ var _fromArray__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./fromArray */ 1155);
-
-
-
-
-function merge(...observables) {
-  let concurrent = Number.POSITIVE_INFINITY;
-  let scheduler = null;
-  let last = observables[observables.length - 1];
-  if ((0,_util_isScheduler__WEBPACK_IMPORTED_MODULE_0__.isScheduler)(last)) {
-    scheduler = observables.pop();
-    if (observables.length > 1 && typeof observables[observables.length - 1] === 'number') {
-      concurrent = observables.pop();
-    }
-  } else if (typeof last === 'number') {
-    concurrent = observables.pop();
-  }
-  if (scheduler === null && observables.length === 1 && observables[0] instanceof _Observable__WEBPACK_IMPORTED_MODULE_1__.Observable) {
-    return observables[0];
-  }
-  return (0,_operators_mergeAll__WEBPACK_IMPORTED_MODULE_2__.mergeAll)(concurrent)((0,_fromArray__WEBPACK_IMPORTED_MODULE_3__.fromArray)(observables, scheduler));
-}
-
-/***/ }),
-
 /***/ 9681:
 /*!**************************************************************!*\
   !*** ./node_modules/rxjs/_esm2015/internal/observable/of.js ***!
@@ -1775,74 +1737,6 @@ class DefaultIfEmptySubscriber extends _Subscriber__WEBPACK_IMPORTED_MODULE_0__.
       this.destination.next(this.defaultValue);
     }
     this.destination.complete();
-  }
-}
-
-/***/ }),
-
-/***/ 5083:
-/*!*******************************************************************************!*\
-  !*** ./node_modules/rxjs/_esm2015/internal/operators/distinctUntilChanged.js ***!
-  \*******************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   distinctUntilChanged: () => (/* binding */ distinctUntilChanged)
-/* harmony export */ });
-/* harmony import */ var _Subscriber__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Subscriber */ 5142);
-
-function distinctUntilChanged(compare, keySelector) {
-  return source => source.lift(new DistinctUntilChangedOperator(compare, keySelector));
-}
-class DistinctUntilChangedOperator {
-  constructor(compare, keySelector) {
-    this.compare = compare;
-    this.keySelector = keySelector;
-  }
-  call(subscriber, source) {
-    return source.subscribe(new DistinctUntilChangedSubscriber(subscriber, this.compare, this.keySelector));
-  }
-}
-class DistinctUntilChangedSubscriber extends _Subscriber__WEBPACK_IMPORTED_MODULE_0__.Subscriber {
-  constructor(destination, compare, keySelector) {
-    super(destination);
-    this.keySelector = keySelector;
-    this.hasKey = false;
-    if (typeof compare === 'function') {
-      this.compare = compare;
-    }
-  }
-  compare(x, y) {
-    return x === y;
-  }
-  _next(value) {
-    let key;
-    try {
-      const {
-        keySelector
-      } = this;
-      key = keySelector ? keySelector(value) : value;
-    } catch (err) {
-      return this.destination.error(err);
-    }
-    let result = false;
-    if (this.hasKey) {
-      try {
-        const {
-          compare
-        } = this;
-        result = compare(this.key, key);
-      } catch (err) {
-        return this.destination.error(err);
-      }
-    } else {
-      this.hasKey = true;
-    }
-    if (!result) {
-      this.key = key;
-      this.destination.next(value);
-    }
   }
 }
 
@@ -2193,56 +2087,6 @@ const flatMap = mergeMap;
 
 /***/ }),
 
-/***/ 202:
-/*!********************************************************************!*\
-  !*** ./node_modules/rxjs/_esm2015/internal/operators/multicast.js ***!
-  \********************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   MulticastOperator: () => (/* binding */ MulticastOperator),
-/* harmony export */   multicast: () => (/* binding */ multicast)
-/* harmony export */ });
-/* harmony import */ var _observable_ConnectableObservable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../observable/ConnectableObservable */ 9148);
-
-function multicast(subjectOrSubjectFactory, selector) {
-  return function multicastOperatorFunction(source) {
-    let subjectFactory;
-    if (typeof subjectOrSubjectFactory === 'function') {
-      subjectFactory = subjectOrSubjectFactory;
-    } else {
-      subjectFactory = function subjectFactory() {
-        return subjectOrSubjectFactory;
-      };
-    }
-    if (typeof selector === 'function') {
-      return source.lift(new MulticastOperator(subjectFactory, selector));
-    }
-    const connectable = Object.create(source, _observable_ConnectableObservable__WEBPACK_IMPORTED_MODULE_0__.connectableObservableDescriptor);
-    connectable.source = source;
-    connectable.subjectFactory = subjectFactory;
-    return connectable;
-  };
-}
-class MulticastOperator {
-  constructor(subjectFactory, selector) {
-    this.subjectFactory = subjectFactory;
-    this.selector = selector;
-  }
-  call(subscriber, source) {
-    const {
-      selector
-    } = this;
-    const subject = this.subjectFactory();
-    const subscription = selector(subject).subscribe(subscriber);
-    subscription.add(source.subscribe(subject));
-    return subscription;
-  }
-}
-
-/***/ }),
-
 /***/ 6159:
 /*!*******************************************************************!*\
   !*** ./node_modules/rxjs/_esm2015/internal/operators/refCount.js ***!
@@ -2379,31 +2223,6 @@ class ScanSubscriber extends _Subscriber__WEBPACK_IMPORTED_MODULE_0__.Subscriber
     this.seed = result;
     this.destination.next(result);
   }
-}
-
-/***/ }),
-
-/***/ 1272:
-/*!****************************************************************!*\
-  !*** ./node_modules/rxjs/_esm2015/internal/operators/share.js ***!
-  \****************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   share: () => (/* binding */ share)
-/* harmony export */ });
-/* harmony import */ var _multicast__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./multicast */ 202);
-/* harmony import */ var _refCount__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./refCount */ 6159);
-/* harmony import */ var _Subject__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Subject */ 2484);
-
-
-
-function shareSubjectFactory() {
-  return new _Subject__WEBPACK_IMPORTED_MODULE_0__.Subject();
-}
-function share() {
-  return source => (0,_refCount__WEBPACK_IMPORTED_MODULE_1__.refCount)()((0,_multicast__WEBPACK_IMPORTED_MODULE_2__.multicast)(shareSubjectFactory)(source));
 }
 
 /***/ }),
@@ -3976,7 +3795,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ 1699);
 /**
- * @license Angular v17.0.5
+ * @license Angular v17.0.8
  * (c) 2010-2022 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -5445,6 +5264,7 @@ function getLocaleExtraDayPeriods(locale, formStyle, width) {
   const data = (0,_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵfindLocaleData"])(locale);
   checkFullData(data);
   const dayPeriodsData = [data[_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵLocaleDataIndex"].ExtraData][0 /* ɵExtraLocaleDataIndex.ExtraDayPeriodFormats */], data[_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵLocaleDataIndex"].ExtraData][1 /* ɵExtraLocaleDataIndex.ExtraDayPeriodStandalone */]];
+
   const dayPeriods = getLastDefinedValue(dayPeriodsData, formStyle) || [];
   return getLastDefinedValue(dayPeriods, width) || [];
 }
@@ -5531,6 +5351,7 @@ function getNumberOfCurrencyDigits(code) {
   if (currency) {
     digits = currency[2 /* ɵCurrencyIndex.NbOfDigits */];
   }
+
   return typeof digits === 'number' ? digits : DEFAULT_NB_OF_CURRENCY_DIGITS;
 }
 const ISO8601_DATE_REGEX = /^(\d{4,})-?(\d\d)-?(\d\d)(?:T(\d\d)(?::?(\d\d)(?::?(\d\d)(?:\.(\d+))?)?)?(Z|([+-])(\d\d):?(\d\d))?)?$/;
@@ -5897,6 +5718,7 @@ function weekGetter(size, monthBased = false) {
       const diff = thisThurs.getTime() - firstThurs.getTime();
       result = 1 + Math.round(diff / 6.048e8); // 6.048e8 ms per week
     }
+
     return padNumber(result, size, getLocaleNumberSymbol(locale, NumberSymbol.MinusSign));
   };
 }
@@ -9620,7 +9442,7 @@ function isPlatformWorkerUi(platformId) {
 /**
  * @publicApi
  */
-const VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.Version('17.0.5');
+const VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.Version('17.0.8');
 
 /**
  * Defines a scroll position manager. Implemented by `BrowserViewportScroller`.
@@ -11245,7 +11067,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/common */ 6575);
 
 /**
- * @license Angular v17.0.5
+ * @license Angular v17.0.8
  * (c) 2010-2022 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -12942,7 +12764,7 @@ function legacyInterceptorFnFactory() {
       // out.
       chain = interceptors.reduceRight(adaptLegacyInterceptorToChain, interceptorChainEndFn);
     }
-    const pendingTasks = (0,_angular_core__WEBPACK_IMPORTED_MODULE_5__.inject)(_angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵInitialRenderPendingTasks"]);
+    const pendingTasks = (0,_angular_core__WEBPACK_IMPORTED_MODULE_5__.inject)(_angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵPendingTasks"]);
     const taskId = pendingTasks.add();
     return chain(req, handler).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_7__.finalize)(() => pendingTasks.remove(taskId)));
   };
@@ -12958,7 +12780,7 @@ class HttpInterceptorHandler extends HttpHandler {
     this.backend = backend;
     this.injector = injector;
     this.chain = null;
-    this.pendingTasks = (0,_angular_core__WEBPACK_IMPORTED_MODULE_5__.inject)(_angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵInitialRenderPendingTasks"]);
+    this.pendingTasks = (0,_angular_core__WEBPACK_IMPORTED_MODULE_5__.inject)(_angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵPendingTasks"]);
     // Check if there is a preferred HTTP backend configured and use it if that's the case.
     // This is needed to enable `FetchBackend` globally for all HttpClient's when `withFetch`
     // is used.
@@ -14422,6 +14244,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "ɵALLOW_MULTIPLE_PLATFORMS": () => (/* binding */ ALLOW_MULTIPLE_PLATFORMS),
 /* harmony export */   "ɵAfterRenderEventManager": () => (/* binding */ AfterRenderEventManager),
 /* harmony export */   "ɵCONTAINER_HEADER_OFFSET": () => (/* binding */ CONTAINER_HEADER_OFFSET),
+/* harmony export */   "ɵChangeDetectionScheduler": () => (/* binding */ ChangeDetectionScheduler),
 /* harmony export */   "ɵComponentFactory": () => (/* binding */ ComponentFactory$1),
 /* harmony export */   "ɵConsole": () => (/* binding */ Console),
 /* harmony export */   "ɵDEFAULT_LOCALE_ID": () => (/* binding */ DEFAULT_LOCALE_ID),
@@ -14434,7 +14257,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "ɵIMAGE_CONFIG_DEFAULTS": () => (/* binding */ IMAGE_CONFIG_DEFAULTS),
 /* harmony export */   "ɵINJECTOR_SCOPE": () => (/* binding */ INJECTOR_SCOPE),
 /* harmony export */   "ɵIS_HYDRATION_DOM_REUSE_ENABLED": () => (/* binding */ IS_HYDRATION_DOM_REUSE_ENABLED),
-/* harmony export */   "ɵInitialRenderPendingTasks": () => (/* binding */ InitialRenderPendingTasks),
 /* harmony export */   "ɵLContext": () => (/* binding */ LContext),
 /* harmony export */   "ɵLifecycleHooksFeature": () => (/* binding */ LifecycleHooksFeature),
 /* harmony export */   "ɵLocaleDataIndex": () => (/* binding */ LocaleDataIndex),
@@ -14449,6 +14271,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "ɵNO_CHANGE": () => (/* binding */ NO_CHANGE),
 /* harmony export */   "ɵNgModuleFactory": () => (/* binding */ NgModuleFactory),
 /* harmony export */   "ɵNoopNgZone": () => (/* binding */ NoopNgZone),
+/* harmony export */   "ɵPendingTasks": () => (/* binding */ PendingTasks),
 /* harmony export */   "ɵReflectionCapabilities": () => (/* binding */ ReflectionCapabilities),
 /* harmony export */   "ɵRender3ComponentFactory": () => (/* binding */ ComponentFactory),
 /* harmony export */   "ɵRender3ComponentRef": () => (/* binding */ ComponentRef),
@@ -14491,6 +14314,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "ɵgetDebugNode": () => (/* binding */ getDebugNode),
 /* harmony export */   "ɵgetDeferBlocks": () => (/* binding */ getDeferBlocks),
 /* harmony export */   "ɵgetDirectives": () => (/* binding */ getDirectives),
+/* harmony export */   "ɵgetEnsureDirtyViewsAreAlwaysReachable": () => (/* binding */ getEnsureDirtyViewsAreAlwaysReachable),
 /* harmony export */   "ɵgetHostElement": () => (/* binding */ getHostElement),
 /* harmony export */   "ɵgetInjectableDef": () => (/* binding */ getInjectableDef),
 /* harmony export */   "ɵgetLContext": () => (/* binding */ getLContext),
@@ -14528,6 +14352,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "ɵsetClassMetadataAsync": () => (/* binding */ setClassMetadataAsync),
 /* harmony export */   "ɵsetCurrentInjector": () => (/* binding */ setCurrentInjector),
 /* harmony export */   "ɵsetDocument": () => (/* binding */ setDocument),
+/* harmony export */   "ɵsetEnsureDirtyViewsAreAlwaysReachable": () => (/* binding */ setEnsureDirtyViewsAreAlwaysReachable),
 /* harmony export */   "ɵsetInjectorProfilerContext": () => (/* binding */ setInjectorProfilerContext),
 /* harmony export */   "ɵsetLocaleId": () => (/* binding */ setLocaleId),
 /* harmony export */   "ɵsetUnknownElementStrictMode": () => (/* binding */ ɵsetUnknownElementStrictMode),
@@ -14726,16 +14551,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core_primitives_signals__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core/primitives/signals */ 8186);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ 2484);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs */ 4614);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs */ 3064);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs */ 9718);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs */ 462);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! rxjs */ 9681);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs/operators */ 1272);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs/operators */ 6520);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! rxjs/operators */ 5083);
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! rxjs/operators */ 7627);
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs */ 462);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs/operators */ 7422);
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs/operators */ 7627);
 /**
- * @license Angular v17.0.5
+ * @license Angular v17.0.8
  * (c) 2010-2022 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -15747,6 +15567,7 @@ function convertToBitFlags(flags) {
   // comment to force a line break in the formatter
   flags.optional && 8 /* InternalInjectFlags.Optional */) | (flags.host && 1 /* InternalInjectFlags.Host */) | (flags.self && 2 /* InternalInjectFlags.Self */) | (flags.skipSelf && 4 /* InternalInjectFlags.SkipSelf */);
 }
+
 function injectArgs(types) {
   const args = [];
   for (let i = 0; i < types.length; i++) {
@@ -16030,6 +15851,7 @@ function setUpAttributes(renderer, native, attrs) {
 function isNameOnlyAttributeMarker(marker) {
   return marker === 3 /* AttributeMarker.Bindings */ || marker === 4 /* AttributeMarker.Template */ || marker === 6 /* AttributeMarker.I18n */;
 }
+
 function isAnimationProp(name) {
   // Perf note: accessing charCodeAt to check for the first character of a string is faster as
   // compared to accessing a character at index 0 (ex. name[0]). The main reason for this is that
@@ -16941,6 +16763,7 @@ function isComponentHost(tNode) {
 function isDirectiveHost(tNode) {
   return (tNode.flags & 1 /* TNodeFlags.isDirectiveHost */) === 1 /* TNodeFlags.isDirectiveHost */;
 }
+
 function isComponentDef(def) {
   return !!def.template;
 }
@@ -16950,9 +16773,11 @@ function isRootView(target) {
 function isProjectionTNode(tNode) {
   return (tNode.type & 16 /* TNodeType.Projection */) === 16 /* TNodeType.Projection */;
 }
+
 function hasI18n(lView) {
   return (lView[FLAGS] & 32 /* LViewFlags.HasI18n */) === 32 /* LViewFlags.HasI18n */;
 }
+
 function isDestroyed(lView) {
   return (lView[FLAGS] & 256 /* LViewFlags.Destroyed */) === 256 /* LViewFlags.Destroyed */;
 }
@@ -17225,6 +17050,15 @@ const profiler = function (event, instance, hookOrListener) {
 const SVG_NAMESPACE = 'svg';
 const MATH_ML_NAMESPACE = 'math';
 
+// TODO(atscott): flip default internally ASAP and externally for v18 (#52928)
+let _ensureDirtyViewsAreAlwaysReachable = false;
+function getEnsureDirtyViewsAreAlwaysReachable() {
+  return _ensureDirtyViewsAreAlwaysReachable;
+}
+function setEnsureDirtyViewsAreAlwaysReachable(v) {
+  _ensureDirtyViewsAreAlwaysReachable = v;
+}
+
 /**
  * For efficiency reasons we often put several different data types (`RNode`, `LView`, `LContainer`)
  * in same location in `LView`. This is because we don't want to pre-allocate space for it
@@ -17387,10 +17221,19 @@ function requiresRefreshOrTraversal(lView) {
  * parents above.
  */
 function updateAncestorTraversalFlagsOnAttach(lView) {
-  if (!requiresRefreshOrTraversal(lView)) {
-    return;
+  // TODO(atscott): Simplify if...else cases once getEnsureDirtyViewsAreAlwaysReachable is always
+  // `true`. When we attach a view that's marked `Dirty`, we should ensure that it is reached during
+  // the next CD traversal so we add the `RefreshView` flag and mark ancestors accordingly.
+  if (requiresRefreshOrTraversal(lView)) {
+    markAncestorsForTraversal(lView);
+  } else if (lView[FLAGS] & 64 /* LViewFlags.Dirty */) {
+    if (getEnsureDirtyViewsAreAlwaysReachable()) {
+      lView[FLAGS] |= 1024 /* LViewFlags.RefreshView */;
+      markAncestorsForTraversal(lView);
+    } else {
+      lView[ENVIRONMENT].changeDetectionScheduler?.notify();
+    }
   }
-  markAncestorsForTraversal(lView);
 }
 /**
  * Ensures views above the given `lView` are traversed during change detection even when they are
@@ -17400,6 +17243,7 @@ function updateAncestorTraversalFlagsOnAttach(lView) {
  * flag is already `true` or the `lView` is detached.
  */
 function markAncestorsForTraversal(lView) {
+  lView[ENVIRONMENT].changeDetectionScheduler?.notify();
   let parent = lView[PARENT];
   while (parent !== null) {
     // We stop adding markers to the ancestors once we reach one that already has the marker. This
@@ -18151,6 +17995,7 @@ function callHooks(currentView, arr, initPhase, currentNodeIndex) {
       if (isInitHook) {
         currentView[PREORDER_HOOK_FLAGS] += 65536 /* PreOrderHookFlags.NumberOfInitHooksCalledIncrementer */;
       }
+
       if (lastNodeIndexFound < nodeIndexLimit || nodeIndexLimit == -1) {
         callHook(currentView, initPhase, arr, i);
         currentView[PREORDER_HOOK_FLAGS] = (currentView[PREORDER_HOOK_FLAGS] & 4294901760 /* PreOrderHookFlags.NumberOfInitHooksCalledMask */) + i + 2;
@@ -18429,6 +18274,7 @@ function getParentInjectorIndex(parentLocation) {
   ngDevMode && assertGreaterThan(parentInjectorIndex, HEADER_OFFSET, 'Parent injector must be pointing past HEADER_OFFSET.');
   return parentLocation & 32767 /* RelativeInjectorLocationFlags.InjectorIndexMask */;
 }
+
 function getParentInjectorViewOffset(parentLocation) {
   return parentLocation >> 16 /* RelativeInjectorLocationFlags.ViewOffsetShift */;
 }
@@ -18637,6 +18483,7 @@ function getParentInjectorLocation(tNode, lView) {
       return parentTNode.injectorIndex | declarationViewOffset << 16 /* RelativeInjectorLocationFlags.ViewOffsetShift */;
     }
   }
+
   return NO_PARENT_INJECTOR;
 }
 /**
@@ -19694,6 +19541,7 @@ function _arrayIndexOfSorted(array, value, shift) {
       start = middle + 1; // We already searched middle so make it non-inclusive by adding 1
     }
   }
+
   return ~(end << shift);
 }
 
@@ -19992,6 +19840,7 @@ const Host =
 // Disable tslint because `InternalInjectFlags` is a const enum which gets inlined.
 // tslint:disable-next-line: no-toplevel-property-access
 attachInjectFlag(makeParamDecorator('Host'), 1 /* InternalInjectFlags.Host */);
+
 let _reflect = null;
 function getReflect() {
   return _reflect = _reflect || new ReflectionCapabilities();
@@ -20182,6 +20031,7 @@ const INJECTOR = new InjectionToken('INJECTOR',
 // Disable tslint because this is const enum which gets inlined not top level prop access.
 // tslint:disable-next-line: no-toplevel-property-access
 -1 /* InjectorMarkers.Injector */);
+
 const INJECTOR_DEF_TYPES = new InjectionToken('INJECTOR_DEF_TYPES');
 class NullInjector {
   get(token, notFoundValue = THROW_IF_NOT_FOUND) {
@@ -22775,6 +22625,7 @@ function detachView(lContainer, removeIndex) {
     // Unsets the attached flag
     viewToDetach[FLAGS] &= ~128 /* LViewFlags.Attached */;
   }
+
   return viewToDetach;
 }
 /**
@@ -22787,7 +22638,6 @@ function detachView(lContainer, removeIndex) {
 function destroyLView(tView, lView) {
   if (!(lView[FLAGS] & 256 /* LViewFlags.Destroyed */)) {
     const renderer = lView[RENDERER];
-    lView[REACTIVE_TEMPLATE_CONSUMER] && (0,_angular_core_primitives_signals__WEBPACK_IMPORTED_MODULE_0__.consumerDestroy)(lView[REACTIVE_TEMPLATE_CONSUMER]);
     if (renderer.destroyNode) {
       applyView(tView, lView, renderer, 3 /* WalkTNodeTreeAction.Destroy */, null, null);
     }
@@ -22813,6 +22663,7 @@ function cleanUpView(tView, lView) {
     // This also aligns with the ViewEngine behavior. It also means that the onDestroy hook is
     // really more of an "afterDestroy" hook if you think about it.
     lView[FLAGS] |= 256 /* LViewFlags.Destroyed */;
+    lView[REACTIVE_TEMPLATE_CONSUMER] && (0,_angular_core_primitives_signals__WEBPACK_IMPORTED_MODULE_0__.consumerDestroy)(lView[REACTIVE_TEMPLATE_CONSUMER]);
     executeOnDestroys(tView, lView);
     processCleanups(tView, lView);
     // For component views only, the local renderer is destroyed at clean up time.
@@ -23198,6 +23049,7 @@ function applyNodes(renderer, action, tNode, lView, parentRElement, beforeNode, 
         tNode.flags |= 2 /* TNodeFlags.isProjected */;
       }
     }
+
     if ((tNode.flags & 32 /* TNodeFlags.isDetached */) !== 32 /* TNodeFlags.isDetached */) {
       if (tNodeType & 8 /* TNodeType.ElementContainer */) {
         applyNodes(renderer, action, tNode.child, lView, parentRElement, beforeNode, false);
@@ -23276,6 +23128,7 @@ function applyProjectionRecursive(renderer, action, lView, tProjectionNode, pare
     if (hasInSkipHydrationBlockFlag(tProjectionNode)) {
       nodeToProject.flags |= 128 /* TNodeFlags.inSkipHydrationBlock */;
     }
+
     applyNodes(renderer, action, nodeToProject, projectedComponentLView, parentRElement, beforeNode, true);
   }
 }
@@ -23641,26 +23494,31 @@ class SafeHtmlImpl extends SafeValueImpl {
     return "HTML" /* BypassType.Html */;
   }
 }
+
 class SafeStyleImpl extends SafeValueImpl {
   getTypeName() {
     return "Style" /* BypassType.Style */;
   }
 }
+
 class SafeScriptImpl extends SafeValueImpl {
   getTypeName() {
     return "Script" /* BypassType.Script */;
   }
 }
+
 class SafeUrlImpl extends SafeValueImpl {
   getTypeName() {
     return "URL" /* BypassType.Url */;
   }
 }
+
 class SafeResourceUrlImpl extends SafeValueImpl {
   getTypeName() {
     return "ResourceURL" /* BypassType.ResourceUrl */;
   }
 }
+
 function unwrapSafeValue(value) {
   return value instanceof SafeValueImpl ? value.changingThisBreaksApplicationSecurity : value;
 }
@@ -24287,6 +24145,11 @@ function getSanitizer() {
 }
 
 /**
+ * Injectable that is notified when an `LView` is made aware of changes to application state.
+ */
+class ChangeDetectionScheduler {}
+
+/**
  * Create a `StateKey<T>` that can be used to store value of type T with `TransferState`.
  *
  * Example:
@@ -24846,24 +24709,6 @@ class Sanitizer {
   });
 }
 
-/**
- * @description Represents the version of Angular
- *
- * @publicApi
- */
-class Version {
-  constructor(full) {
-    this.full = full;
-    this.major = full.split('.')[0];
-    this.minor = full.split('.')[1];
-    this.patch = full.split('.').slice(2).join('.');
-  }
-}
-/**
- * @publicApi
- */
-const VERSION = new Version('17.0.5');
-
 // This default value is when checking the hierarchy for a token.
 //
 // It means both:
@@ -24948,6 +24793,7 @@ function isListLikeIterable(obj) {
   // JS Map are iterables but return entries as [k, v]
   Symbol.iterator in obj; // JS Iterable have a Symbol.iterator prop
 }
+
 function areIterablesEqual(a, b, comparator) {
   const iterator1 = a[Symbol.iterator]();
   const iterator2 = b[Symbol.iterator]();
@@ -26133,6 +25979,19 @@ class ErrorHandler {
     return e || null;
   }
 }
+/**
+ * `InjectionToken` used to configure how to call the `ErrorHandler`.
+ *
+ * `NgZone` is provided by default today so the default (and only) implementation for this
+ * is calling `ErrorHandler.handleError` outside of the Angular zone.
+ */
+const INTERNAL_APPLICATION_ERROR_HANDLER = new InjectionToken(typeof ngDevMode === 'undefined' || ngDevMode ? 'internal error handler' : '', {
+  providedIn: 'root',
+  factory: () => {
+    const userErrorHandler = inject(ErrorHandler);
+    return userErrorHandler.handleError.bind(undefined);
+  }
+});
 
 /**
  * Internal token that specifies whether DOM reuse logic
@@ -26397,10 +26256,11 @@ function processHostBindingOpCodes(tView, lView) {
 function createLView(parentLView, tView, context, flags, host, tHostNode, environment, renderer, injector, embeddedViewInjector, hydrationInfo) {
   const lView = tView.blueprint.slice();
   lView[HOST] = host;
-  lView[FLAGS] = flags | 4 /* LViewFlags.CreationMode */ | 128 /* LViewFlags.Attached */ | 8 /* LViewFlags.FirstLViewPass */;
+  lView[FLAGS] = flags | 4 /* LViewFlags.CreationMode */ | 128 /* LViewFlags.Attached */ | 8 /* LViewFlags.FirstLViewPass */ | 64 /* LViewFlags.Dirty */;
   if (embeddedViewInjector !== null || parentLView && parentLView[FLAGS] & 2048 /* LViewFlags.HasEmbeddedViewInjector */) {
     lView[FLAGS] |= 2048 /* LViewFlags.HasEmbeddedViewInjector */;
   }
+
   resetPreOrderHookFlags(lView);
   ngDevMode && tView.declTNode && parentLView && assertTNodeForLView(tView.declTNode, parentLView);
   lView[PARENT] = lView[DECLARATION_VIEW] = parentLView;
@@ -26758,6 +26618,7 @@ function createTNode(tView, tParent, type, index, value, attrs) {
   if (isInSkipHydrationBlock$1()) {
     flags |= 128 /* TNodeFlags.inSkipHydrationBlock */;
   }
+
   const tNode = {
     type,
     index,
@@ -26868,10 +26729,12 @@ function initializeInputAndOutputAliases(tView, tNode, hostDirectiveDefinitionMa
     if (inputsStore.hasOwnProperty('class')) {
       tNode.flags |= 8 /* TNodeFlags.hasClassInput */;
     }
+
     if (inputsStore.hasOwnProperty('style')) {
       tNode.flags |= 16 /* TNodeFlags.hasStyleInput */;
     }
   }
+
   tNode.initialInputs = inputsFromAttrs;
   tNode.inputs = inputsStore;
   tNode.outputs = outputsStore;
@@ -26935,6 +26798,7 @@ function markDirtyIfOnPush(lView, viewIndex) {
     childComponentLView[FLAGS] |= 64 /* LViewFlags.Dirty */;
   }
 }
+
 function setNgReflectProperty(lView, element, type, attrName, value) {
   const renderer = lView[RENDERER];
   attrName = normalizeDebugBindingName(attrName);
@@ -27299,6 +27163,7 @@ function addComponentLogic(lView, hostTNode, def) {
   } else if (def.onPush) {
     lViewFlags = 64 /* LViewFlags.Dirty */;
   }
+
   const componentView = addToViewTree(lView, createLView(lView, tView, null, lViewFlags, native, hostTNode, null, rendererFactory.createRenderer(native, def), null, null, null));
   // Component view will always be created before any injected LContainers,
   // so this is a regular element, wrap it with the component view
@@ -27429,6 +27294,7 @@ function createLContainer(hostNative, currentView, native, tNode) {
   ngDevMode && assertLView(currentView);
   const lContainer = [hostNative, true, 0, currentView, null, tNode, null, native, null, null // moved views
   ];
+
   ngDevMode && assertEqual(lContainer.length, CONTAINER_HEADER_OFFSET, 'Should allocate correct number of slots for LContainer header.');
   return lContainer;
 }
@@ -27608,9 +27474,6 @@ function detectChangesInternal(lView, notifyErrorHandler = true) {
     afterRenderEventManager?.begin();
   }
   try {
-    const tView = lView[TVIEW];
-    const context = lView[CONTEXT];
-    refreshView(tView, lView, tView.template, context);
     detectChangesInViewWhileDirty(lView);
   } catch (error) {
     if (notifyErrorHandler) {
@@ -27629,6 +27492,7 @@ function detectChangesInternal(lView, notifyErrorHandler = true) {
   }
 }
 function detectChangesInViewWhileDirty(lView) {
+  detectChangesInView(lView, 0 /* ChangeDetectionMode.Global */);
   let retries = 0;
   // If after running change detection, this view still needs to be refreshed or there are
   // descendants views that need to be refreshed due to re-dirtying during the change detection
@@ -27644,6 +27508,7 @@ function detectChangesInViewWhileDirty(lView) {
     detectChangesInView(lView, 1 /* ChangeDetectionMode.Targeted */);
   }
 }
+
 function checkNoChangesInternal(lView, notifyErrorHandler = true) {
   setIsInCheckNoChangesMode(true);
   try {
@@ -27723,9 +27588,11 @@ function refreshView(tView, lView, templateFn, context) {
         if (contentHooks !== null) {
           executeInitAndCheckHooks(lView, contentHooks, 1 /* InitPhaseState.AfterContentInitHooksToBeRun */);
         }
+
         incrementInitPhaseFlags(lView, 1 /* InitPhaseState.AfterContentInitHooksToBeRun */);
       }
     }
+
     processHostBindingOpCodes(tView, lView);
     // Refresh child component views.
     const components = tView.components;
@@ -27752,9 +27619,11 @@ function refreshView(tView, lView, templateFn, context) {
         if (viewHooks !== null) {
           executeInitAndCheckHooks(lView, viewHooks, 2 /* InitPhaseState.AfterViewInitHooksToBeRun */);
         }
+
         incrementInitPhaseFlags(lView, 2 /* InitPhaseState.AfterViewInitHooksToBeRun */);
       }
     }
+
     if (tView.firstUpdatePass === true) {
       // We need to make sure that we only flip the flag on successful `refreshView` only
       // Don't do this in `finally` block.
@@ -27929,6 +27798,7 @@ function detectChangesInChildComponents(hostLView, components, mode) {
  * @returns the root LView
  */
 function markViewDirty(lView) {
+  lView[ENVIRONMENT].changeDetectionScheduler?.notify();
   while (lView) {
     lView[FLAGS] |= 64 /* LViewFlags.Dirty */;
     const parent = getLViewParent(lView);
@@ -27992,6 +27862,7 @@ class ViewRef$1 {
   get destroyed() {
     return (this._lView[FLAGS] & 256 /* LViewFlags.Destroyed */) === 256 /* LViewFlags.Destroyed */;
   }
+
   destroy() {
     if (this._appRef) {
       this._appRef.detachView(this);
@@ -28185,6 +28056,12 @@ class ViewRef$1 {
    * See {@link ChangeDetectorRef#detach} for more information.
    */
   detectChanges() {
+    // Add `RefreshView` flag to ensure this view is refreshed if not already dirty.
+    // `RefreshView` flag is used intentionally over `Dirty` because it gets cleared before
+    // executing any of the actual refresh code while the `Dirty` flag doesn't get cleared
+    // until the end of the refresh. Using `RefreshView` prevents creating a potential difference
+    // in the state of the LViewFlags during template execution.
+    this._lView[FLAGS] |= 1024 /* LViewFlags.RefreshView */;
     detectChangesInternal(this._lView, this.notifyErrorHandler);
   }
   /**
@@ -28213,6 +28090,7 @@ class ViewRef$1 {
       throw new RuntimeError(902 /* RuntimeErrorCode.VIEW_ALREADY_ATTACHED */, ngDevMode && 'This view is already attached to a ViewContainer!');
     }
     this._appRef = appRef;
+    updateAncestorTraversalFlagsOnAttach(this._lView);
   }
 }
 
@@ -28453,6 +28331,7 @@ class ZoneAwareMicrotaskScheduler {
       // tslint:disable-next-line:semicolon
     };
   }
+
   scheduleEffect(handle) {
     this.delegate.scheduleEffect(handle);
     if (!this.hasQueuedFlush) {
@@ -28551,14 +28430,12 @@ function performanceMarkFeature(feature) {
     return;
   }
   markedFeatures.add(feature);
-  performance?.mark?.('mark_use_counter', {
+  performance?.mark?.('mark_feature_usage', {
     detail: {
       feature
     }
   });
 }
-
-/// <reference types="rxjs" />
 class EventEmitter_ extends rxjs__WEBPACK_IMPORTED_MODULE_1__.Subject {
   constructor(isAsync = false) {
     super();
@@ -29055,63 +28932,6 @@ class NoopNgZone {
     return fn.apply(applyThis, applyArgs);
   }
 }
-/**
- * Token used to drive ApplicationRef.isStable
- *
- * TODO: This should be moved entirely to NgZone (as a breaking change) so it can be tree-shakeable
- * for `NoopNgZone` which is always just an `Observable` of `true`. Additionally, we should consider
- * whether the property on `NgZone` should be `Observable` or `Signal`.
- */
-const ZONE_IS_STABLE_OBSERVABLE = new InjectionToken(ngDevMode ? 'isStable Observable' : '', {
-  providedIn: 'root',
-  // TODO(atscott): Replace this with a suitable default like `new
-  // BehaviorSubject(true).asObservable`. Again, long term this won't exist on ApplicationRef at
-  // all but until we can remove it, we need a default value zoneless.
-  factory: isStableFactory
-});
-function isStableFactory() {
-  const zone = inject(NgZone);
-  let _stable = true;
-  const isCurrentlyStable = new rxjs__WEBPACK_IMPORTED_MODULE_3__.Observable(observer => {
-    _stable = zone.isStable && !zone.hasPendingMacrotasks && !zone.hasPendingMicrotasks;
-    zone.runOutsideAngular(() => {
-      observer.next(_stable);
-      observer.complete();
-    });
-  });
-  const isStable = new rxjs__WEBPACK_IMPORTED_MODULE_3__.Observable(observer => {
-    // Create the subscription to onStable outside the Angular Zone so that
-    // the callback is run outside the Angular Zone.
-    let stableSub;
-    zone.runOutsideAngular(() => {
-      stableSub = zone.onStable.subscribe(() => {
-        NgZone.assertNotInAngularZone();
-        // Check whether there are no pending macro/micro tasks in the next tick
-        // to allow for NgZone to update the state.
-        queueMicrotask(() => {
-          if (!_stable && !zone.hasPendingMacrotasks && !zone.hasPendingMicrotasks) {
-            _stable = true;
-            observer.next(true);
-          }
-        });
-      });
-    });
-    const unstableSub = zone.onUnstable.subscribe(() => {
-      NgZone.assertInAngularZone();
-      if (_stable) {
-        _stable = false;
-        zone.runOutsideAngular(() => {
-          observer.next(false);
-        });
-      }
-    });
-    return () => {
-      stableSub.unsubscribe();
-      unstableSub.unsubscribe();
-    };
-  });
-  return (0,rxjs__WEBPACK_IMPORTED_MODULE_4__.merge)(isCurrentlyStable, isStable.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.share)()));
-}
 function shouldBeIgnoredByZone(applyArgs) {
   if (!Array.isArray(applyArgs)) {
     return false;
@@ -29124,8 +28944,15 @@ function shouldBeIgnoredByZone(applyArgs) {
   // Prevent triggering change detection when the __ignore_ng_zone__ flag is detected.
   return applyArgs[0].data?.['__ignore_ng_zone__'] === true;
 }
-
-// Public API for Zone
+function getNgZone(ngZoneToUse = 'zone.js', options) {
+  if (ngZoneToUse === 'noop') {
+    return new NoopNgZone();
+  }
+  if (ngZoneToUse === 'zone.js') {
+    return new NgZone(options);
+  }
+  return ngZoneToUse;
+}
 
 /**
  * The phase to run an `afterRender` or `afterNextRender` callback in.
@@ -29731,23 +29558,27 @@ class ComponentFactory extends ComponentFactory$1 {
     }
     const sanitizer = rootViewInjector.get(Sanitizer, null);
     const afterRenderEventManager = rootViewInjector.get(AfterRenderEventManager, null);
+    const changeDetectionScheduler = rootViewInjector.get(ChangeDetectionScheduler, null);
     const environment = {
       rendererFactory,
       sanitizer,
       // We don't use inline effects (yet).
       inlineEffectRunner: null,
-      afterRenderEventManager
+      afterRenderEventManager,
+      changeDetectionScheduler
     };
     const hostRenderer = rendererFactory.createRenderer(null, this.componentDef);
     // Determine a tag name used for creating host elements when this component is created
     // dynamically. Default to 'div' if this component did not specify any tag name in its selector.
     const elementName = this.componentDef.selectors[0][0] || 'div';
     const hostRNode = rootSelectorOrNode ? locateHostElement(hostRenderer, rootSelectorOrNode, this.componentDef.encapsulation, rootViewInjector) : createElementNode(hostRenderer, elementName, getNamespace(elementName));
-    // Signal components use the granular "RefreshView"  for change detection
-    const signalFlags = 4096 /* LViewFlags.SignalView */ | 512 /* LViewFlags.IsRoot */;
-    // Non-signal components use the traditional "CheckAlways or OnPush/Dirty" change detection
-    const nonSignalFlags = this.componentDef.onPush ? 64 /* LViewFlags.Dirty */ | 512 /* LViewFlags.IsRoot */ : 16 /* LViewFlags.CheckAlways */ | 512 /* LViewFlags.IsRoot */;
-    const rootFlags = this.componentDef.signals ? signalFlags : nonSignalFlags;
+    let rootFlags = 512 /* LViewFlags.IsRoot */;
+    if (this.componentDef.signals) {
+      rootFlags |= 4096 /* LViewFlags.SignalView */;
+    } else if (!this.componentDef.onPush) {
+      rootFlags |= 16 /* LViewFlags.CheckAlways */;
+    }
+
     let hydrationInfo = null;
     if (hostRNode !== null) {
       hydrationInfo = retrieveHydrationInfo(hostRNode, rootViewInjector, true /* isRootView */);
@@ -29891,6 +29722,7 @@ function createRootComponentView(tNode, hostRNode, rootComponentDef, rootDirecti
   } else if (rootComponentDef.onPush) {
     lViewFlags = 64 /* LViewFlags.Dirty */;
   }
+
   const componentView = createLView(rootView, getOrCreateComponentTView(rootComponentDef), null, lViewFlags, rootView[tNode.index], tNode, environment, viewRenderer, null, null, hydrationInfo);
   if (tView.firstCreatePass) {
     markAsComponentHost(tView, tNode, rootDirectives.length - 1);
@@ -29948,7 +29780,8 @@ function createRootComponent(componentView, rootComponentDef, rootDirectives, ho
 /** Sets the static attributes on a root component. */
 function setRootNodeAttributes(hostRenderer, componentDef, hostRNode, rootSelectorOrNode) {
   if (rootSelectorOrNode) {
-    setUpAttributes(hostRenderer, hostRNode, ['ng-version', VERSION.full]);
+    // The placeholder will be replaced with the actual version at build time.
+    setUpAttributes(hostRenderer, hostRNode, ['ng-version', '17.0.8']);
   } else {
     // If host element is created as a part of this function call (i.e. `rootSelectorOrNode`
     // is not defined), also apply attributes and classes extracted from component selector.
@@ -30966,27 +30799,33 @@ function toTStylingRange(prev, next) {
   ngDevMode && assertNumberInRange(next, 0, 32767 /* StylingRange.UNSIGNED_MASK */);
   return prev << 17 /* StylingRange.PREV_SHIFT */ | next << 2 /* StylingRange.NEXT_SHIFT */;
 }
+
 function getTStylingRangePrev(tStylingRange) {
   ngDevMode && assertNumber(tStylingRange, 'expected number');
   return tStylingRange >> 17 /* StylingRange.PREV_SHIFT */ & 32767 /* StylingRange.UNSIGNED_MASK */;
 }
+
 function getTStylingRangePrevDuplicate(tStylingRange) {
   ngDevMode && assertNumber(tStylingRange, 'expected number');
   return (tStylingRange & 2 /* StylingRange.PREV_DUPLICATE */) == 2 /* StylingRange.PREV_DUPLICATE */;
 }
+
 function setTStylingRangePrev(tStylingRange, previous) {
   ngDevMode && assertNumber(tStylingRange, 'expected number');
   ngDevMode && assertNumberInRange(previous, 0, 32767 /* StylingRange.UNSIGNED_MASK */);
   return tStylingRange & ~4294836224 /* StylingRange.PREV_MASK */ | previous << 17 /* StylingRange.PREV_SHIFT */;
 }
+
 function setTStylingRangePrevDuplicate(tStylingRange) {
   ngDevMode && assertNumber(tStylingRange, 'expected number');
   return tStylingRange | 2 /* StylingRange.PREV_DUPLICATE */;
 }
+
 function getTStylingRangeNext(tStylingRange) {
   ngDevMode && assertNumber(tStylingRange, 'expected number');
   return (tStylingRange & 131068 /* StylingRange.NEXT_MASK */) >> 2 /* StylingRange.NEXT_SHIFT */;
 }
+
 function setTStylingRangeNext(tStylingRange, next) {
   ngDevMode && assertNumber(tStylingRange, 'expected number');
   ngDevMode && assertNumberInRange(next, 0, 32767 /* StylingRange.UNSIGNED_MASK */);
@@ -30994,14 +30833,17 @@ function setTStylingRangeNext(tStylingRange, next) {
   //
   next << 2 /* StylingRange.NEXT_SHIFT */;
 }
+
 function getTStylingRangeNextDuplicate(tStylingRange) {
   ngDevMode && assertNumber(tStylingRange, 'expected number');
   return (tStylingRange & 1 /* StylingRange.NEXT_DUPLICATE */) === 1 /* StylingRange.NEXT_DUPLICATE */;
 }
+
 function setTStylingRangeNextDuplicate(tStylingRange) {
   ngDevMode && assertNumber(tStylingRange, 'expected number');
   return tStylingRange | 1 /* StylingRange.NEXT_DUPLICATE */;
 }
+
 function getTStylingRangeTail(tStylingRange) {
   ngDevMode && assertNumber(tStylingRange, 'expected number');
   const next = getTStylingRangeNext(tStylingRange);
@@ -31391,6 +31233,7 @@ function isStylingMatch(tStylingKeyCursor, tStylingKey) {
     // statics and we need to check those as well.
     return keyValueArrayIndexOf(tStylingKeyCursor, tStylingKey) >= 0; // see if we are matching the key
   }
+
   return false;
 }
 
@@ -31607,6 +31450,7 @@ function consumeStyleValue(text, startIndex, endIndex) {
     ch2 = ch1;
     ch1 = ch & -33 /* CharCode.UPPER_CASE */;
   }
+
   return lastChIndex;
 }
 /**
@@ -33265,6 +33109,16 @@ function getNoOffsetIndex(tNode) {
   return tNode.index - HEADER_OFFSET;
 }
 /**
+ * Check whether a given node exists, but is disconnected from the DOM.
+ *
+ * Note: we leverage the fact that we have this information available in the DOM emulation
+ * layer (in Domino) for now. Longer-term solution should not rely on the DOM emulation and
+ * only use internal data structures and state to compute this information.
+ */
+function isDisconnectedNode(tNode, lView) {
+  return !(tNode.type & 16 /* TNodeType.Projection */) && !!lView[tNode.index] && !unwrapRNode(lView[tNode.index])?.isConnected;
+}
+/**
  * Locate a node in DOM tree that corresponds to a given TNode.
  *
  * @param hydrationInfo The hydration annotation data
@@ -33451,10 +33305,20 @@ function calcPathBetween(from, to, fromNodeName) {
  * instructions needs to be generated for a TNode.
  */
 function calcPathForNode(tNode, lView) {
-  const parentTNode = tNode.parent;
+  let parentTNode = tNode.parent;
   let parentIndex;
   let parentRNode;
   let referenceNodeName;
+  // Skip over all parent nodes that are disconnected from the DOM, such nodes
+  // can not be used as anchors.
+  //
+  // This might happen in certain content projection-based use-cases, where
+  // a content of an element is projected and used, when a parent element
+  // itself remains detached from DOM. In this scenario we try to find a parent
+  // element that is attached to DOM and can act as an anchor instead.
+  while (parentTNode !== null && isDisconnectedNode(parentTNode, lView)) {
+    parentTNode = parentTNode.parent;
+  }
   if (parentTNode === null || !(parentTNode.type & 3 /* TNodeType.AnyRNode */)) {
     // If there is no parent TNode or a parent TNode does not represent an RNode
     // (i.e. not a DOM node), use component host element as a reference node.
@@ -33693,7 +33557,7 @@ function reconcile(liveCollection, newCollection, trackByFn) {
       }
       // Fallback to the slow path: we need to learn more about the content of the live and new
       // collections.
-      detachedItems ??= new MultiMap();
+      detachedItems ??= new UniqueValueMultiKeyMap();
       liveKeysInTheFuture ??= initLiveItemsInTheFuture(liveCollection, liveStartIdx, liveEndIdx, trackByFn);
       // Check if I'm inserting a previously detached item: if so, attach it here
       if (attachPreviouslyDetached(liveCollection, detachedItems, liveStartIdx, newStartKey)) {
@@ -33736,7 +33600,7 @@ function reconcile(liveCollection, newCollection, trackByFn) {
         liveStartIdx++;
         newIterationResult = newCollectionIterator.next();
       } else {
-        detachedItems ??= new MultiMap();
+        detachedItems ??= new UniqueValueMultiKeyMap();
         liveKeysInTheFuture ??= initLiveItemsInTheFuture(liveCollection, liveStartIdx, liveEndIdx, trackByFn);
         // Check if I'm inserting a previously detached item: if so, attach it here
         const newKey = trackByFn(liveStartIdx, newValue);
@@ -33798,40 +33662,69 @@ function initLiveItemsInTheFuture(liveCollection, start, end, trackByFn) {
   }
   return keys;
 }
-class MultiMap {
+/**
+ * A specific, partial implementation of the Map interface with the following characteristics:
+ * - allows multiple values for a given key;
+ * - maintain FIFO order for multiple values corresponding to a given key;
+ * - assumes that all values are unique.
+ *
+ * The implementation aims at having the minimal overhead for cases where keys are _not_ duplicated
+ * (the most common case in the list reconciliation algorithm). To achieve this, the first value for
+ * a given key is stored in a regular map. Then, when more values are set for a given key, we
+ * maintain a form of linked list in a separate map. To maintain this linked list we assume that all
+ * values (in the entire collection) are unique.
+ */
+class UniqueValueMultiKeyMap {
   constructor() {
-    this.map = new Map();
+    // A map from a key to the first value corresponding to this key.
+    this.kvMap = new Map();
+    // A map that acts as a linked list of values - each value maps to the next value in this "linked
+    // list" (this only works if values are unique). Allocated lazily to avoid memory consumption when
+    // there are no duplicated values.
+    this._vMap = undefined;
   }
   has(key) {
-    const listOfKeys = this.map.get(key);
-    return listOfKeys !== undefined && listOfKeys.length > 0;
+    return this.kvMap.has(key);
   }
   delete(key) {
-    const listOfKeys = this.map.get(key);
-    if (listOfKeys !== undefined) {
-      listOfKeys.shift();
-      return true;
+    if (!this.has(key)) return false;
+    const value = this.kvMap.get(key);
+    if (this._vMap !== undefined && this._vMap.has(value)) {
+      this.kvMap.set(key, this._vMap.get(value));
+      this._vMap.delete(value);
+    } else {
+      this.kvMap.delete(key);
     }
-    return false;
+    return true;
   }
   get(key) {
-    const listOfKeys = this.map.get(key);
-    return listOfKeys !== undefined && listOfKeys.length > 0 ? listOfKeys[0] : undefined;
+    return this.kvMap.get(key);
   }
   set(key, value) {
-    // if value is array, they we always store it as [value].
-    if (!this.map.has(key)) {
-      this.map.set(key, [value]);
-      return;
+    if (this.kvMap.has(key)) {
+      let prevValue = this.kvMap.get(key);
+      ngDevMode && assertNotSame(prevValue, value, `Detected a duplicated value ${value} for the key ${key}`);
+      if (this._vMap === undefined) {
+        this._vMap = new Map();
+      }
+      const vMap = this._vMap;
+      while (vMap.has(prevValue)) {
+        prevValue = vMap.get(prevValue);
+      }
+      vMap.set(prevValue, value);
+    } else {
+      this.kvMap.set(key, value);
     }
-    // THINK: this allows duplicate values, but I guess this is fine?
-    // Is the existing key an array or not?
-    this.map.get(key)?.push(value);
   }
   forEach(cb) {
-    for (const [key, values] of this.map) {
-      for (const value of values) {
-        cb(value, key);
+    for (let [key, value] of this.kvMap) {
+      cb(value, key);
+      if (this._vMap !== undefined) {
+        const vMap = this._vMap;
+        while (vMap.has(value)) {
+          value = vMap.get(value);
+          cb(value, key);
+        }
       }
     }
   }
@@ -33873,13 +33766,13 @@ function getLViewFromLContainer(lContainer, index) {
  * block (in which case view contents was re-created, thus needing insertion).
  */
 function shouldAddViewToDom(tNode, dehydratedView) {
-  return !dehydratedView || hasInSkipHydrationBlockFlag(tNode);
+  return !dehydratedView || dehydratedView.firstChild === null || hasInSkipHydrationBlockFlag(tNode);
 }
 function addLViewToLContainer(lContainer, lView, index, addToDOM = true) {
   const tView = lView[TVIEW];
-  // insert to the view tree so the new view can be change-detected
+  // Insert into the view tree so the new view can be change-detected
   insertView(tView, lView, lContainer, index);
-  // insert to the view to the DOM tree
+  // Insert elements that belong to this view into the DOM tree
   if (addToDOM) {
     const beforeNode = getBeforeNodeForView(index, lContainer);
     const renderer = lView[RENDERER];
@@ -33887,6 +33780,13 @@ function addLViewToLContainer(lContainer, lView, index, addToDOM = true) {
     if (parentRNode !== null) {
       addViewToDOM(tView, lContainer[T_HOST], renderer, lView, parentRNode, beforeNode);
     }
+  }
+  // When in hydration mode, reset the pointer to the first child in
+  // the dehydrated view. This indicates that the view was hydrated and
+  // further attaching/detaching should work with this view as normal.
+  const hydrationInfo = lView[HYDRATION];
+  if (hydrationInfo !== null && hydrationInfo.firstChild !== null) {
+    hydrationInfo.firstChild = null;
   }
 }
 function removeLViewFromLContainer(lContainer, index) {
@@ -34769,6 +34669,8 @@ function invokeAllTriggerCleanupFns(lDetails) {
   invokeTriggerCleanupFns(0 /* TriggerType.Regular */, lDetails);
 }
 
+// Public API for Zone
+
 /**
  * Calculates a data slot index for defer block info (either static or
  * instance-specific), given an index of a defer instruction.
@@ -35527,6 +35429,7 @@ function ɵɵdefer(index, primaryTmplIndex, dependencyResolverFn, loadingTmplInd
   // Init instance-specific defer details and store it.
   const lDetails = [null, DeferBlockInternalState.Initial, null, null, null, null // PREFETCH_TRIGGER_CLEANUP_FNS
   ];
+
   setLDeferBlockDetails(lView, adjustedIndex, lDetails);
   const cleanupTriggersFn = () => invokeAllTriggerCleanupFns(lDetails);
   // When defer block is triggered - unsubscribe from LView destroy cleanup.
@@ -36759,6 +36662,7 @@ function addTNodeAndUpdateInsertBeforeIndex(previousTNodes, newTNode) {
 function isI18nText(tNode) {
   return !(tNode.type & 64 /* TNodeType.Placeholder */);
 }
+
 function isNewTNodeCreatedBefore(existingTNode, newTNode) {
   return isI18nText(newTNode) || existingTNode.index > newTNode.index;
 }
@@ -36869,12 +36773,15 @@ function getCurrentICUCaseIndex(tIcu, lView) {
 function getParentFromIcuCreateOpCode(mergedCode) {
   return mergedCode >>> 17 /* IcuCreateOpCode.SHIFT_PARENT */;
 }
+
 function getRefFromIcuCreateOpCode(mergedCode) {
   return (mergedCode & 131070 /* IcuCreateOpCode.MASK_REF */) >>> 1 /* IcuCreateOpCode.SHIFT_REF */;
 }
+
 function getInstructionFromIcuCreateOpCode(mergedCode) {
   return mergedCode & 1 /* IcuCreateOpCode.MASK_INSTRUCTION */;
 }
+
 function icuCreateOpCode(opCode, parentIdx, refIdx) {
   ngDevMode && assertGreaterThanOrEqual(parentIdx, 0, 'Missing parent index');
   ngDevMode && assertGreaterThan(refIdx, 0, 'Missing ref index');
@@ -37930,6 +37837,7 @@ function parseICUBlock(pattern) {
     } else {
       icuType = 1 /* IcuType.plural */;
     }
+
     mainBinding = parseInt(binding.slice(1), 10);
     return '';
   });
@@ -38106,12 +38014,15 @@ function addRemoveNestedIcu(remove, index, depth) {
     remove.push(index); // remove ICU comment at `index`
   }
 }
+
 function addUpdateIcuSwitch(update, icuExpression, index) {
   update.push(toMaskBit(icuExpression.mainBinding), 2, -1 - icuExpression.mainBinding, index << 2 /* I18nUpdateOpCode.SHIFT_REF */ | 2 /* I18nUpdateOpCode.IcuSwitch */);
 }
+
 function addUpdateIcuUpdate(update, bindingMask, index) {
   update.push(bindingMask, 1, index << 2 /* I18nUpdateOpCode.SHIFT_REF */ | 3 /* I18nUpdateOpCode.IcuUpdate */);
 }
+
 function addCreateNodeAndAppend(create, marker, text, appendToParentIdx, createAtIdx) {
   if (marker !== null) {
     create.push(marker);
@@ -38281,6 +38192,7 @@ function ɵɵi18nStart(index, messageIndex, subTemplateIndex = -1) {
   } else {
     lView[FLAGS] |= 32 /* LViewFlags.HasI18n */;
   }
+
   const tI18n = tView.data[adjustedIndex];
   const sameViewParentTNode = parentTNode === lView[T_HOST] ? null : parentTNode;
   const parentRNode = getClosestRElement(tView, sameViewParentTNode, lView);
@@ -38668,6 +38580,7 @@ function matchingProjectionSlotIndex(tNode, projectionSlots) {
       return i; // first matching selector "captures" a given node
     }
   }
+
   return wildcardNgContentIndex;
 }
 /**
@@ -40300,6 +40213,7 @@ function resolveProvider(provider, tInjectables, lInjectablesBlueprint, isCompon
         if (isViewProvider) {
           tNode.providerIndexes += 1048576 /* TNodeProviderIndexes.CptViewProvidersCountShifter */;
         }
+
         lInjectablesBlueprint.push(factory);
         lView.push(factory);
       } else {
@@ -40345,6 +40259,7 @@ function resolveProvider(provider, tInjectables, lInjectablesBlueprint, isCompon
         if (isViewProvider) {
           tNode.providerIndexes += 1048576 /* TNodeProviderIndexes.CptViewProvidersCountShifter */;
         }
+
         lInjectablesBlueprint.push(factory);
         lView.push(factory);
       } else {
@@ -41777,7 +41692,7 @@ class QueryList {
    * Returns `Observable` of `QueryList` notifying the subscriber of changes.
    */
   get changes() {
-    return this._changes || (this._changes = new EventEmitter());
+    return this._changes ??= new EventEmitter();
   }
   /**
    * @param emitDistinctChangesOnly Whether `QueryList.changes` should fire only when actual change
@@ -41789,7 +41704,7 @@ class QueryList {
     this.dirty = true;
     this._results = [];
     this._changesDetected = false;
-    this._changes = null;
+    this._changes = undefined;
     this.length = 0;
     this.first = undefined;
     this.last = undefined;
@@ -41879,7 +41794,7 @@ class QueryList {
    * Triggers a change event by emitting on the `changes` {@link EventEmitter}.
    */
   notifyOnChanges() {
-    if (this._changes && (this._changesDetected || !this._emitDistinctChangesOnly)) this._changes.emit(this);
+    if (this._changes !== undefined && (this._changesDetected || !this._emitDistinctChangesOnly)) this._changes.emit(this);
   }
   /** internal */
   setDirty() {
@@ -41887,8 +41802,10 @@ class QueryList {
   }
   /** internal */
   destroy() {
-    this.changes.complete();
-    this.changes.unsubscribe();
+    if (this._changes !== undefined) {
+      this._changes.complete();
+      this._changes.unsubscribe();
+    }
   }
 }
 
@@ -43785,6 +43702,25 @@ const NgModule = makeDecorator('NgModule', ngModule => ngModule, undefined, unde
  * to be used by the decorator versions of these annotations.
  */
 
+/**
+ * @description Represents the version of Angular
+ *
+ * @publicApi
+ */
+class Version {
+  constructor(full) {
+    this.full = full;
+    const parts = full.split('.');
+    this.major = parts[0];
+    this.minor = parts[1];
+    this.patch = parts.slice(2).join('.');
+  }
+}
+/**
+ * @publicApi
+ */
+const VERSION = new Version('17.0.8');
+
 /*
  * This file exists to support compilation of @angular/core in Ivy mode.
  *
@@ -43804,199 +43740,6 @@ const NgModule = makeDecorator('NgModule', ngModule => ngModule, undefined, unde
  * current program is actually @angular/core, which needs to be compiled specially.
  */
 const ITS_JUST_ANGULAR = true;
-
-/**
- * A [DI token](guide/glossary#di-token "DI token definition") that you can use to provide
- * one or more initialization functions.
- *
- * The provided functions are injected at application startup and executed during
- * app initialization. If any of these functions returns a Promise or an Observable, initialization
- * does not complete until the Promise is resolved or the Observable is completed.
- *
- * You can, for example, create a factory function that loads language data
- * or an external configuration, and provide that function to the `APP_INITIALIZER` token.
- * The function is executed during the application bootstrap process,
- * and the needed data is available on startup.
- *
- * @see {@link ApplicationInitStatus}
- *
- * @usageNotes
- *
- * The following example illustrates how to configure a multi-provider using `APP_INITIALIZER` token
- * and a function returning a promise.
- * ### Example with NgModule-based application
- * ```
- *  function initializeApp(): Promise<any> {
- *    return new Promise((resolve, reject) => {
- *      // Do some asynchronous stuff
- *      resolve();
- *    });
- *  }
- *
- *  @NgModule({
- *   imports: [BrowserModule],
- *   declarations: [AppComponent],
- *   bootstrap: [AppComponent],
- *   providers: [{
- *     provide: APP_INITIALIZER,
- *     useFactory: () => initializeApp,
- *     multi: true
- *    }]
- *   })
- *  export class AppModule {}
- * ```
- *
- * ### Example with standalone application
- * ```
- * export function initializeApp(http: HttpClient) {
- *   return (): Promise<any> =>
- *     firstValueFrom(
- *       http
- *         .get("https://someUrl.com/api/user")
- *         .pipe(tap(user => { ... }))
- *     );
- * }
- *
- * bootstrapApplication(App, {
- *   providers: [
- *     provideHttpClient(),
- *     {
- *       provide: APP_INITIALIZER,
- *       useFactory: initializeApp,
- *       multi: true,
- *       deps: [HttpClient],
- *     },
- *   ],
- * });
-
- * ```
- *
- *
- * It's also possible to configure a multi-provider using `APP_INITIALIZER` token and a function
- * returning an observable, see an example below. Note: the `HttpClient` in this example is used for
- * demo purposes to illustrate how the factory function can work with other providers available
- * through DI.
- *
- * ### Example with NgModule-based application
- * ```
- *  function initializeAppFactory(httpClient: HttpClient): () => Observable<any> {
- *   return () => httpClient.get("https://someUrl.com/api/user")
- *     .pipe(
- *        tap(user => { ... })
- *     );
- *  }
- *
- *  @NgModule({
- *    imports: [BrowserModule, HttpClientModule],
- *    declarations: [AppComponent],
- *    bootstrap: [AppComponent],
- *    providers: [{
- *      provide: APP_INITIALIZER,
- *      useFactory: initializeAppFactory,
- *      deps: [HttpClient],
- *      multi: true
- *    }]
- *  })
- *  export class AppModule {}
- * ```
- *
- * ### Example with standalone application
- * ```
- *  function initializeAppFactory(httpClient: HttpClient): () => Observable<any> {
- *   return () => httpClient.get("https://someUrl.com/api/user")
- *     .pipe(
- *        tap(user => { ... })
- *     );
- *  }
- *
- * bootstrapApplication(App, {
- *   providers: [
- *     provideHttpClient(),
- *     {
- *       provide: APP_INITIALIZER,
- *       useFactory: initializeAppFactory,
- *       multi: true,
- *       deps: [HttpClient],
- *     },
- *   ],
- * });
- * ```
- *
- * @publicApi
- */
-const APP_INITIALIZER = new InjectionToken('Application Initializer');
-/**
- * A class that reflects the state of running {@link APP_INITIALIZER} functions.
- *
- * @publicApi
- */
-class ApplicationInitStatus {
-  constructor() {
-    this.initialized = false;
-    this.done = false;
-    this.donePromise = new Promise((res, rej) => {
-      this.resolve = res;
-      this.reject = rej;
-    });
-    this.appInits = inject(APP_INITIALIZER, {
-      optional: true
-    }) ?? [];
-    if ((typeof ngDevMode === 'undefined' || ngDevMode) && !Array.isArray(this.appInits)) {
-      throw new RuntimeError(-209 /* RuntimeErrorCode.INVALID_MULTI_PROVIDER */, 'Unexpected type of the `APP_INITIALIZER` token value ' + `(expected an array, but got ${typeof this.appInits}). ` + 'Please check that the `APP_INITIALIZER` token is configured as a ' + '`multi: true` provider.');
-    }
-  }
-  /** @internal */
-  runInitializers() {
-    if (this.initialized) {
-      return;
-    }
-    const asyncInitPromises = [];
-    for (const appInits of this.appInits) {
-      const initResult = appInits();
-      if (isPromise(initResult)) {
-        asyncInitPromises.push(initResult);
-      } else if (isSubscribable(initResult)) {
-        const observableAsPromise = new Promise((resolve, reject) => {
-          initResult.subscribe({
-            complete: resolve,
-            error: reject
-          });
-        });
-        asyncInitPromises.push(observableAsPromise);
-      }
-    }
-    const complete = () => {
-      // @ts-expect-error overwriting a readonly
-      this.done = true;
-      this.resolve();
-    };
-    Promise.all(asyncInitPromises).then(() => {
-      complete();
-    }).catch(e => {
-      this.reject(e);
-    });
-    if (asyncInitPromises.length === 0) {
-      complete();
-    }
-    this.initialized = true;
-  }
-  static #_ = this.ɵfac = function ApplicationInitStatus_Factory(t) {
-    return new (t || ApplicationInitStatus)();
-  };
-  static #_2 = this.ɵprov = /*@__PURE__*/ɵɵdefineInjectable({
-    token: ApplicationInitStatus,
-    factory: ApplicationInitStatus.ɵfac,
-    providedIn: 'root'
-  });
-}
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ApplicationInitStatus, [{
-    type: Injectable,
-    args: [{
-      providedIn: 'root'
-    }]
-  }], () => [], null);
-})();
 class Console {
   log(message) {
     // tslint:disable-next-line:no-console
@@ -44021,384 +43764,6 @@ class Console {
     type: Injectable,
     args: [{
       providedIn: 'platform'
-    }]
-  }], null, null);
-})();
-
-/**
- * Work out the locale from the potential global properties.
- *
- * * Closure Compiler: use `goog.LOCALE`.
- * * Ivy enabled: use `$localize.locale`
- */
-function getGlobalLocale() {
-  if (typeof ngI18nClosureMode !== 'undefined' && ngI18nClosureMode && typeof goog !== 'undefined' && goog.LOCALE !== 'en') {
-    // * The default `goog.LOCALE` value is `en`, while Angular used `en-US`.
-    // * In order to preserve backwards compatibility, we use Angular default value over
-    //   Closure Compiler's one.
-    return goog.LOCALE;
-  } else {
-    // KEEP `typeof $localize !== 'undefined' && $localize.locale` IN SYNC WITH THE LOCALIZE
-    // COMPILE-TIME INLINER.
-    //
-    // * During compile time inlining of translations the expression will be replaced
-    //   with a string literal that is the current locale. Other forms of this expression are not
-    //   guaranteed to be replaced.
-    //
-    // * During runtime translation evaluation, the developer is required to set `$localize.locale`
-    //   if required, or just to provide their own `LOCALE_ID` provider.
-    return typeof $localize !== 'undefined' && $localize.locale || DEFAULT_LOCALE_ID;
-  }
-}
-/**
- * Provide this token to set the locale of your application.
- * It is used for i18n extraction, by i18n pipes (DatePipe, I18nPluralPipe, CurrencyPipe,
- * DecimalPipe and PercentPipe) and by ICU expressions.
- *
- * See the [i18n guide](guide/i18n-common-locale-id) for more information.
- *
- * @usageNotes
- * ### Example
- *
- * ```typescript
- * import { LOCALE_ID } from '@angular/core';
- * import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
- * import { AppModule } from './app/app.module';
- *
- * platformBrowserDynamic().bootstrapModule(AppModule, {
- *   providers: [{provide: LOCALE_ID, useValue: 'en-US' }]
- * });
- * ```
- *
- * @publicApi
- */
-const LOCALE_ID = new InjectionToken('LocaleId', {
-  providedIn: 'root',
-  factory: () => inject(LOCALE_ID, InjectFlags.Optional | InjectFlags.SkipSelf) || getGlobalLocale()
-});
-/**
- * Provide this token to set the default currency code your application uses for
- * CurrencyPipe when there is no currency code passed into it. This is only used by
- * CurrencyPipe and has no relation to locale currency. Defaults to USD if not configured.
- *
- * See the [i18n guide](guide/i18n-common-locale-id) for more information.
- *
- * <div class="alert is-helpful">
- *
- * **Deprecation notice:**
- *
- * The default currency code is currently always `USD` but this is deprecated from v9.
- *
- * **In v10 the default currency code will be taken from the current locale.**
- *
- * If you need the previous behavior then set it by creating a `DEFAULT_CURRENCY_CODE` provider in
- * your application `NgModule`:
- *
- * ```ts
- * {provide: DEFAULT_CURRENCY_CODE, useValue: 'USD'}
- * ```
- *
- * </div>
- *
- * @usageNotes
- * ### Example
- *
- * ```typescript
- * import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
- * import { AppModule } from './app/app.module';
- *
- * platformBrowserDynamic().bootstrapModule(AppModule, {
- *   providers: [{provide: DEFAULT_CURRENCY_CODE, useValue: 'EUR' }]
- * });
- * ```
- *
- * @publicApi
- */
-const DEFAULT_CURRENCY_CODE = new InjectionToken('DefaultCurrencyCode', {
-  providedIn: 'root',
-  factory: () => USD_CURRENCY_CODE
-});
-/**
- * Use this token at bootstrap to provide the content of your translation file (`xtb`,
- * `xlf` or `xlf2`) when you want to translate your application in another language.
- *
- * See the [i18n guide](guide/i18n-common-merge) for more information.
- *
- * @usageNotes
- * ### Example
- *
- * ```typescript
- * import { TRANSLATIONS } from '@angular/core';
- * import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
- * import { AppModule } from './app/app.module';
- *
- * // content of your translation file
- * const translations = '....';
- *
- * platformBrowserDynamic().bootstrapModule(AppModule, {
- *   providers: [{provide: TRANSLATIONS, useValue: translations }]
- * });
- * ```
- *
- * @publicApi
- */
-const TRANSLATIONS = new InjectionToken('Translations');
-/**
- * Provide this token at bootstrap to set the format of your {@link TRANSLATIONS}: `xtb`,
- * `xlf` or `xlf2`.
- *
- * See the [i18n guide](guide/i18n-common-merge) for more information.
- *
- * @usageNotes
- * ### Example
- *
- * ```typescript
- * import { TRANSLATIONS_FORMAT } from '@angular/core';
- * import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
- * import { AppModule } from './app/app.module';
- *
- * platformBrowserDynamic().bootstrapModule(AppModule, {
- *   providers: [{provide: TRANSLATIONS_FORMAT, useValue: 'xlf' }]
- * });
- * ```
- *
- * @publicApi
- */
-const TRANSLATIONS_FORMAT = new InjectionToken('TranslationsFormat');
-/**
- * Use this enum at bootstrap as an option of `bootstrapModule` to define the strategy
- * that the compiler should use in case of missing translations:
- * - Error: throw if you have missing translations.
- * - Warning (default): show a warning in the console and/or shell.
- * - Ignore: do nothing.
- *
- * See the [i18n guide](guide/i18n-common-merge#report-missing-translations) for more information.
- *
- * @usageNotes
- * ### Example
- * ```typescript
- * import { MissingTranslationStrategy } from '@angular/core';
- * import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
- * import { AppModule } from './app/app.module';
- *
- * platformBrowserDynamic().bootstrapModule(AppModule, {
- *   missingTranslation: MissingTranslationStrategy.Error
- * });
- * ```
- *
- * @publicApi
- */
-var MissingTranslationStrategy;
-(function (MissingTranslationStrategy) {
-  MissingTranslationStrategy[MissingTranslationStrategy["Error"] = 0] = "Error";
-  MissingTranslationStrategy[MissingTranslationStrategy["Warning"] = 1] = "Warning";
-  MissingTranslationStrategy[MissingTranslationStrategy["Ignore"] = 2] = "Ignore";
-})(MissingTranslationStrategy || (MissingTranslationStrategy = {}));
-
-// A delay in milliseconds before the scan is run after onLoad, to avoid any
-// potential race conditions with other LCP-related functions. This delay
-// happens outside of the main JavaScript execution and will only effect the timing
-// on when the warning becomes visible in the console.
-const SCAN_DELAY = 200;
-const OVERSIZED_IMAGE_TOLERANCE = 1200;
-class ImagePerformanceWarning {
-  constructor() {
-    // Map of full image URLs -> original `ngSrc` values.
-    this.window = null;
-    this.observer = null;
-    this.options = inject(IMAGE_CONFIG);
-    this.ngZone = inject(NgZone);
-  }
-  start() {
-    if (typeof PerformanceObserver === 'undefined' || this.options?.disableImageSizeWarning && this.options?.disableImageLazyLoadWarning) {
-      return;
-    }
-    this.observer = this.initPerformanceObserver();
-    const doc = getDocument();
-    const win = doc.defaultView;
-    if (typeof win !== 'undefined') {
-      this.window = win;
-      // Wait to avoid race conditions where LCP image triggers
-      // load event before it's recorded by the performance observer
-      const waitToScan = () => {
-        setTimeout(this.scanImages.bind(this), SCAN_DELAY);
-      };
-      // Angular doesn't have to run change detection whenever any asynchronous tasks are invoked in
-      // the scope of this functionality.
-      this.ngZone.runOutsideAngular(() => {
-        // Consider the case when the application is created and destroyed multiple times.
-        // Typically, applications are created instantly once the page is loaded, and the
-        // `window.load` listener is always triggered. However, the `window.load` event will never
-        // be fired if the page is loaded, and the application is created later. Checking for
-        // `readyState` is the easiest way to determine whether the page has been loaded or not.
-        if (doc.readyState === 'complete') {
-          waitToScan();
-        } else {
-          this.window?.addEventListener('load', waitToScan, {
-            once: true
-          });
-        }
-      });
-    }
-  }
-  ngOnDestroy() {
-    this.observer?.disconnect();
-  }
-  initPerformanceObserver() {
-    if (typeof PerformanceObserver === 'undefined') {
-      return null;
-    }
-    const observer = new PerformanceObserver(entryList => {
-      const entries = entryList.getEntries();
-      if (entries.length === 0) return;
-      // We use the latest entry produced by the `PerformanceObserver` as the best
-      // signal on which element is actually an LCP one. As an example, the first image to load on
-      // a page, by virtue of being the only thing on the page so far, is often a LCP candidate
-      // and gets reported by PerformanceObserver, but isn't necessarily the LCP element.
-      const lcpElement = entries[entries.length - 1];
-      // Cast to `any` due to missing `element` on the `LargestContentfulPaint` type of entry.
-      // See https://developer.mozilla.org/en-US/docs/Web/API/LargestContentfulPaint
-      const imgSrc = lcpElement.element?.src ?? '';
-      // Exclude `data:` and `blob:` URLs, since they are fetched resources.
-      if (imgSrc.startsWith('data:') || imgSrc.startsWith('blob:')) return;
-      this.lcpImageUrl = imgSrc;
-    });
-    observer.observe({
-      type: 'largest-contentful-paint',
-      buffered: true
-    });
-    return observer;
-  }
-  scanImages() {
-    const images = getDocument().querySelectorAll('img');
-    let lcpElementFound,
-      lcpElementLoadedCorrectly = false;
-    images.forEach(image => {
-      if (!this.options?.disableImageSizeWarning) {
-        for (const image of images) {
-          // Image elements using the NgOptimizedImage directive are excluded,
-          // as that directive has its own version of this check.
-          if (!image.getAttribute('ng-img') && this.isOversized(image)) {
-            logOversizedImageWarning(image.src);
-          }
-        }
-      }
-      if (!this.options?.disableImageLazyLoadWarning && this.lcpImageUrl) {
-        if (image.src === this.lcpImageUrl) {
-          lcpElementFound = true;
-          if (image.loading !== 'lazy' || image.getAttribute('ng-img')) {
-            // This variable is set to true and never goes back to false to account
-            // for the case where multiple images have the same src url, and some
-            // have lazy loading while others don't.
-            // Also ignore NgOptimizedImage because there's a different warning for that.
-            lcpElementLoadedCorrectly = true;
-          }
-        }
-      }
-    });
-    if (lcpElementFound && !lcpElementLoadedCorrectly && this.lcpImageUrl && !this.options?.disableImageLazyLoadWarning) {
-      logLazyLCPWarning(this.lcpImageUrl);
-    }
-  }
-  isOversized(image) {
-    if (!this.window) {
-      return false;
-    }
-    const computedStyle = this.window.getComputedStyle(image);
-    let renderedWidth = parseFloat(computedStyle.getPropertyValue('width'));
-    let renderedHeight = parseFloat(computedStyle.getPropertyValue('height'));
-    const boxSizing = computedStyle.getPropertyValue('box-sizing');
-    const objectFit = computedStyle.getPropertyValue('object-fit');
-    if (objectFit === `cover`) {
-      // Object fit cover may indicate a use case such as a sprite sheet where
-      // this warning does not apply.
-      return false;
-    }
-    if (boxSizing === 'border-box') {
-      const paddingTop = computedStyle.getPropertyValue('padding-top');
-      const paddingRight = computedStyle.getPropertyValue('padding-right');
-      const paddingBottom = computedStyle.getPropertyValue('padding-bottom');
-      const paddingLeft = computedStyle.getPropertyValue('padding-left');
-      renderedWidth -= parseFloat(paddingRight) + parseFloat(paddingLeft);
-      renderedHeight -= parseFloat(paddingTop) + parseFloat(paddingBottom);
-    }
-    const intrinsicWidth = image.naturalWidth;
-    const intrinsicHeight = image.naturalHeight;
-    const recommendedWidth = this.window.devicePixelRatio * renderedWidth;
-    const recommendedHeight = this.window.devicePixelRatio * renderedHeight;
-    const oversizedWidth = intrinsicWidth - recommendedWidth >= OVERSIZED_IMAGE_TOLERANCE;
-    const oversizedHeight = intrinsicHeight - recommendedHeight >= OVERSIZED_IMAGE_TOLERANCE;
-    return oversizedWidth || oversizedHeight;
-  }
-  static #_ = this.ɵfac = function ImagePerformanceWarning_Factory(t) {
-    return new (t || ImagePerformanceWarning)();
-  };
-  static #_2 = this.ɵprov = /*@__PURE__*/ɵɵdefineInjectable({
-    token: ImagePerformanceWarning,
-    factory: ImagePerformanceWarning.ɵfac,
-    providedIn: 'root'
-  });
-}
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ImagePerformanceWarning, [{
-    type: Injectable,
-    args: [{
-      providedIn: 'root'
-    }]
-  }], null, null);
-})();
-function logLazyLCPWarning(src) {
-  console.warn(formatRuntimeError(-913 /* RuntimeErrorCode.IMAGE_PERFORMANCE_WARNING */, `An image with src ${src} is the Largest Contentful Paint (LCP) element ` + `but was given a "loading" value of "lazy", which can negatively impact ` + `application loading performance. This warning can be addressed by ` + `changing the loading value of the LCP image to "eager", or by using the ` + `NgOptimizedImage directive's prioritization utilities. For more ` + `information about addressing or disabling this warning, see ` + `https://angular.io/errors/NG0913`));
-}
-function logOversizedImageWarning(src) {
-  console.warn(formatRuntimeError(-913 /* RuntimeErrorCode.IMAGE_PERFORMANCE_WARNING */, `An image with src ${src} has intrinsic file dimensions much larger than its ` + `rendered size. This can negatively impact application loading performance. ` + `For more information about addressing or disabling this warning, see ` + `https://angular.io/errors/NG0913`));
-}
-
-/**
- * *Internal* service that keeps track of pending tasks happening in the system
- * during the initial rendering. No tasks are tracked after an initial
- * rendering.
- *
- * This information is needed to make sure that the serialization on the server
- * is delayed until all tasks in the queue (such as an initial navigation or a
- * pending HTTP request) are completed.
- */
-class InitialRenderPendingTasks {
-  constructor() {
-    this.taskId = 0;
-    this.pendingTasks = new Set();
-    this.hasPendingTasks = new rxjs__WEBPACK_IMPORTED_MODULE_6__.BehaviorSubject(false);
-  }
-  add() {
-    this.hasPendingTasks.next(true);
-    const taskId = this.taskId++;
-    this.pendingTasks.add(taskId);
-    return taskId;
-  }
-  remove(taskId) {
-    this.pendingTasks.delete(taskId);
-    if (this.pendingTasks.size === 0) {
-      this.hasPendingTasks.next(false);
-    }
-  }
-  ngOnDestroy() {
-    this.pendingTasks.clear();
-    this.hasPendingTasks.next(false);
-  }
-  static #_ = this.ɵfac = function InitialRenderPendingTasks_Factory(t) {
-    return new (t || InitialRenderPendingTasks)();
-  };
-  static #_2 = this.ɵprov = /*@__PURE__*/ɵɵdefineInjectable({
-    token: InitialRenderPendingTasks,
-    factory: InitialRenderPendingTasks.ɵfac,
-    providedIn: 'root'
-  });
-}
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(InitialRenderPendingTasks, [{
-    type: Injectable,
-    args: [{
-      providedIn: 'root'
     }]
   }], null, null);
 })();
@@ -44516,6 +43881,63 @@ const COMPILER_OPTIONS = new InjectionToken('compilerOptions');
  * additional context.
  */
 class CompilerFactory {}
+
+/**
+ * *Internal* service that keeps track of pending tasks happening in the system.
+ *
+ * This information is needed to make sure that the serialization on the server
+ * is delayed until all tasks in the queue (such as an initial navigation or a
+ * pending HTTP request) are completed.
+ *
+ * Pending tasks continue to contribute to the stableness of `ApplicationRef`
+ * throughout the lifetime of the application.
+ */
+class PendingTasks {
+  constructor() {
+    this.taskId = 0;
+    this.pendingTasks = new Set();
+    this.hasPendingTasks = new rxjs__WEBPACK_IMPORTED_MODULE_3__.BehaviorSubject(false);
+  }
+  get _hasPendingTasks() {
+    return this.hasPendingTasks.value;
+  }
+  add() {
+    if (!this._hasPendingTasks) {
+      this.hasPendingTasks.next(true);
+    }
+    const taskId = this.taskId++;
+    this.pendingTasks.add(taskId);
+    return taskId;
+  }
+  remove(taskId) {
+    this.pendingTasks.delete(taskId);
+    if (this.pendingTasks.size === 0 && this._hasPendingTasks) {
+      this.hasPendingTasks.next(false);
+    }
+  }
+  ngOnDestroy() {
+    this.pendingTasks.clear();
+    if (this._hasPendingTasks) {
+      this.hasPendingTasks.next(false);
+    }
+  }
+  static #_ = this.ɵfac = function PendingTasks_Factory(t) {
+    return new (t || PendingTasks)();
+  };
+  static #_2 = this.ɵprov = /*@__PURE__*/ɵɵdefineInjectable({
+    token: PendingTasks,
+    factory: PendingTasks.ɵfac,
+    providedIn: 'root'
+  });
+}
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(PendingTasks, [{
+    type: Injectable,
+    args: [{
+      providedIn: 'root'
+    }]
+  }], null, null);
+})();
 
 /**
  * These are the data structures that our framework injector profiler will fill with data in order
@@ -44798,6 +44220,7 @@ function applyChanges(component) {
  */
 function detectChanges(component) {
   const view = getComponentViewByInstance(component);
+  view[FLAGS] |= 1024 /* LViewFlags.RefreshView */;
   detectChangesInternal(view);
 }
 
@@ -45742,19 +45165,200 @@ function setTestabilityGetter(getter) {
   _testabilityGetter = getter;
 }
 let _testabilityGetter;
-let _platformInjector = null;
+
 /**
- * Internal token to indicate whether having multiple bootstrapped platform should be allowed (only
- * one bootstrapped platform is allowed by default). This token helps to support SSR scenarios.
+ * A [DI token](guide/glossary#di-token "DI token definition") that you can use to provide
+ * one or more initialization functions.
+ *
+ * The provided functions are injected at application startup and executed during
+ * app initialization. If any of these functions returns a Promise or an Observable, initialization
+ * does not complete until the Promise is resolved or the Observable is completed.
+ *
+ * You can, for example, create a factory function that loads language data
+ * or an external configuration, and provide that function to the `APP_INITIALIZER` token.
+ * The function is executed during the application bootstrap process,
+ * and the needed data is available on startup.
+ *
+ * @see {@link ApplicationInitStatus}
+ *
+ * @usageNotes
+ *
+ * The following example illustrates how to configure a multi-provider using `APP_INITIALIZER` token
+ * and a function returning a promise.
+ * ### Example with NgModule-based application
+ * ```
+ *  function initializeApp(): Promise<any> {
+ *    return new Promise((resolve, reject) => {
+ *      // Do some asynchronous stuff
+ *      resolve();
+ *    });
+ *  }
+ *
+ *  @NgModule({
+ *   imports: [BrowserModule],
+ *   declarations: [AppComponent],
+ *   bootstrap: [AppComponent],
+ *   providers: [{
+ *     provide: APP_INITIALIZER,
+ *     useFactory: () => initializeApp,
+ *     multi: true
+ *    }]
+ *   })
+ *  export class AppModule {}
+ * ```
+ *
+ * ### Example with standalone application
+ * ```
+ * export function initializeApp(http: HttpClient) {
+ *   return (): Promise<any> =>
+ *     firstValueFrom(
+ *       http
+ *         .get("https://someUrl.com/api/user")
+ *         .pipe(tap(user => { ... }))
+ *     );
+ * }
+ *
+ * bootstrapApplication(App, {
+ *   providers: [
+ *     provideHttpClient(),
+ *     {
+ *       provide: APP_INITIALIZER,
+ *       useFactory: initializeApp,
+ *       multi: true,
+ *       deps: [HttpClient],
+ *     },
+ *   ],
+ * });
+
+ * ```
+ *
+ *
+ * It's also possible to configure a multi-provider using `APP_INITIALIZER` token and a function
+ * returning an observable, see an example below. Note: the `HttpClient` in this example is used for
+ * demo purposes to illustrate how the factory function can work with other providers available
+ * through DI.
+ *
+ * ### Example with NgModule-based application
+ * ```
+ *  function initializeAppFactory(httpClient: HttpClient): () => Observable<any> {
+ *   return () => httpClient.get("https://someUrl.com/api/user")
+ *     .pipe(
+ *        tap(user => { ... })
+ *     );
+ *  }
+ *
+ *  @NgModule({
+ *    imports: [BrowserModule, HttpClientModule],
+ *    declarations: [AppComponent],
+ *    bootstrap: [AppComponent],
+ *    providers: [{
+ *      provide: APP_INITIALIZER,
+ *      useFactory: initializeAppFactory,
+ *      deps: [HttpClient],
+ *      multi: true
+ *    }]
+ *  })
+ *  export class AppModule {}
+ * ```
+ *
+ * ### Example with standalone application
+ * ```
+ *  function initializeAppFactory(httpClient: HttpClient): () => Observable<any> {
+ *   return () => httpClient.get("https://someUrl.com/api/user")
+ *     .pipe(
+ *        tap(user => { ... })
+ *     );
+ *  }
+ *
+ * bootstrapApplication(App, {
+ *   providers: [
+ *     provideHttpClient(),
+ *     {
+ *       provide: APP_INITIALIZER,
+ *       useFactory: initializeAppFactory,
+ *       multi: true,
+ *       deps: [HttpClient],
+ *     },
+ *   ],
+ * });
+ * ```
+ *
+ * @publicApi
  */
-const ALLOW_MULTIPLE_PLATFORMS = new InjectionToken('AllowMultipleToken');
+const APP_INITIALIZER = new InjectionToken('Application Initializer');
 /**
- * Internal token that allows to register extra callbacks that should be invoked during the
- * `PlatformRef.destroy` operation. This token is needed to avoid a direct reference to the
- * `PlatformRef` class (i.e. register the callback via `PlatformRef.onDestroy`), thus making the
- * entire class tree-shakeable.
+ * A class that reflects the state of running {@link APP_INITIALIZER} functions.
+ *
+ * @publicApi
  */
-const PLATFORM_DESTROY_LISTENERS = new InjectionToken('PlatformDestroyListeners');
+class ApplicationInitStatus {
+  constructor() {
+    this.initialized = false;
+    this.done = false;
+    this.donePromise = new Promise((res, rej) => {
+      this.resolve = res;
+      this.reject = rej;
+    });
+    this.appInits = inject(APP_INITIALIZER, {
+      optional: true
+    }) ?? [];
+    if ((typeof ngDevMode === 'undefined' || ngDevMode) && !Array.isArray(this.appInits)) {
+      throw new RuntimeError(-209 /* RuntimeErrorCode.INVALID_MULTI_PROVIDER */, 'Unexpected type of the `APP_INITIALIZER` token value ' + `(expected an array, but got ${typeof this.appInits}). ` + 'Please check that the `APP_INITIALIZER` token is configured as a ' + '`multi: true` provider.');
+    }
+  }
+  /** @internal */
+  runInitializers() {
+    if (this.initialized) {
+      return;
+    }
+    const asyncInitPromises = [];
+    for (const appInits of this.appInits) {
+      const initResult = appInits();
+      if (isPromise(initResult)) {
+        asyncInitPromises.push(initResult);
+      } else if (isSubscribable(initResult)) {
+        const observableAsPromise = new Promise((resolve, reject) => {
+          initResult.subscribe({
+            complete: resolve,
+            error: reject
+          });
+        });
+        asyncInitPromises.push(observableAsPromise);
+      }
+    }
+    const complete = () => {
+      // @ts-expect-error overwriting a readonly
+      this.done = true;
+      this.resolve();
+    };
+    Promise.all(asyncInitPromises).then(() => {
+      complete();
+    }).catch(e => {
+      this.reject(e);
+    });
+    if (asyncInitPromises.length === 0) {
+      complete();
+    }
+    this.initialized = true;
+  }
+  static #_ = this.ɵfac = function ApplicationInitStatus_Factory(t) {
+    return new (t || ApplicationInitStatus)();
+  };
+  static #_2 = this.ɵprov = /*@__PURE__*/ɵɵdefineInjectable({
+    token: ApplicationInitStatus,
+    factory: ApplicationInitStatus.ɵfac,
+    providedIn: 'root'
+  });
+}
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ApplicationInitStatus, [{
+    type: Injectable,
+    args: [{
+      providedIn: 'root'
+    }]
+  }], () => [], null);
+})();
+
 /**
  * A [DI token](guide/glossary#di-token "DI token definition") that provides a set of callbacks to
  * be called for every component that is bootstrapped.
@@ -45830,376 +45434,6 @@ class NgProbeToken {
     this.name = name;
     this.token = token;
   }
-}
-/**
- * Creates a platform.
- * Platforms must be created on launch using this function.
- *
- * @publicApi
- */
-function createPlatform(injector) {
-  if (_platformInjector && !_platformInjector.get(ALLOW_MULTIPLE_PLATFORMS, false)) {
-    throw new RuntimeError(400 /* RuntimeErrorCode.MULTIPLE_PLATFORMS */, ngDevMode && 'There can be only one platform. Destroy the previous one to create a new one.');
-  }
-  publishDefaultGlobalUtils();
-  publishSignalConfiguration();
-  _platformInjector = injector;
-  const platform = injector.get(PlatformRef);
-  runPlatformInitializers(injector);
-  return platform;
-}
-/**
- * The goal of this function is to bootstrap a platform injector,
- * but avoid referencing `PlatformRef` class.
- * This function is needed for bootstrapping a Standalone Component.
- */
-function createOrReusePlatformInjector(providers = []) {
-  // If a platform injector already exists, it means that the platform
-  // is already bootstrapped and no additional actions are required.
-  if (_platformInjector) return _platformInjector;
-  publishDefaultGlobalUtils();
-  // Otherwise, setup a new platform injector and run platform initializers.
-  const injector = createPlatformInjector(providers);
-  _platformInjector = injector;
-  publishSignalConfiguration();
-  runPlatformInitializers(injector);
-  return injector;
-}
-function runPlatformInitializers(injector) {
-  const inits = injector.get(PLATFORM_INITIALIZER, null);
-  inits?.forEach(init => init());
-}
-/**
- * Internal create application API that implements the core application creation logic and optional
- * bootstrap logic.
- *
- * Platforms (such as `platform-browser`) may require different set of application and platform
- * providers for an application to function correctly. As a result, platforms may use this function
- * internally and supply the necessary providers during the bootstrap, while exposing
- * platform-specific APIs as a part of their public API.
- *
- * @returns A promise that returns an `ApplicationRef` instance once resolved.
- */
-function internalCreateApplication(config) {
-  try {
-    const {
-      rootComponent,
-      appProviders,
-      platformProviders
-    } = config;
-    if ((typeof ngDevMode === 'undefined' || ngDevMode) && rootComponent !== undefined) {
-      assertStandaloneComponentType(rootComponent);
-    }
-    const platformInjector = createOrReusePlatformInjector(platformProviders);
-    // Create root application injector based on a set of providers configured at the platform
-    // bootstrap level as well as providers passed to the bootstrap call by a user.
-    const allAppProviders = [provideZoneChangeDetection(), ...(appProviders || [])];
-    const adapter = new EnvironmentNgModuleRefAdapter({
-      providers: allAppProviders,
-      parent: platformInjector,
-      debugName: typeof ngDevMode === 'undefined' || ngDevMode ? 'Environment Injector' : '',
-      // We skip environment initializers because we need to run them inside the NgZone, which
-      // happens after we get the NgZone instance from the Injector.
-      runEnvironmentInitializers: false
-    });
-    const envInjector = adapter.injector;
-    const ngZone = envInjector.get(NgZone);
-    return ngZone.run(() => {
-      envInjector.resolveInjectorInitializers();
-      const exceptionHandler = envInjector.get(ErrorHandler, null);
-      if ((typeof ngDevMode === 'undefined' || ngDevMode) && !exceptionHandler) {
-        throw new RuntimeError(402 /* RuntimeErrorCode.MISSING_REQUIRED_INJECTABLE_IN_BOOTSTRAP */, 'No `ErrorHandler` found in the Dependency Injection tree.');
-      }
-      let onErrorSubscription;
-      ngZone.runOutsideAngular(() => {
-        onErrorSubscription = ngZone.onError.subscribe({
-          next: error => {
-            exceptionHandler.handleError(error);
-          }
-        });
-      });
-      // If the whole platform is destroyed, invoke the `destroy` method
-      // for all bootstrapped applications as well.
-      const destroyListener = () => envInjector.destroy();
-      const onPlatformDestroyListeners = platformInjector.get(PLATFORM_DESTROY_LISTENERS);
-      onPlatformDestroyListeners.add(destroyListener);
-      envInjector.onDestroy(() => {
-        onErrorSubscription.unsubscribe();
-        onPlatformDestroyListeners.delete(destroyListener);
-      });
-      return _callAndReportToErrorHandler(exceptionHandler, ngZone, () => {
-        const initStatus = envInjector.get(ApplicationInitStatus);
-        initStatus.runInitializers();
-        return initStatus.donePromise.then(() => {
-          const localeId = envInjector.get(LOCALE_ID, DEFAULT_LOCALE_ID);
-          setLocaleId(localeId || DEFAULT_LOCALE_ID);
-          const appRef = envInjector.get(ApplicationRef);
-          if (rootComponent !== undefined) {
-            appRef.bootstrap(rootComponent);
-          }
-          if (typeof ngDevMode === 'undefined' || ngDevMode) {
-            const imagePerformanceService = envInjector.get(ImagePerformanceWarning);
-            imagePerformanceService.start();
-          }
-          return appRef;
-        });
-      });
-    });
-  } catch (e) {
-    return Promise.reject(e);
-  }
-}
-/**
- * Creates a factory for a platform. Can be used to provide or override `Providers` specific to
- * your application's runtime needs, such as `PLATFORM_INITIALIZER` and `PLATFORM_ID`.
- * @param parentPlatformFactory Another platform factory to modify. Allows you to compose factories
- * to build up configurations that might be required by different libraries or parts of the
- * application.
- * @param name Identifies the new platform factory.
- * @param providers A set of dependency providers for platforms created with the new factory.
- *
- * @publicApi
- */
-function createPlatformFactory(parentPlatformFactory, name, providers = []) {
-  const desc = `Platform: ${name}`;
-  const marker = new InjectionToken(desc);
-  return (extraProviders = []) => {
-    let platform = getPlatform();
-    if (!platform || platform.injector.get(ALLOW_MULTIPLE_PLATFORMS, false)) {
-      const platformProviders = [...providers, ...extraProviders, {
-        provide: marker,
-        useValue: true
-      }];
-      if (parentPlatformFactory) {
-        parentPlatformFactory(platformProviders);
-      } else {
-        createPlatform(createPlatformInjector(platformProviders, desc));
-      }
-    }
-    return assertPlatform(marker);
-  };
-}
-/**
- * Checks that there is currently a platform that contains the given token as a provider.
- *
- * @publicApi
- */
-function assertPlatform(requiredToken) {
-  const platform = getPlatform();
-  if (!platform) {
-    throw new RuntimeError(401 /* RuntimeErrorCode.PLATFORM_NOT_FOUND */, ngDevMode && 'No platform exists!');
-  }
-  if ((typeof ngDevMode === 'undefined' || ngDevMode) && !platform.injector.get(requiredToken, null)) {
-    throw new RuntimeError(400 /* RuntimeErrorCode.MULTIPLE_PLATFORMS */, 'A platform with a different configuration has been created. Please destroy it first.');
-  }
-  return platform;
-}
-/**
- * Helper function to create an instance of a platform injector (that maintains the 'platform'
- * scope).
- */
-function createPlatformInjector(providers = [], name) {
-  return Injector.create({
-    name,
-    providers: [{
-      provide: INJECTOR_SCOPE,
-      useValue: 'platform'
-    }, {
-      provide: PLATFORM_DESTROY_LISTENERS,
-      useValue: new Set([() => _platformInjector = null])
-    }, ...providers]
-  });
-}
-/**
- * Destroys the current Angular platform and all Angular applications on the page.
- * Destroys all modules and listeners registered with the platform.
- *
- * @publicApi
- */
-function destroyPlatform() {
-  getPlatform()?.destroy();
-}
-/**
- * Returns the current platform.
- *
- * @publicApi
- */
-function getPlatform() {
-  return _platformInjector?.get(PlatformRef) ?? null;
-}
-/**
- * The Angular platform is the entry point for Angular on a web page.
- * Each page has exactly one platform. Services (such as reflection) which are common
- * to every Angular application running on the page are bound in its scope.
- * A page's platform is initialized implicitly when a platform is created using a platform
- * factory such as `PlatformBrowser`, or explicitly by calling the `createPlatform()` function.
- *
- * @publicApi
- */
-class PlatformRef {
-  /** @internal */
-  constructor(_injector) {
-    this._injector = _injector;
-    this._modules = [];
-    this._destroyListeners = [];
-    this._destroyed = false;
-  }
-  /**
-   * Creates an instance of an `@NgModule` for the given platform.
-   *
-   * @deprecated Passing NgModule factories as the `PlatformRef.bootstrapModuleFactory` function
-   *     argument is deprecated. Use the `PlatformRef.bootstrapModule` API instead.
-   */
-  bootstrapModuleFactory(moduleFactory, options) {
-    // Note: We need to create the NgZone _before_ we instantiate the module,
-    // as instantiating the module creates some providers eagerly.
-    // So we create a mini parent injector that just contains the new NgZone and
-    // pass that as parent to the NgModuleFactory.
-    const ngZone = getNgZone(options?.ngZone, getNgZoneOptions({
-      eventCoalescing: options?.ngZoneEventCoalescing,
-      runCoalescing: options?.ngZoneRunCoalescing
-    }));
-    // Note: Create ngZoneInjector within ngZone.run so that all of the instantiated services are
-    // created within the Angular zone
-    // Do not try to replace ngZone.run with ApplicationRef#run because ApplicationRef would then be
-    // created outside of the Angular zone.
-    return ngZone.run(() => {
-      const moduleRef = createNgModuleRefWithProviders(moduleFactory.moduleType, this.injector, internalProvideZoneChangeDetection(() => ngZone));
-      if ((typeof ngDevMode === 'undefined' || ngDevMode) && moduleRef.injector.get(PROVIDED_NG_ZONE, null) !== null) {
-        throw new RuntimeError(207 /* RuntimeErrorCode.PROVIDER_IN_WRONG_CONTEXT */, '`bootstrapModule` does not support `provideZoneChangeDetection`. Use `BootstrapOptions` instead.');
-      }
-      const exceptionHandler = moduleRef.injector.get(ErrorHandler, null);
-      if ((typeof ngDevMode === 'undefined' || ngDevMode) && exceptionHandler === null) {
-        throw new RuntimeError(402 /* RuntimeErrorCode.MISSING_REQUIRED_INJECTABLE_IN_BOOTSTRAP */, 'No ErrorHandler. Is platform module (BrowserModule) included?');
-      }
-      ngZone.runOutsideAngular(() => {
-        const subscription = ngZone.onError.subscribe({
-          next: error => {
-            exceptionHandler.handleError(error);
-          }
-        });
-        moduleRef.onDestroy(() => {
-          remove(this._modules, moduleRef);
-          subscription.unsubscribe();
-        });
-      });
-      return _callAndReportToErrorHandler(exceptionHandler, ngZone, () => {
-        const initStatus = moduleRef.injector.get(ApplicationInitStatus);
-        initStatus.runInitializers();
-        return initStatus.donePromise.then(() => {
-          // If the `LOCALE_ID` provider is defined at bootstrap then we set the value for ivy
-          const localeId = moduleRef.injector.get(LOCALE_ID, DEFAULT_LOCALE_ID);
-          setLocaleId(localeId || DEFAULT_LOCALE_ID);
-          this._moduleDoBootstrap(moduleRef);
-          return moduleRef;
-        });
-      });
-    });
-  }
-  /**
-   * Creates an instance of an `@NgModule` for a given platform.
-   *
-   * @usageNotes
-   * ### Simple Example
-   *
-   * ```typescript
-   * @NgModule({
-   *   imports: [BrowserModule]
-   * })
-   * class MyModule {}
-   *
-   * let moduleRef = platformBrowser().bootstrapModule(MyModule);
-   * ```
-   *
-   */
-  bootstrapModule(moduleType, compilerOptions = []) {
-    const options = optionsReducer({}, compilerOptions);
-    return compileNgModuleFactory(this.injector, options, moduleType).then(moduleFactory => this.bootstrapModuleFactory(moduleFactory, options));
-  }
-  _moduleDoBootstrap(moduleRef) {
-    const appRef = moduleRef.injector.get(ApplicationRef);
-    if (moduleRef._bootstrapComponents.length > 0) {
-      moduleRef._bootstrapComponents.forEach(f => appRef.bootstrap(f));
-    } else if (moduleRef.instance.ngDoBootstrap) {
-      moduleRef.instance.ngDoBootstrap(appRef);
-    } else {
-      throw new RuntimeError(-403 /* RuntimeErrorCode.BOOTSTRAP_COMPONENTS_NOT_FOUND */, ngDevMode && `The module ${stringify(moduleRef.instance.constructor)} was bootstrapped, ` + `but it does not declare "@NgModule.bootstrap" components nor a "ngDoBootstrap" method. ` + `Please define one of these.`);
-    }
-    this._modules.push(moduleRef);
-  }
-  /**
-   * Registers a listener to be called when the platform is destroyed.
-   */
-  onDestroy(callback) {
-    this._destroyListeners.push(callback);
-  }
-  /**
-   * Retrieves the platform {@link Injector}, which is the parent injector for
-   * every Angular application on the page and provides singleton providers.
-   */
-  get injector() {
-    return this._injector;
-  }
-  /**
-   * Destroys the current Angular platform and all Angular applications on the page.
-   * Destroys all modules and listeners registered with the platform.
-   */
-  destroy() {
-    if (this._destroyed) {
-      throw new RuntimeError(404 /* RuntimeErrorCode.PLATFORM_ALREADY_DESTROYED */, ngDevMode && 'The platform has already been destroyed!');
-    }
-    this._modules.slice().forEach(module => module.destroy());
-    this._destroyListeners.forEach(listener => listener());
-    const destroyListeners = this._injector.get(PLATFORM_DESTROY_LISTENERS, null);
-    if (destroyListeners) {
-      destroyListeners.forEach(listener => listener());
-      destroyListeners.clear();
-    }
-    this._destroyed = true;
-  }
-  /**
-   * Indicates whether this instance was destroyed.
-   */
-  get destroyed() {
-    return this._destroyed;
-  }
-  static #_ = this.ɵfac = function PlatformRef_Factory(t) {
-    return new (t || PlatformRef)(ɵɵinject(Injector));
-  };
-  static #_2 = this.ɵprov = /*@__PURE__*/ɵɵdefineInjectable({
-    token: PlatformRef,
-    factory: PlatformRef.ɵfac,
-    providedIn: 'platform'
-  });
-}
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(PlatformRef, [{
-    type: Injectable,
-    args: [{
-      providedIn: 'platform'
-    }]
-  }], () => [{
-    type: Injector
-  }], null);
-})();
-// Transforms a set of `BootstrapOptions` (supported by the NgModule-based bootstrap APIs) ->
-// `NgZoneOptions` that are recognized by the NgZone constructor. Passing no options will result in
-// a set of default options returned.
-function getNgZoneOptions(options) {
-  return {
-    enableLongStackTrace: typeof ngDevMode === 'undefined' ? false : !!ngDevMode,
-    shouldCoalesceEventChangeDetection: options?.eventCoalescing ?? false,
-    shouldCoalesceRunChangeDetection: options?.runCoalescing ?? false
-  };
-}
-function getNgZone(ngZoneToUse = 'zone.js', options) {
-  if (ngZoneToUse === 'noop') {
-    return new NoopNgZone();
-  }
-  if (ngZoneToUse === 'zone.js') {
-    return new NgZone(options);
-  }
-  return ngZoneToUse;
 }
 function _callAndReportToErrorHandler(errorHandler, ngZone, callback) {
   try {
@@ -46329,7 +45563,6 @@ class ApplicationRef {
     /** @internal */
     this._views = [];
     this.internalErrorHandler = inject(INTERNAL_APPLICATION_ERROR_HANDLER);
-    this.zoneIsStable = inject(ZONE_IS_STABLE_OBSERVABLE);
     /**
      * Get a list of component types registered to this application.
      * This list is populated even before the component is created.
@@ -46342,7 +45575,7 @@ class ApplicationRef {
     /**
      * Returns an Observable that indicates when the application is stable or unstable.
      */
-    this.isStable = inject(InitialRenderPendingTasks).hasPendingTasks.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_7__.switchMap)(hasPendingTasks => hasPendingTasks ? (0,rxjs__WEBPACK_IMPORTED_MODULE_8__.of)(false) : this.zoneIsStable), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.distinctUntilChanged)(), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.share)());
+    this.isStable = inject(PendingTasks).hasPendingTasks.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_4__.map)(pending => !pending));
     this._injector = inject(EnvironmentInjector);
   }
   /**
@@ -46580,23 +45813,22 @@ function _lastDefined(args) {
   }
   return undefined;
 }
+let whenStableStore;
 /**
- * `InjectionToken` used to configure how to call the `ErrorHandler`.
- *
- * `NgZone` is provided by default today so the default (and only) implementation for this
- * is calling `ErrorHandler.handleError` outside of the Angular zone.
+ * Returns a Promise that resolves when the application becomes stable after this method is called
+ * the first time.
  */
-const INTERNAL_APPLICATION_ERROR_HANDLER = new InjectionToken(typeof ngDevMode === 'undefined' || ngDevMode ? 'internal error handler' : '', {
-  providedIn: 'root',
-  factory: () => {
-    const userErrorHandler = inject(ErrorHandler);
-    return userErrorHandler.handleError.bind(undefined);
+function whenStable(applicationRef) {
+  whenStableStore ??= new WeakMap();
+  const cachedWhenStable = whenStableStore.get(applicationRef);
+  if (cachedWhenStable) {
+    return cachedWhenStable;
   }
-});
-function ngZoneApplicationErrorHandlerFactory() {
-  const zone = inject(NgZone);
-  const userErrorHandler = inject(ErrorHandler);
-  return e => zone.runOutsideAngular(() => userErrorHandler.handleError(e));
+  const whenStablePromise = applicationRef.isStable.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.first)(isStable => isStable)).toPromise().then(() => void 0);
+  whenStableStore.set(applicationRef, whenStablePromise);
+  // Be a good citizen and clean the store `onDestroy` even though we are using `WeakMap`.
+  applicationRef.onDestroy(() => whenStableStore?.delete(applicationRef));
+  return whenStablePromise;
 }
 class NgZoneChangeDetectionScheduler {
   constructor() {
@@ -46657,12 +45889,23 @@ function internalProvideZoneChangeDetection(ngZoneFactory) {
       return () => ngZoneChangeDetectionScheduler.initialize();
     }
   }, {
+    provide: ENVIRONMENT_INITIALIZER,
+    multi: true,
+    useFactory: () => {
+      const service = inject(ZoneStablePendingTask);
+      return () => {
+        service.initialize();
+      };
+    }
+  }, {
     provide: INTERNAL_APPLICATION_ERROR_HANDLER,
     useFactory: ngZoneApplicationErrorHandlerFactory
-  }, {
-    provide: ZONE_IS_STABLE_OBSERVABLE,
-    useFactory: isStableFactory
   }];
+}
+function ngZoneApplicationErrorHandlerFactory() {
+  const zone = inject(NgZone);
+  const userErrorHandler = inject(ErrorHandler);
+  return e => zone.runOutsideAngular(() => userErrorHandler.handleError(e));
 }
 /**
  * Provides `NgZone`-based change detection for the application bootstrapped using
@@ -46691,22 +45934,524 @@ function provideZoneChangeDetection(options) {
     useValue: true
   } : [], zoneProviders]);
 }
-let whenStableStore;
-/**
- * Returns a Promise that resolves when the application becomes stable after this method is called
- * the first time.
- */
-function whenStable(applicationRef) {
-  whenStableStore ??= new WeakMap();
-  const cachedWhenStable = whenStableStore.get(applicationRef);
-  if (cachedWhenStable) {
-    return cachedWhenStable;
+// Transforms a set of `BootstrapOptions` (supported by the NgModule-based bootstrap APIs) ->
+// `NgZoneOptions` that are recognized by the NgZone constructor. Passing no options will result in
+// a set of default options returned.
+function getNgZoneOptions(options) {
+  return {
+    enableLongStackTrace: typeof ngDevMode === 'undefined' ? false : !!ngDevMode,
+    shouldCoalesceEventChangeDetection: options?.eventCoalescing ?? false,
+    shouldCoalesceRunChangeDetection: options?.runCoalescing ?? false
+  };
+}
+class ZoneStablePendingTask {
+  constructor() {
+    this.subscription = new rxjs__WEBPACK_IMPORTED_MODULE_2__.Subscription();
+    this.initialized = false;
+    this.zone = inject(NgZone);
+    this.pendingTasks = inject(PendingTasks);
   }
-  const whenStablePromise = applicationRef.isStable.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_10__.first)(isStable => isStable)).toPromise().then(() => void 0);
-  whenStableStore.set(applicationRef, whenStablePromise);
-  // Be a good citizen and clean the store `onDestroy` even though we are using `WeakMap`.
-  applicationRef.onDestroy(() => whenStableStore?.delete(applicationRef));
-  return whenStablePromise;
+  initialize() {
+    if (this.initialized) {
+      return;
+    }
+    this.initialized = true;
+    let task = null;
+    if (!this.zone.isStable && !this.zone.hasPendingMacrotasks && !this.zone.hasPendingMicrotasks) {
+      task = this.pendingTasks.add();
+    }
+    this.zone.runOutsideAngular(() => {
+      this.subscription.add(this.zone.onStable.subscribe(() => {
+        NgZone.assertNotInAngularZone();
+        // Check whether there are no pending macro/micro tasks in the next tick
+        // to allow for NgZone to update the state.
+        queueMicrotask(() => {
+          if (task !== null && !this.zone.hasPendingMacrotasks && !this.zone.hasPendingMicrotasks) {
+            this.pendingTasks.remove(task);
+            task = null;
+          }
+        });
+      }));
+    });
+    this.subscription.add(this.zone.onUnstable.subscribe(() => {
+      NgZone.assertInAngularZone();
+      task ??= this.pendingTasks.add();
+    }));
+  }
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+  static #_ = this.ɵfac = function ZoneStablePendingTask_Factory(t) {
+    return new (t || ZoneStablePendingTask)();
+  };
+  static #_2 = this.ɵprov = /*@__PURE__*/ɵɵdefineInjectable({
+    token: ZoneStablePendingTask,
+    factory: ZoneStablePendingTask.ɵfac,
+    providedIn: 'root'
+  });
+}
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ZoneStablePendingTask, [{
+    type: Injectable,
+    args: [{
+      providedIn: 'root'
+    }]
+  }], null, null);
+})();
+
+/**
+ * Work out the locale from the potential global properties.
+ *
+ * * Closure Compiler: use `goog.LOCALE`.
+ * * Ivy enabled: use `$localize.locale`
+ */
+function getGlobalLocale() {
+  if (typeof ngI18nClosureMode !== 'undefined' && ngI18nClosureMode && typeof goog !== 'undefined' && goog.LOCALE !== 'en') {
+    // * The default `goog.LOCALE` value is `en`, while Angular used `en-US`.
+    // * In order to preserve backwards compatibility, we use Angular default value over
+    //   Closure Compiler's one.
+    return goog.LOCALE;
+  } else {
+    // KEEP `typeof $localize !== 'undefined' && $localize.locale` IN SYNC WITH THE LOCALIZE
+    // COMPILE-TIME INLINER.
+    //
+    // * During compile time inlining of translations the expression will be replaced
+    //   with a string literal that is the current locale. Other forms of this expression are not
+    //   guaranteed to be replaced.
+    //
+    // * During runtime translation evaluation, the developer is required to set `$localize.locale`
+    //   if required, or just to provide their own `LOCALE_ID` provider.
+    return typeof $localize !== 'undefined' && $localize.locale || DEFAULT_LOCALE_ID;
+  }
+}
+/**
+ * Provide this token to set the locale of your application.
+ * It is used for i18n extraction, by i18n pipes (DatePipe, I18nPluralPipe, CurrencyPipe,
+ * DecimalPipe and PercentPipe) and by ICU expressions.
+ *
+ * See the [i18n guide](guide/i18n-common-locale-id) for more information.
+ *
+ * @usageNotes
+ * ### Example
+ *
+ * ```typescript
+ * import { LOCALE_ID } from '@angular/core';
+ * import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+ * import { AppModule } from './app/app.module';
+ *
+ * platformBrowserDynamic().bootstrapModule(AppModule, {
+ *   providers: [{provide: LOCALE_ID, useValue: 'en-US' }]
+ * });
+ * ```
+ *
+ * @publicApi
+ */
+const LOCALE_ID = new InjectionToken('LocaleId', {
+  providedIn: 'root',
+  factory: () => inject(LOCALE_ID, InjectFlags.Optional | InjectFlags.SkipSelf) || getGlobalLocale()
+});
+/**
+ * Provide this token to set the default currency code your application uses for
+ * CurrencyPipe when there is no currency code passed into it. This is only used by
+ * CurrencyPipe and has no relation to locale currency. Defaults to USD if not configured.
+ *
+ * See the [i18n guide](guide/i18n-common-locale-id) for more information.
+ *
+ * <div class="alert is-helpful">
+ *
+ * **Deprecation notice:**
+ *
+ * The default currency code is currently always `USD` but this is deprecated from v9.
+ *
+ * **In v10 the default currency code will be taken from the current locale.**
+ *
+ * If you need the previous behavior then set it by creating a `DEFAULT_CURRENCY_CODE` provider in
+ * your application `NgModule`:
+ *
+ * ```ts
+ * {provide: DEFAULT_CURRENCY_CODE, useValue: 'USD'}
+ * ```
+ *
+ * </div>
+ *
+ * @usageNotes
+ * ### Example
+ *
+ * ```typescript
+ * import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+ * import { AppModule } from './app/app.module';
+ *
+ * platformBrowserDynamic().bootstrapModule(AppModule, {
+ *   providers: [{provide: DEFAULT_CURRENCY_CODE, useValue: 'EUR' }]
+ * });
+ * ```
+ *
+ * @publicApi
+ */
+const DEFAULT_CURRENCY_CODE = new InjectionToken('DefaultCurrencyCode', {
+  providedIn: 'root',
+  factory: () => USD_CURRENCY_CODE
+});
+/**
+ * Use this token at bootstrap to provide the content of your translation file (`xtb`,
+ * `xlf` or `xlf2`) when you want to translate your application in another language.
+ *
+ * See the [i18n guide](guide/i18n-common-merge) for more information.
+ *
+ * @usageNotes
+ * ### Example
+ *
+ * ```typescript
+ * import { TRANSLATIONS } from '@angular/core';
+ * import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+ * import { AppModule } from './app/app.module';
+ *
+ * // content of your translation file
+ * const translations = '....';
+ *
+ * platformBrowserDynamic().bootstrapModule(AppModule, {
+ *   providers: [{provide: TRANSLATIONS, useValue: translations }]
+ * });
+ * ```
+ *
+ * @publicApi
+ */
+const TRANSLATIONS = new InjectionToken('Translations');
+/**
+ * Provide this token at bootstrap to set the format of your {@link TRANSLATIONS}: `xtb`,
+ * `xlf` or `xlf2`.
+ *
+ * See the [i18n guide](guide/i18n-common-merge) for more information.
+ *
+ * @usageNotes
+ * ### Example
+ *
+ * ```typescript
+ * import { TRANSLATIONS_FORMAT } from '@angular/core';
+ * import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+ * import { AppModule } from './app/app.module';
+ *
+ * platformBrowserDynamic().bootstrapModule(AppModule, {
+ *   providers: [{provide: TRANSLATIONS_FORMAT, useValue: 'xlf' }]
+ * });
+ * ```
+ *
+ * @publicApi
+ */
+const TRANSLATIONS_FORMAT = new InjectionToken('TranslationsFormat');
+/**
+ * Use this enum at bootstrap as an option of `bootstrapModule` to define the strategy
+ * that the compiler should use in case of missing translations:
+ * - Error: throw if you have missing translations.
+ * - Warning (default): show a warning in the console and/or shell.
+ * - Ignore: do nothing.
+ *
+ * See the [i18n guide](guide/i18n-common-merge#report-missing-translations) for more information.
+ *
+ * @usageNotes
+ * ### Example
+ * ```typescript
+ * import { MissingTranslationStrategy } from '@angular/core';
+ * import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+ * import { AppModule } from './app/app.module';
+ *
+ * platformBrowserDynamic().bootstrapModule(AppModule, {
+ *   missingTranslation: MissingTranslationStrategy.Error
+ * });
+ * ```
+ *
+ * @publicApi
+ */
+var MissingTranslationStrategy;
+(function (MissingTranslationStrategy) {
+  MissingTranslationStrategy[MissingTranslationStrategy["Error"] = 0] = "Error";
+  MissingTranslationStrategy[MissingTranslationStrategy["Warning"] = 1] = "Warning";
+  MissingTranslationStrategy[MissingTranslationStrategy["Ignore"] = 2] = "Ignore";
+})(MissingTranslationStrategy || (MissingTranslationStrategy = {}));
+
+/**
+ * Internal token that allows to register extra callbacks that should be invoked during the
+ * `PlatformRef.destroy` operation. This token is needed to avoid a direct reference to the
+ * `PlatformRef` class (i.e. register the callback via `PlatformRef.onDestroy`), thus making the
+ * entire class tree-shakeable.
+ */
+const PLATFORM_DESTROY_LISTENERS = new InjectionToken('PlatformDestroyListeners');
+/**
+ * The Angular platform is the entry point for Angular on a web page.
+ * Each page has exactly one platform. Services (such as reflection) which are common
+ * to every Angular application running on the page are bound in its scope.
+ * A page's platform is initialized implicitly when a platform is created using a platform
+ * factory such as `PlatformBrowser`, or explicitly by calling the `createPlatform()` function.
+ *
+ * @publicApi
+ */
+class PlatformRef {
+  /** @internal */
+  constructor(_injector) {
+    this._injector = _injector;
+    this._modules = [];
+    this._destroyListeners = [];
+    this._destroyed = false;
+  }
+  /**
+   * Creates an instance of an `@NgModule` for the given platform.
+   *
+   * @deprecated Passing NgModule factories as the `PlatformRef.bootstrapModuleFactory` function
+   *     argument is deprecated. Use the `PlatformRef.bootstrapModule` API instead.
+   */
+  bootstrapModuleFactory(moduleFactory, options) {
+    // Note: We need to create the NgZone _before_ we instantiate the module,
+    // as instantiating the module creates some providers eagerly.
+    // So we create a mini parent injector that just contains the new NgZone and
+    // pass that as parent to the NgModuleFactory.
+    const ngZone = getNgZone(options?.ngZone, getNgZoneOptions({
+      eventCoalescing: options?.ngZoneEventCoalescing,
+      runCoalescing: options?.ngZoneRunCoalescing
+    }));
+    // Note: Create ngZoneInjector within ngZone.run so that all of the instantiated services are
+    // created within the Angular zone
+    // Do not try to replace ngZone.run with ApplicationRef#run because ApplicationRef would then be
+    // created outside of the Angular zone.
+    return ngZone.run(() => {
+      const moduleRef = createNgModuleRefWithProviders(moduleFactory.moduleType, this.injector, internalProvideZoneChangeDetection(() => ngZone));
+      if ((typeof ngDevMode === 'undefined' || ngDevMode) && moduleRef.injector.get(PROVIDED_NG_ZONE, null) !== null) {
+        throw new RuntimeError(207 /* RuntimeErrorCode.PROVIDER_IN_WRONG_CONTEXT */, '`bootstrapModule` does not support `provideZoneChangeDetection`. Use `BootstrapOptions` instead.');
+      }
+      const exceptionHandler = moduleRef.injector.get(ErrorHandler, null);
+      if ((typeof ngDevMode === 'undefined' || ngDevMode) && exceptionHandler === null) {
+        throw new RuntimeError(402 /* RuntimeErrorCode.MISSING_REQUIRED_INJECTABLE_IN_BOOTSTRAP */, 'No ErrorHandler. Is platform module (BrowserModule) included?');
+      }
+      ngZone.runOutsideAngular(() => {
+        const subscription = ngZone.onError.subscribe({
+          next: error => {
+            exceptionHandler.handleError(error);
+          }
+        });
+        moduleRef.onDestroy(() => {
+          remove(this._modules, moduleRef);
+          subscription.unsubscribe();
+        });
+      });
+      return _callAndReportToErrorHandler(exceptionHandler, ngZone, () => {
+        const initStatus = moduleRef.injector.get(ApplicationInitStatus);
+        initStatus.runInitializers();
+        return initStatus.donePromise.then(() => {
+          // If the `LOCALE_ID` provider is defined at bootstrap then we set the value for ivy
+          const localeId = moduleRef.injector.get(LOCALE_ID, DEFAULT_LOCALE_ID);
+          setLocaleId(localeId || DEFAULT_LOCALE_ID);
+          this._moduleDoBootstrap(moduleRef);
+          return moduleRef;
+        });
+      });
+    });
+  }
+  /**
+   * Creates an instance of an `@NgModule` for a given platform.
+   *
+   * @usageNotes
+   * ### Simple Example
+   *
+   * ```typescript
+   * @NgModule({
+   *   imports: [BrowserModule]
+   * })
+   * class MyModule {}
+   *
+   * let moduleRef = platformBrowser().bootstrapModule(MyModule);
+   * ```
+   *
+   */
+  bootstrapModule(moduleType, compilerOptions = []) {
+    const options = optionsReducer({}, compilerOptions);
+    return compileNgModuleFactory(this.injector, options, moduleType).then(moduleFactory => this.bootstrapModuleFactory(moduleFactory, options));
+  }
+  _moduleDoBootstrap(moduleRef) {
+    const appRef = moduleRef.injector.get(ApplicationRef);
+    if (moduleRef._bootstrapComponents.length > 0) {
+      moduleRef._bootstrapComponents.forEach(f => appRef.bootstrap(f));
+    } else if (moduleRef.instance.ngDoBootstrap) {
+      moduleRef.instance.ngDoBootstrap(appRef);
+    } else {
+      throw new RuntimeError(-403 /* RuntimeErrorCode.BOOTSTRAP_COMPONENTS_NOT_FOUND */, ngDevMode && `The module ${stringify(moduleRef.instance.constructor)} was bootstrapped, ` + `but it does not declare "@NgModule.bootstrap" components nor a "ngDoBootstrap" method. ` + `Please define one of these.`);
+    }
+    this._modules.push(moduleRef);
+  }
+  /**
+   * Registers a listener to be called when the platform is destroyed.
+   */
+  onDestroy(callback) {
+    this._destroyListeners.push(callback);
+  }
+  /**
+   * Retrieves the platform {@link Injector}, which is the parent injector for
+   * every Angular application on the page and provides singleton providers.
+   */
+  get injector() {
+    return this._injector;
+  }
+  /**
+   * Destroys the current Angular platform and all Angular applications on the page.
+   * Destroys all modules and listeners registered with the platform.
+   */
+  destroy() {
+    if (this._destroyed) {
+      throw new RuntimeError(404 /* RuntimeErrorCode.PLATFORM_ALREADY_DESTROYED */, ngDevMode && 'The platform has already been destroyed!');
+    }
+    this._modules.slice().forEach(module => module.destroy());
+    this._destroyListeners.forEach(listener => listener());
+    const destroyListeners = this._injector.get(PLATFORM_DESTROY_LISTENERS, null);
+    if (destroyListeners) {
+      destroyListeners.forEach(listener => listener());
+      destroyListeners.clear();
+    }
+    this._destroyed = true;
+  }
+  /**
+   * Indicates whether this instance was destroyed.
+   */
+  get destroyed() {
+    return this._destroyed;
+  }
+  static #_ = this.ɵfac = function PlatformRef_Factory(t) {
+    return new (t || PlatformRef)(ɵɵinject(Injector));
+  };
+  static #_2 = this.ɵprov = /*@__PURE__*/ɵɵdefineInjectable({
+    token: PlatformRef,
+    factory: PlatformRef.ɵfac,
+    providedIn: 'platform'
+  });
+}
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(PlatformRef, [{
+    type: Injectable,
+    args: [{
+      providedIn: 'platform'
+    }]
+  }], () => [{
+    type: Injector
+  }], null);
+})();
+let _platformInjector = null;
+/**
+ * Internal token to indicate whether having multiple bootstrapped platform should be allowed (only
+ * one bootstrapped platform is allowed by default). This token helps to support SSR scenarios.
+ */
+const ALLOW_MULTIPLE_PLATFORMS = new InjectionToken('AllowMultipleToken');
+/**
+ * Creates a platform.
+ * Platforms must be created on launch using this function.
+ *
+ * @publicApi
+ */
+function createPlatform(injector) {
+  if (_platformInjector && !_platformInjector.get(ALLOW_MULTIPLE_PLATFORMS, false)) {
+    throw new RuntimeError(400 /* RuntimeErrorCode.MULTIPLE_PLATFORMS */, ngDevMode && 'There can be only one platform. Destroy the previous one to create a new one.');
+  }
+  publishDefaultGlobalUtils();
+  publishSignalConfiguration();
+  _platformInjector = injector;
+  const platform = injector.get(PlatformRef);
+  runPlatformInitializers(injector);
+  return platform;
+}
+/**
+ * Creates a factory for a platform. Can be used to provide or override `Providers` specific to
+ * your application's runtime needs, such as `PLATFORM_INITIALIZER` and `PLATFORM_ID`.
+ * @param parentPlatformFactory Another platform factory to modify. Allows you to compose factories
+ * to build up configurations that might be required by different libraries or parts of the
+ * application.
+ * @param name Identifies the new platform factory.
+ * @param providers A set of dependency providers for platforms created with the new factory.
+ *
+ * @publicApi
+ */
+function createPlatformFactory(parentPlatformFactory, name, providers = []) {
+  const desc = `Platform: ${name}`;
+  const marker = new InjectionToken(desc);
+  return (extraProviders = []) => {
+    let platform = getPlatform();
+    if (!platform || platform.injector.get(ALLOW_MULTIPLE_PLATFORMS, false)) {
+      const platformProviders = [...providers, ...extraProviders, {
+        provide: marker,
+        useValue: true
+      }];
+      if (parentPlatformFactory) {
+        parentPlatformFactory(platformProviders);
+      } else {
+        createPlatform(createPlatformInjector(platformProviders, desc));
+      }
+    }
+    return assertPlatform(marker);
+  };
+}
+/**
+ * Helper function to create an instance of a platform injector (that maintains the 'platform'
+ * scope).
+ */
+function createPlatformInjector(providers = [], name) {
+  return Injector.create({
+    name,
+    providers: [{
+      provide: INJECTOR_SCOPE,
+      useValue: 'platform'
+    }, {
+      provide: PLATFORM_DESTROY_LISTENERS,
+      useValue: new Set([() => _platformInjector = null])
+    }, ...providers]
+  });
+}
+/**
+ * Checks that there is currently a platform that contains the given token as a provider.
+ *
+ * @publicApi
+ */
+function assertPlatform(requiredToken) {
+  const platform = getPlatform();
+  if (!platform) {
+    throw new RuntimeError(401 /* RuntimeErrorCode.PLATFORM_NOT_FOUND */, ngDevMode && 'No platform exists!');
+  }
+  if ((typeof ngDevMode === 'undefined' || ngDevMode) && !platform.injector.get(requiredToken, null)) {
+    throw new RuntimeError(400 /* RuntimeErrorCode.MULTIPLE_PLATFORMS */, 'A platform with a different configuration has been created. Please destroy it first.');
+  }
+  return platform;
+}
+/**
+ * Returns the current platform.
+ *
+ * @publicApi
+ */
+function getPlatform() {
+  return _platformInjector?.get(PlatformRef) ?? null;
+}
+/**
+ * Destroys the current Angular platform and all Angular applications on the page.
+ * Destroys all modules and listeners registered with the platform.
+ *
+ * @publicApi
+ */
+function destroyPlatform() {
+  getPlatform()?.destroy();
+}
+/**
+ * The goal of this function is to bootstrap a platform injector,
+ * but avoid referencing `PlatformRef` class.
+ * This function is needed for bootstrapping a Standalone Component.
+ */
+function createOrReusePlatformInjector(providers = []) {
+  // If a platform injector already exists, it means that the platform
+  // is already bootstrapped and no additional actions are required.
+  if (_platformInjector) return _platformInjector;
+  publishDefaultGlobalUtils();
+  // Otherwise, setup a new platform injector and run platform initializers.
+  const injector = createPlatformInjector(providers);
+  _platformInjector = injector;
+  publishSignalConfiguration();
+  runPlatformInitializers(injector);
+  return injector;
+}
+function runPlatformInitializers(injector) {
+  const inits = injector.get(PLATFORM_INITIALIZER, null);
+  inits?.forEach(init => init());
 }
 
 /**
@@ -47495,6 +47240,7 @@ function producerAccessed(node) {
       // `activeConsumer.producerNode[idx]` which will be overwritten below.
     }
   }
+
   if (activeConsumer.producerNode[idx] !== node) {
     // We're a new dependency of the consumer (at `idx`).
     activeConsumer.producerNode[idx] = node;
@@ -47839,12 +47585,7 @@ function signalSetFn(node, newValue) {
   if (!producerUpdatesAllowed()) {
     throwInvalidWriteToSignalError();
   }
-  const value = node.value;
-  if (Object.is(value, newValue)) {
-    if (typeof ngDevMode !== 'undefined' && ngDevMode && !node.equal(value, newValue)) {
-      console.warn('Signal value equality implementations should always return `true` for' + ' values that are the same according to `Object.is` but returned `false` instead.');
-    }
-  } else if (!node.equal(value, newValue)) {
+  if (!node.equal(node.value, newValue)) {
     node.value = newValue;
     signalValueChanged(node);
   }
@@ -47953,6 +47694,246 @@ const WATCH_NODE = /* @__PURE__ */(() => {
 })();
 function setAlternateWeakRefImpl(impl) {
   // TODO: remove this function
+}
+
+// A delay in milliseconds before the scan is run after onLoad, to avoid any
+// potential race conditions with other LCP-related functions. This delay
+// happens outside of the main JavaScript execution and will only effect the timing
+// on when the warning becomes visible in the console.
+const SCAN_DELAY = 200;
+const OVERSIZED_IMAGE_TOLERANCE = 1200;
+class ImagePerformanceWarning {
+  constructor() {
+    // Map of full image URLs -> original `ngSrc` values.
+    this.window = null;
+    this.observer = null;
+    this.options = inject(IMAGE_CONFIG);
+    this.ngZone = inject(NgZone);
+  }
+  start() {
+    if (typeof PerformanceObserver === 'undefined' || this.options?.disableImageSizeWarning && this.options?.disableImageLazyLoadWarning) {
+      return;
+    }
+    this.observer = this.initPerformanceObserver();
+    const doc = getDocument();
+    const win = doc.defaultView;
+    if (typeof win !== 'undefined') {
+      this.window = win;
+      // Wait to avoid race conditions where LCP image triggers
+      // load event before it's recorded by the performance observer
+      const waitToScan = () => {
+        setTimeout(this.scanImages.bind(this), SCAN_DELAY);
+      };
+      // Angular doesn't have to run change detection whenever any asynchronous tasks are invoked in
+      // the scope of this functionality.
+      this.ngZone.runOutsideAngular(() => {
+        // Consider the case when the application is created and destroyed multiple times.
+        // Typically, applications are created instantly once the page is loaded, and the
+        // `window.load` listener is always triggered. However, the `window.load` event will never
+        // be fired if the page is loaded, and the application is created later. Checking for
+        // `readyState` is the easiest way to determine whether the page has been loaded or not.
+        if (doc.readyState === 'complete') {
+          waitToScan();
+        } else {
+          this.window?.addEventListener('load', waitToScan, {
+            once: true
+          });
+        }
+      });
+    }
+  }
+  ngOnDestroy() {
+    this.observer?.disconnect();
+  }
+  initPerformanceObserver() {
+    if (typeof PerformanceObserver === 'undefined') {
+      return null;
+    }
+    const observer = new PerformanceObserver(entryList => {
+      const entries = entryList.getEntries();
+      if (entries.length === 0) return;
+      // We use the latest entry produced by the `PerformanceObserver` as the best
+      // signal on which element is actually an LCP one. As an example, the first image to load on
+      // a page, by virtue of being the only thing on the page so far, is often a LCP candidate
+      // and gets reported by PerformanceObserver, but isn't necessarily the LCP element.
+      const lcpElement = entries[entries.length - 1];
+      // Cast to `any` due to missing `element` on the `LargestContentfulPaint` type of entry.
+      // See https://developer.mozilla.org/en-US/docs/Web/API/LargestContentfulPaint
+      const imgSrc = lcpElement.element?.src ?? '';
+      // Exclude `data:` and `blob:` URLs, since they are fetched resources.
+      if (imgSrc.startsWith('data:') || imgSrc.startsWith('blob:')) return;
+      this.lcpImageUrl = imgSrc;
+    });
+    observer.observe({
+      type: 'largest-contentful-paint',
+      buffered: true
+    });
+    return observer;
+  }
+  scanImages() {
+    const images = getDocument().querySelectorAll('img');
+    let lcpElementFound,
+      lcpElementLoadedCorrectly = false;
+    images.forEach(image => {
+      if (!this.options?.disableImageSizeWarning) {
+        for (const image of images) {
+          // Image elements using the NgOptimizedImage directive are excluded,
+          // as that directive has its own version of this check.
+          if (!image.getAttribute('ng-img') && this.isOversized(image)) {
+            logOversizedImageWarning(image.src);
+          }
+        }
+      }
+      if (!this.options?.disableImageLazyLoadWarning && this.lcpImageUrl) {
+        if (image.src === this.lcpImageUrl) {
+          lcpElementFound = true;
+          if (image.loading !== 'lazy' || image.getAttribute('ng-img')) {
+            // This variable is set to true and never goes back to false to account
+            // for the case where multiple images have the same src url, and some
+            // have lazy loading while others don't.
+            // Also ignore NgOptimizedImage because there's a different warning for that.
+            lcpElementLoadedCorrectly = true;
+          }
+        }
+      }
+    });
+    if (lcpElementFound && !lcpElementLoadedCorrectly && this.lcpImageUrl && !this.options?.disableImageLazyLoadWarning) {
+      logLazyLCPWarning(this.lcpImageUrl);
+    }
+  }
+  isOversized(image) {
+    if (!this.window) {
+      return false;
+    }
+    const computedStyle = this.window.getComputedStyle(image);
+    let renderedWidth = parseFloat(computedStyle.getPropertyValue('width'));
+    let renderedHeight = parseFloat(computedStyle.getPropertyValue('height'));
+    const boxSizing = computedStyle.getPropertyValue('box-sizing');
+    const objectFit = computedStyle.getPropertyValue('object-fit');
+    if (objectFit === `cover`) {
+      // Object fit cover may indicate a use case such as a sprite sheet where
+      // this warning does not apply.
+      return false;
+    }
+    if (boxSizing === 'border-box') {
+      const paddingTop = computedStyle.getPropertyValue('padding-top');
+      const paddingRight = computedStyle.getPropertyValue('padding-right');
+      const paddingBottom = computedStyle.getPropertyValue('padding-bottom');
+      const paddingLeft = computedStyle.getPropertyValue('padding-left');
+      renderedWidth -= parseFloat(paddingRight) + parseFloat(paddingLeft);
+      renderedHeight -= parseFloat(paddingTop) + parseFloat(paddingBottom);
+    }
+    const intrinsicWidth = image.naturalWidth;
+    const intrinsicHeight = image.naturalHeight;
+    const recommendedWidth = this.window.devicePixelRatio * renderedWidth;
+    const recommendedHeight = this.window.devicePixelRatio * renderedHeight;
+    const oversizedWidth = intrinsicWidth - recommendedWidth >= OVERSIZED_IMAGE_TOLERANCE;
+    const oversizedHeight = intrinsicHeight - recommendedHeight >= OVERSIZED_IMAGE_TOLERANCE;
+    return oversizedWidth || oversizedHeight;
+  }
+  static #_ = this.ɵfac = function ImagePerformanceWarning_Factory(t) {
+    return new (t || ImagePerformanceWarning)();
+  };
+  static #_2 = this.ɵprov = /*@__PURE__*/ɵɵdefineInjectable({
+    token: ImagePerformanceWarning,
+    factory: ImagePerformanceWarning.ɵfac,
+    providedIn: 'root'
+  });
+}
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ImagePerformanceWarning, [{
+    type: Injectable,
+    args: [{
+      providedIn: 'root'
+    }]
+  }], null, null);
+})();
+function logLazyLCPWarning(src) {
+  console.warn(formatRuntimeError(-913 /* RuntimeErrorCode.IMAGE_PERFORMANCE_WARNING */, `An image with src ${src} is the Largest Contentful Paint (LCP) element ` + `but was given a "loading" value of "lazy", which can negatively impact ` + `application loading performance. This warning can be addressed by ` + `changing the loading value of the LCP image to "eager", or by using the ` + `NgOptimizedImage directive's prioritization utilities. For more ` + `information about addressing or disabling this warning, see ` + `https://angular.io/errors/NG0913`));
+}
+function logOversizedImageWarning(src) {
+  console.warn(formatRuntimeError(-913 /* RuntimeErrorCode.IMAGE_PERFORMANCE_WARNING */, `An image with src ${src} has intrinsic file dimensions much larger than its ` + `rendered size. This can negatively impact application loading performance. ` + `For more information about addressing or disabling this warning, see ` + `https://angular.io/errors/NG0913`));
+}
+
+/**
+ * Internal create application API that implements the core application creation logic and optional
+ * bootstrap logic.
+ *
+ * Platforms (such as `platform-browser`) may require different set of application and platform
+ * providers for an application to function correctly. As a result, platforms may use this function
+ * internally and supply the necessary providers during the bootstrap, while exposing
+ * platform-specific APIs as a part of their public API.
+ *
+ * @returns A promise that returns an `ApplicationRef` instance once resolved.
+ */
+function internalCreateApplication(config) {
+  try {
+    const {
+      rootComponent,
+      appProviders,
+      platformProviders
+    } = config;
+    if ((typeof ngDevMode === 'undefined' || ngDevMode) && rootComponent !== undefined) {
+      assertStandaloneComponentType(rootComponent);
+    }
+    const platformInjector = createOrReusePlatformInjector(platformProviders);
+    // Create root application injector based on a set of providers configured at the platform
+    // bootstrap level as well as providers passed to the bootstrap call by a user.
+    const allAppProviders = [provideZoneChangeDetection(), ...(appProviders || [])];
+    const adapter = new EnvironmentNgModuleRefAdapter({
+      providers: allAppProviders,
+      parent: platformInjector,
+      debugName: typeof ngDevMode === 'undefined' || ngDevMode ? 'Environment Injector' : '',
+      // We skip environment initializers because we need to run them inside the NgZone, which
+      // happens after we get the NgZone instance from the Injector.
+      runEnvironmentInitializers: false
+    });
+    const envInjector = adapter.injector;
+    const ngZone = envInjector.get(NgZone);
+    return ngZone.run(() => {
+      envInjector.resolveInjectorInitializers();
+      const exceptionHandler = envInjector.get(ErrorHandler, null);
+      if ((typeof ngDevMode === 'undefined' || ngDevMode) && !exceptionHandler) {
+        throw new RuntimeError(402 /* RuntimeErrorCode.MISSING_REQUIRED_INJECTABLE_IN_BOOTSTRAP */, 'No `ErrorHandler` found in the Dependency Injection tree.');
+      }
+      let onErrorSubscription;
+      ngZone.runOutsideAngular(() => {
+        onErrorSubscription = ngZone.onError.subscribe({
+          next: error => {
+            exceptionHandler.handleError(error);
+          }
+        });
+      });
+      // If the whole platform is destroyed, invoke the `destroy` method
+      // for all bootstrapped applications as well.
+      const destroyListener = () => envInjector.destroy();
+      const onPlatformDestroyListeners = platformInjector.get(PLATFORM_DESTROY_LISTENERS);
+      onPlatformDestroyListeners.add(destroyListener);
+      envInjector.onDestroy(() => {
+        onErrorSubscription.unsubscribe();
+        onPlatformDestroyListeners.delete(destroyListener);
+      });
+      return _callAndReportToErrorHandler(exceptionHandler, ngZone, () => {
+        const initStatus = envInjector.get(ApplicationInitStatus);
+        initStatus.runInitializers();
+        return initStatus.donePromise.then(() => {
+          const localeId = envInjector.get(LOCALE_ID, DEFAULT_LOCALE_ID);
+          setLocaleId(localeId || DEFAULT_LOCALE_ID);
+          const appRef = envInjector.get(ApplicationRef);
+          if (rootComponent !== undefined) {
+            appRef.bootstrap(rootComponent);
+          }
+          if (typeof ngDevMode === 'undefined' || ngDevMode) {
+            const imagePerformanceService = envInjector.get(ImagePerformanceWarning);
+            imagePerformanceService.start();
+          }
+          return appRef;
+        });
+      });
+    });
+  } catch (e) {
+    return Promise.reject(e);
+  }
 }
 
 /**
@@ -48296,6 +48277,7 @@ function serializeLView(lView, context) {
         }
       }
     }
+    conditionallyAnnotateNodePath(ngh, tNode, lView);
     if (isLContainer(lView[i])) {
       // Serialize information about a template.
       const embeddedTView = tNode.tView;
@@ -48382,16 +48364,36 @@ function serializeLView(lView, context) {
             context.corruptedTextNodes.set(rNode, "ngtns" /* TextNodeMarker.Separator */);
           }
         }
-        if (tNode.projectionNext && tNode.projectionNext !== tNode.next && !isInSkipHydrationBlock(tNode.projectionNext)) {
-          // Check if projection next is not the same as next, in which case
-          // the node would not be found at creation time at runtime and we
-          // need to provide a location for that node.
-          appendSerializedNodePath(ngh, tNode.projectionNext, lView);
-        }
       }
     }
   }
+
   return ngh;
+}
+/**
+ * Serializes node location in cases when it's needed, specifically:
+ *
+ *  1. If `tNode.projectionNext` is different from `tNode.next` - it means that
+ *     the next `tNode` after projection is different from the one in the original
+ *     template. Since hydration relies on `tNode.next`, this serialized info
+ *     if required to help runtime code find the node at the correct location.
+ *  2. In certain content projection-based use-cases, it's possible that only
+ *     a content of a projected element is rendered. In this case, content nodes
+ *     require an extra annotation, since runtime logic can't rely on parent-child
+ *     connection to identify the location of a node.
+ */
+function conditionallyAnnotateNodePath(ngh, tNode, lView) {
+  // Handle case #1 described above.
+  if (tNode.projectionNext && tNode.projectionNext !== tNode.next && !isInSkipHydrationBlock(tNode.projectionNext)) {
+    appendSerializedNodePath(ngh, tNode.projectionNext, lView);
+  }
+  // Handle case #2 described above.
+  // Note: we only do that for the first node (i.e. when `tNode.prev === null`),
+  // the rest of the nodes would rely on the current node location, so no extra
+  // annotation is needed.
+  if (tNode.prev === null && tNode.parent !== null && isDisconnectedNode(tNode.parent, lView) && !isDisconnectedNode(tNode, lView)) {
+    appendSerializedNodePath(ngh, tNode, lView);
+  }
 }
 /**
  * Determines whether a component instance that is represented
@@ -48460,16 +48462,6 @@ function isContentProjectedNode(tNode) {
     currentTNode = currentTNode.parent;
   }
   return false;
-}
-/**
- * Check whether a given node exists, but is disconnected from the DOM.
- *
- * Note: we leverage the fact that we have this information available in the DOM emulation
- * layer (in Domino) for now. Longer-term solution should not rely on the DOM emulation and
- * only use internal data structures and state to compute this information.
- */
-function isDisconnectedNode(tNode, lView) {
-  return !(tNode.type & 16 /* TNodeType.Projection */) && !!lView[tNode.index] && !unwrapRNode(lView[tNode.index]).isConnected;
 }
 
 /**
@@ -48616,6 +48608,7 @@ function withDomHydration() {
       }
       return () => {}; // noop
     },
+
     multi: true
   }]);
 }
@@ -49028,7 +49021,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   signalUpdateFn: () => (/* binding */ signalUpdateFn)
 /* harmony export */ });
 /**
- * @license Angular v17.0.5
+ * @license Angular v17.0.8
  * (c) 2010-2022 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -49118,6 +49111,7 @@ function producerAccessed(node) {
       // `activeConsumer.producerNode[idx]` which will be overwritten below.
     }
   }
+
   if (activeConsumer.producerNode[idx] !== node) {
     // We're a new dependency of the consumer (at `idx`).
     activeConsumer.producerNode[idx] = node;
@@ -49462,12 +49456,7 @@ function signalSetFn(node, newValue) {
   if (!producerUpdatesAllowed()) {
     throwInvalidWriteToSignalError();
   }
-  const value = node.value;
-  if (Object.is(value, newValue)) {
-    if (typeof ngDevMode !== 'undefined' && ngDevMode && !node.equal(value, newValue)) {
-      console.warn('Signal value equality implementations should always return `true` for' + ' values that are the same according to `Object.is` but returned `false` instead.');
-    }
-  } else if (!node.equal(value, newValue)) {
+  if (!node.equal(node.value, newValue)) {
     node.value = newValue;
     signalValueChanged(node);
   }
@@ -49652,7 +49641,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs */ 2130);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs/operators */ 7422);
 /**
- * @license Angular v17.0.5
+ * @license Angular v17.0.8
  * (c) 2010-2022 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -50373,6 +50362,7 @@ function minValidator(min) {
     if (isEmptyInputValue(control.value) || isEmptyInputValue(min)) {
       return null; // don't validate empty values to allow optional controls
     }
+
     const value = parseFloat(control.value);
     // Controls with NaN values after parsing should be treated as not having a
     // minimum, per the HTML forms spec: https://www.w3.org/TR/html5/forms.html#attr-input-min
@@ -50393,6 +50383,7 @@ function maxValidator(max) {
     if (isEmptyInputValue(control.value) || isEmptyInputValue(max)) {
       return null; // don't validate empty values to allow optional controls
     }
+
     const value = parseFloat(control.value);
     // Controls with NaN values after parsing should be treated as not having a
     // maximum, per the HTML forms spec: https://www.w3.org/TR/html5/forms.html#attr-input-max
@@ -50431,6 +50422,7 @@ function emailValidator(control) {
   if (isEmptyInputValue(control.value)) {
     return null; // don't validate empty values to allow optional controls
   }
+
   return EMAIL_REGEXP.test(control.value) ? null : {
     'email': true
   };
@@ -50490,6 +50482,7 @@ function patternValidator(pattern) {
     if (isEmptyInputValue(control.value)) {
       return null; // don't validate empty values to allow optional controls
     }
+
     const value = control.value;
     return regex.test(value) ? null : {
       'pattern': {
@@ -57580,7 +57573,7 @@ class UntypedFormBuilder extends FormBuilder {
 /**
  * @publicApi
  */
-const VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.Version('17.0.5');
+const VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.Version('17.0.8');
 
 /**
  * Exports the required providers and directives for template-driven forms,
@@ -57763,7 +57756,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/common */ 6575);
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ 4860);
 /**
- * @license Angular v17.0.5
+ * @license Angular v17.0.8
  * (c) 2010-2022 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -57863,7 +57856,7 @@ function getBaseElementHref() {
 function relativePath(url) {
   // The base URL doesn't really matter, we just need it so relative paths have something
   // to resolve against. In the browser `HTMLBaseElement.href` is always absolute.
-  return new URL(url, 'http://a').pathname;
+  return new URL(url, document.baseURI).pathname;
 }
 class BrowserGetTestability {
   addToWindow(registry) {
@@ -58754,6 +58747,7 @@ class KeyEventsPlugin extends EventManagerPlugin {
     } else if (keycode === '.') {
       keycode = 'dot'; // because '.' is used as a separator in event names
     }
+
     MODIFIER_KEYS.forEach(modifierName => {
       if (modifierName !== keycode) {
         const modifierGetter = MODIFIER_KEY_GETTERS[modifierName];
@@ -60022,7 +60016,7 @@ function provideClientHydration(...features) {
 /**
  * @publicApi
  */
-const VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_1__.Version('17.0.5');
+const VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_1__.Version('17.0.8');
 
 // Re-export TransferState to the public API of the `platform-browser` for backwards-compatibility.
 /**
@@ -60181,7 +60175,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! rxjs/operators */ 2600);
 /* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! @angular/platform-browser */ 6480);
 /**
- * @license Angular v17.0.5
+ * @license Angular v17.0.8
  * (c) 2010-2022 Google LLC. https://angular.io/
  * License: MIT
  */
@@ -61557,6 +61551,7 @@ class GuardsCheckStart extends RouterEvent {
     this.state = state;
     this.type = 7 /* EventType.GuardsCheckStart */;
   }
+
   toString() {
     return `GuardsCheckStart(id: ${this.id}, url: '${this.url}', urlAfterRedirects: '${this.urlAfterRedirects}', state: ${this.state})`;
   }
@@ -61581,6 +61576,7 @@ class GuardsCheckEnd extends RouterEvent {
     this.shouldActivate = shouldActivate;
     this.type = 8 /* EventType.GuardsCheckEnd */;
   }
+
   toString() {
     return `GuardsCheckEnd(id: ${this.id}, url: '${this.url}', urlAfterRedirects: '${this.urlAfterRedirects}', state: ${this.state}, shouldActivate: ${this.shouldActivate})`;
   }
@@ -61606,6 +61602,7 @@ class ResolveStart extends RouterEvent {
     this.state = state;
     this.type = 5 /* EventType.ResolveStart */;
   }
+
   toString() {
     return `ResolveStart(id: ${this.id}, url: '${this.url}', urlAfterRedirects: '${this.urlAfterRedirects}', state: ${this.state})`;
   }
@@ -61627,6 +61624,7 @@ class ResolveEnd extends RouterEvent {
     this.state = state;
     this.type = 6 /* EventType.ResolveEnd */;
   }
+
   toString() {
     return `ResolveEnd(id: ${this.id}, url: '${this.url}', urlAfterRedirects: '${this.urlAfterRedirects}', state: ${this.state})`;
   }
@@ -61644,6 +61642,7 @@ class RouteConfigLoadStart {
     this.route = route;
     this.type = 9 /* EventType.RouteConfigLoadStart */;
   }
+
   toString() {
     return `RouteConfigLoadStart(path: ${this.route.path})`;
   }
@@ -61661,6 +61660,7 @@ class RouteConfigLoadEnd {
     this.route = route;
     this.type = 10 /* EventType.RouteConfigLoadEnd */;
   }
+
   toString() {
     return `RouteConfigLoadEnd(path: ${this.route.path})`;
   }
@@ -61679,6 +61679,7 @@ class ChildActivationStart {
     this.snapshot = snapshot;
     this.type = 11 /* EventType.ChildActivationStart */;
   }
+
   toString() {
     const path = this.snapshot.routeConfig && this.snapshot.routeConfig.path || '';
     return `ChildActivationStart(path: '${path}')`;
@@ -61697,6 +61698,7 @@ class ChildActivationEnd {
     this.snapshot = snapshot;
     this.type = 12 /* EventType.ChildActivationEnd */;
   }
+
   toString() {
     const path = this.snapshot.routeConfig && this.snapshot.routeConfig.path || '';
     return `ChildActivationEnd(path: '${path}')`;
@@ -61716,6 +61718,7 @@ class ActivationStart {
     this.snapshot = snapshot;
     this.type = 13 /* EventType.ActivationStart */;
   }
+
   toString() {
     const path = this.snapshot.routeConfig && this.snapshot.routeConfig.path || '';
     return `ActivationStart(path: '${path}')`;
@@ -61735,6 +61738,7 @@ class ActivationEnd {
     this.snapshot = snapshot;
     this.type = 14 /* EventType.ActivationEnd */;
   }
+
   toString() {
     const path = this.snapshot.routeConfig && this.snapshot.routeConfig.path || '';
     return `ActivationEnd(path: '${path}')`;
@@ -61755,6 +61759,7 @@ class Scroll {
     this.anchor = anchor;
     this.type = 15 /* EventType.Scroll */;
   }
+
   toString() {
     const pos = this.position ? `${this.position[0]}, ${this.position[1]}` : null;
     return `Scroll(anchor: '${this.anchor}', position: '${pos}')`;
@@ -62170,8 +62175,12 @@ function getInherited(route, parent, paramsInheritanceStrategy = 'emptyOnly') {
     };
   } else {
     inherited = {
-      params: route.params,
-      data: route.data,
+      params: {
+        ...route.params
+      },
+      data: {
+        ...route.data
+      },
       resolve: {
         ...route.data,
         ...(route._resolvedData ?? {})
@@ -63551,13 +63560,11 @@ function namedOutletsRedirect(redirectTo) {
 function canLoadFails(route) {
   return (0,rxjs__WEBPACK_IMPORTED_MODULE_19__.throwError)(navigationCancelingError((typeof ngDevMode === 'undefined' || ngDevMode) && `Cannot load children because the guard of the route "path: '${route.path}'" returned false`, 3 /* NavigationCancellationCode.GuardRejected */));
 }
+
 class ApplyRedirects {
   constructor(urlSerializer, urlTree) {
     this.urlSerializer = urlSerializer;
     this.urlTree = urlTree;
-  }
-  noMatchError(e) {
-    return new _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵRuntimeError"](4002 /* RuntimeErrorCode.NO_MATCH */, (typeof ngDevMode === 'undefined' || ngDevMode) && `Cannot match any routes. URL Segment: '${e.segmentGroup}'`);
   }
   lineralizeSegments(route, urlTree) {
     let res = [];
@@ -63645,6 +63652,9 @@ function matchWithChecks(segmentGroup, route, segments, injector, urlSerializer)
   }));
 }
 function match(segmentGroup, route, segments) {
+  if (route.path === '**') {
+    return createWildcardMatchResult(segments);
+  }
   if (route.path === '') {
     if (route.pathMatch === 'full' && (segmentGroup.hasChildren() || segments.length > 0)) {
       return {
@@ -63679,6 +63689,15 @@ function match(segmentGroup, route, segments) {
     // TODO(atscott): investigate combining parameters and positionalParamSegments
     parameters,
     positionalParamSegments: res.posParams ?? {}
+  };
+}
+function createWildcardMatchResult(segments) {
+  return {
+    matched: true,
+    parameters: segments.length > 0 ? last(segments).parameters : {},
+    consumedSegments: segments,
+    remainingSegments: [],
+    positionalParamSegments: {}
   };
 }
 function split(segmentGroup, consumedSegments, slicedSegments, config) {
@@ -63758,9 +63777,6 @@ function isImmediateMatch(route, rawSegment, segments, outlet) {
   if (getOutlet(route) !== outlet && (outlet === PRIMARY_OUTLET || !emptyPathMatch(rawSegment, segments, route))) {
     return false;
   }
-  if (route.path === '**') {
-    return true;
-  }
   return match(rawSegment, route, segments).matched;
 }
 function noLeftoversInUrl(segmentGroup, segments, outlet) {
@@ -63791,7 +63807,7 @@ class Recognizer {
     this.allowRedirects = true;
   }
   noMatchError(e) {
-    return new _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵRuntimeError"](4002 /* RuntimeErrorCode.NO_MATCH */, (typeof ngDevMode === 'undefined' || ngDevMode) && `Cannot match any routes. URL Segment: '${e.segmentGroup}'`);
+    return new _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵRuntimeError"](4002 /* RuntimeErrorCode.NO_MATCH */, typeof ngDevMode === 'undefined' || ngDevMode ? `Cannot match any routes. URL Segment: '${e.segmentGroup}'` : `'${e.segmentGroup}'`);
   }
   recognize() {
     const rootSegmentGroup = split(this.urlTree.root, [], [], this.config).segmentGroup;
@@ -63920,7 +63936,7 @@ class Recognizer {
       consumedSegments,
       positionalParamSegments,
       remainingSegments
-    } = route.path === '**' ? createWildcardMatchResult(segments) : match(segmentGroup, route, segments);
+    } = match(segmentGroup, route, segments);
     if (!matched) return noMatch$1(segmentGroup);
     // TODO(atscott): Move all of this under an if(ngDevMode) as a breaking change and allow stack
     // size exceeded in production
@@ -63939,16 +63955,13 @@ class Recognizer {
     }));
   }
   matchSegmentAgainstRoute(injector, rawSegment, route, segments, outlet) {
-    let matchResult;
+    const matchResult = matchWithChecks(rawSegment, route, segments, injector, this.urlSerializer);
     if (route.path === '**') {
-      matchResult = (0,rxjs__WEBPACK_IMPORTED_MODULE_3__.of)(createWildcardMatchResult(segments));
       // Prior versions of the route matching algorithm would stop matching at the wildcard route.
       // We should investigate a better strategy for any existing children. Otherwise, these
       // child segments are silently dropped from the navigation.
       // https://github.com/angular/angular/issues/40089
       rawSegment.children = {};
-    } else {
-      matchResult = matchWithChecks(rawSegment, route, segments, injector, this.urlSerializer);
     }
     return matchResult.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_7__.switchMap)(result => {
       if (!result.matched) {
@@ -64090,15 +64103,6 @@ function getData(route) {
 }
 function getResolve(route) {
   return route.resolve || {};
-}
-function createWildcardMatchResult(segments) {
-  return {
-    matched: true,
-    parameters: segments.length > 0 ? last(segments).parameters : {},
-    consumedSegments: segments,
-    remainingSegments: [],
-    positionalParamSegments: {}
-  };
 }
 function recognize(injector, configLoader, rootComponentType, config, serializer, paramsInheritanceStrategy) {
   return (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_12__.mergeMap)(t => recognize$1(injector, configLoader, rootComponentType, config, t.extractedUrl, serializer, paramsInheritanceStrategy).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_5__.map)(({
@@ -64801,7 +64805,7 @@ class NavigationTransitions {
           }
           return loaders;
         };
-        return (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.combineLatest)(loadComponents(t.targetSnapshot.root)).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_22__.defaultIfEmpty)(), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.take)(1));
+        return (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.combineLatest)(loadComponents(t.targetSnapshot.root)).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_22__.defaultIfEmpty)(null), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.take)(1));
       }), switchTap(() => this.afterPreactivation()), (0,rxjs_operators__WEBPACK_IMPORTED_MODULE_7__.switchMap)(() => {
         const {
           currentSnapshot,
@@ -64890,6 +64894,7 @@ class NavigationTransitions {
       // casting because `pipe` returns observable({}) when called with 8+ arguments
     }));
   }
+
   cancelNavigationTransition(t, reason, code) {
     const navCancel = new NavigationCancel(t.id, this.urlSerializer.serialize(t.extractedUrl), reason, code);
     this.events.next(navCancel);
@@ -65331,7 +65336,7 @@ class Router {
     this.options = (0,_angular_core__WEBPACK_IMPORTED_MODULE_1__.inject)(ROUTER_CONFIGURATION, {
       optional: true
     }) || {};
-    this.pendingTasks = (0,_angular_core__WEBPACK_IMPORTED_MODULE_1__.inject)(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵInitialRenderPendingTasks"]);
+    this.pendingTasks = (0,_angular_core__WEBPACK_IMPORTED_MODULE_1__.inject)(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵPendingTasks"]);
     this.urlUpdateStrategy = this.options.urlUpdateStrategy || 'deferred';
     this.navigationTransitions = (0,_angular_core__WEBPACK_IMPORTED_MODULE_1__.inject)(NavigationTransitions);
     this.urlSerializer = (0,_angular_core__WEBPACK_IMPORTED_MODULE_1__.inject)(UrlSerializer);
@@ -67018,6 +67023,7 @@ function withDisabledInitialNavigation() {
     provide: INITIAL_NAVIGATION,
     useValue: 2 /* InitialNavigation.Disabled */
   }];
+
   return routerFeature(3 /* RouterFeatureKind.DisabledInitialNavigationFeature */, providers);
 }
 /**
@@ -67555,7 +67561,7 @@ function mapToResolve(provider) {
 /**
  * @publicApi
  */
-const VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_1__.Version('17.0.5');
+const VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_1__.Version('17.0.8');
 
 /**
  * @module
