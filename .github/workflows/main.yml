@@ -45,7 +45,7 @@ jobs:
       - name: Publish Unit Test Coverage Results
         uses: romeovs/lcov-reporter-action@v0.2.16
         with:
-          lcov-file: .test-results/coverage/report-lcov/lcov.info
+          lcov-file: test-results/coverage/report-lcov/lcov.info
   deploy-ghpages:
     needs: build
     if: startsWith(github.ref, 'refs/tags/v')
