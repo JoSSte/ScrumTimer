@@ -70,4 +70,14 @@ describe('ParticipantService', () => {
   it('should be created', inject([ParticipantService], (pService: ParticipantService) => {
     expect(pService).toBeTruthy();
   }));
+  it('should log the sync', inject([ParticipantService], (pService: ParticipantService) => {
+    const lastSyncDate = new Date();
+    pService.setLastSync(lastSyncDate);
+    expect(localStorage.getItem('lastSync')).toEqual(lastSyncDate.toISOString());
+  }));
+  // it('should update participant list', inject([ParticipantService], (pService: ParticipantService) => {
+  // 
+  //   pService.updateRemoteParticipants();
+  //   expect(localStorage.getItem('participants')).toEqual(JSON.stringify(pService.participants));;
+  // }));
 });
