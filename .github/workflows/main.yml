@@ -1,4 +1,4 @@
-on: [push, pull_request]
+on: push
 name: Build Angular Application
 permissions:
   contents: read
@@ -27,7 +27,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: npm install and npm run build
         run: |
-          pwd
           npm i
           npm run build
           npm test
@@ -60,7 +59,8 @@ jobs:
         minimum-coverage: 90
         artifact-name: code-coverage-report
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        working-directory: .
+        # this location is based on running pwd in the preceding job. TODO: automate
+        working-directory: /home/runner/work/ScrumTimer/ScrumTimer
         update-comment: true
   deploy-ghpages:
     needs: build
