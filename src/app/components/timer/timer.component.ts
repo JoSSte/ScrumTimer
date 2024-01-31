@@ -57,7 +57,7 @@ export class TimerComponent implements OnInit {
     } else {
       this.individualTime = this.individualMaxTime;
     }
-    console.log('[Scrumtimer] Timer init');
+    console.info('[Scrumtimer] Timer init');
     if(this.activatedRoute['_routerState'].snapshot.url === '/popin'){
       this.nav.hide();
     }else{
@@ -217,14 +217,16 @@ export class TimerComponent implements OnInit {
    *
    * @param participant Participant to mark as absent
    */
-  markAbsent(participant: Participant) {
+  markAbsent(participant: Participant): boolean {
     if (this.participantList.length <= 2) {
-      console.log('Cannot mark the last two participants absent.');
+      console.warn('Cannot mark the last two participants absent.');
+      return false;
     } else {
       const idx: number = this.participantList.indexOf(participant);
       this.absentParticipants.push(participant);
       this.participantList.splice(idx, 1);
       this.currentParticipant = this.participantList[0];
+      return true;
     }
   }
 
