@@ -3,6 +3,7 @@ import { HttpTestingController, HttpClientTestingModule } from '@angular/common/
 import { ParticipantService } from './participant.service';
 import { SettingsService } from '../settings/settings.service';
 import { Subscription } from 'rxjs/Subscription';
+import { Participant } from '../../models/Participant';
 
 describe('ParticipantService', () => {
   let service: ParticipantService;
@@ -70,13 +71,22 @@ describe('ParticipantService', () => {
   it('should be created', inject([ParticipantService], (pService: ParticipantService) => {
     expect(pService).toBeTruthy();
   }));
+
   it('should log the sync', inject([ParticipantService], (pService: ParticipantService) => {
     const lastSyncDate = new Date();
     pService.setLastSync(lastSyncDate);
     expect(localStorage.getItem('lastSync')).toEqual(lastSyncDate.toISOString());
   }));
+
+  it('should get participant list', inject([ParticipantService], (pService: ParticipantService) => {
+    const mockParticipants = [new Participant('IJ', 'Indiana'), new Participant('DJ', 'Doctor Jonas')];
+    pService.participants = mockParticipants;
+    expect(pService.settings.usesRemoteParticipantList()).toEqual(false);
+    // pService.getRemoteParticipants();
+
+  }));
+
   // it('should update participant list', inject([ParticipantService], (pService: ParticipantService) => {
-  // 
   //   pService.updateRemoteParticipants();
   //   expect(localStorage.getItem('participants')).toEqual(JSON.stringify(pService.participants));;
   // }));
