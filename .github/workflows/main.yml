@@ -43,7 +43,7 @@ jobs:
         with:
           junit_files: test-results/junit/*.xml
       - name: Publish Unit Test Coverage Results
-        uses: romeovs/lcov-reporter-action@v0.2.16
+        uses: romeovs/lcov-reporter-action@v0.2.21   
         with:
           lcov-file: test-results/coverage/report-lcov/lcov.info
   deploy-ghpages:
