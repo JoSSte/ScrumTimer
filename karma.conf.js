@@ -45,11 +45,17 @@ module.exports = function (config) {
     },
     coverageReporter: {
       dir: require('path').join(__dirname, 'test-results/coverage'),
-      reports: ['html','junit'],
+      reporters: [{
+        type: 'html',
+        subdir: 'report-html',
+      }, {
+        type: 'lcov',
+        subdir: 'report-lcov',
+      }],
       fixWebpackSourcePaths: true
     },
     junitReporter: { // config: https://www.npmjs.com/package/karma-junit-reporter
-      outputDir: 'test-results', // results will be saved as $outputDir/$browserName.xml
+      outputDir: 'test-results/junit', // results will be saved as $outputDir/$browserName.xml
       outputFile: undefined
     }
   });
