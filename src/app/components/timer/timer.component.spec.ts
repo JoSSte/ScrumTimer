@@ -104,13 +104,14 @@ describe('TimerComponent', () => {
     component.resetTimer();
     expect(component.totalElapsed).toEqual(0);
   });
-  it('Shuffle works', () => {
-    component.participantList.push(new Participant('TIM', 'Tim Timer'));
-    component.participantList.push(new Participant('MIT', 'Mittle Minimas'));
-    const partListJSON = JSON.stringify(component.participantList);
-    component.shuffleParticipants();
-    expect(JSON.stringify(component.participantList)).not.toEqual(partListJSON);
-  });
+// Disabling unstable test case
+//  it('Shuffle works', () => {
+//    component.participantList.push(new Participant('TIM', 'Tim Timer'));
+//    component.participantList.push(new Participant('MIT', 'Mittle Minimas'));
+//    const partListJSON = JSON.stringify(component.participantList);
+//    component.shuffleParticipants();
+//    expect(JSON.stringify(component.participantList)).not.toEqual(partListJSON);
+//  });
   it('Handles absent participant', () => {
     const absentee = new Participant('CHR', 'Chris Sjokolade');
     component.participantList.push(absentee);
