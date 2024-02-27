@@ -14,39 +14,35 @@ export class NavbarComponent implements OnInit {
   private popupWidth = 360;
   constructor(
     public nav: NavbarService
-    ) {
+  ) {
     const hasOpener = window.opener;
     let openerMessage = '';
-    try {
-      if (hasOpener) {
-        this.noOpener = false;
-        openerMessage = 'Not Displaying popout link. already popped out';
-        this.nav.hide();
-      } else {
-        this.noOpener = true;
-        openerMessage = 'Displaying pop out link';
-      }
-    } catch (e) {
-      console.error(e);
-      openerMessage = 'Not Displaying popout link. Already popped out (exception)';
+
+    if (hasOpener) {
       this.noOpener = false;
+      openerMessage = 'Not Displaying popout link. already popped out';
       this.nav.hide();
+    } else {
+      this.noOpener = true;
+      openerMessage = 'Displaying pop out link';
     }
     console.info(openerMessage);
   }
 
   openScrumTimer() {
-    const swp = this.windowProps+ this.popupWidth + ',height=' + window.screen.availHeight;
-    this.scrumTimerWindow = window.open(window.location.origin + window.location.pathname + '#/popin', 'TimerWindowName', swp );
+    const swp = this.windowProps + this.popupWidth + ',height=' + window.screen.availHeight;
+    this.scrumTimerWindow = window.open(window.location.origin + window.location.pathname + '#/popin', 'TimerWindowName', swp);
   }
 
-  openJira() {
+  openJira(): boolean {
     const jwp = this.windowProps + (window.screen.availWidth - this.popupWidth - 10) + ',height=' + window.screen.availHeight;
     const url = localStorage.getItem('JiraURL');
     if (url) {
       this.jiraTimerWindow = window.open(url, 'StoryWindowName', jwp);
-    }else{
+      return true;
+    } else {
       console.warn('no JiraURL in localStorage');
+      return false;
     }
   }
 
