@@ -1,9 +1,10 @@
 on: push
 name: Build Angular Application
 permissions:
-  contents: read
+  contents: write
   issues: read
   checks: write
+  statuses: read
   pull-requests: write
 jobs:
   build:
