@@ -12,16 +12,16 @@ export class SettingsService {
     if (localStorage.getItem('settings') === null) {
       this.globalMaxTime = 60 * 15;
     } else {
-      this.globalMaxTime = JSON.parse(localStorage.getItem('settings'))[1];
+      this.globalMaxTime = JSON.parse(localStorage.getItem('settings') ?? '""')[1];
     }
     return this.globalMaxTime;
   }
 
   getUseGlobalMaxTime(): boolean {
-    if (localStorage.getItem('settings') === null) {
-      this.useGlobalMaxTime = true;
+    if (localStorage.getItem('settings') !== null) {
+      this.useGlobalMaxTime = JSON.parse(localStorage.getItem('settings') ?? '""')[0];
     } else {
-      this.useGlobalMaxTime = JSON.parse(localStorage.getItem('settings'))[0];
+      this.useGlobalMaxTime = true;
     }
     return this.useGlobalMaxTime;
   }
@@ -30,7 +30,7 @@ export class SettingsService {
     if (localStorage.getItem('settings') === null) {
       this.remoteParticipantList = '';
     } else {
-      this.remoteParticipantList = JSON.parse(localStorage.getItem('settings'))[2];
+      this.remoteParticipantList = JSON.parse(localStorage.getItem('settings') ?? '""')[2];
     }
     return this.remoteParticipantList;
   }
@@ -39,7 +39,7 @@ export class SettingsService {
     if (localStorage.getItem('JiraURL') === null) {
       this.jiraURL = '';
     } else {
-      this.jiraURL = localStorage.getItem('JiraURL');
+      this.jiraURL = localStorage.getItem('JiraURL') ?? '""';
     }
     return this.jiraURL;
   }
@@ -81,7 +81,7 @@ export class SettingsService {
   }
 
   // overwrite localstorage, and refresh local list of participants from there...
-  importSettings(jsonSettings) {
+  importSettings(jsonSettings: string) {
     localStorage.setItem('participants', jsonSettings);
     this.exportSettings();
   }

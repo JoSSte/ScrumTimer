@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 
 @Injectable()
 export class ParticipantService {
-  participants: Participant[];
+  participants!: Participant[];
   lastSync: Date = new Date('2000-01-01T00:00:00.000Z');
 
   constructor(public settings: SettingsService, private http: HttpClient, private adapter: ParticipantAdapter) {
@@ -72,30 +72,32 @@ export class ParticipantService {
   }
 
   // overwrite localstorage, and refresh local list of participants from there...
-  importParticipants(jsonParticipants) {
+  importParticipants(jsonParticipants: string) {
     localStorage.setItem('participants', jsonParticipants);
     this.exportParticipants();
   }
 
   getRemoteParticipants(): Observable<Participant[]> {
     if (this.settings.usesRemoteParticipantList()) {
-      console.debug('remote participant list affirmative. Checking URL');
+      // console.debug('remote participant list affirmative. Checking URL');
       const durationSinceLastSync = (Date.now()).valueOf() - this.lastSync.valueOf();
 
       // If more than 15 hours since sync, update
       if (durationSinceLastSync > 54000) {
         const url = this.settings.getRemoteParticipantListURL();
-        console.debug('Seconds since last sync: ' + durationSinceLastSync + ' syncing from ' + url + ' . . .');
+        // console.debug('Seconds since last sync: ' + durationSinceLastSync + ' syncing from ' + url + ' . . .');
         return this.http
         .get(url)
         .pipe(map((data: any[]) => data.map((item) => this.adapter.adapt(item))));
 
-      } else { // TODO: throw exception
-        console.error('not syncing');
+      } else {
+        console.error(new Error('not syncing'));
       }
-    } else { // TODO: throw exception ?
-      console.info('using local participant list');
     }
+    /* else { // TODO: throw exception ?
+      // console.info('using local participant list');
+      throw new Error('not syncing');
+    } */
   }
 
   updateRemoteParticipants(){
