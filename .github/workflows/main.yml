@@ -38,6 +38,7 @@ jobs:
         with:
           artifacts: "dist/angular-githubaction/*"
           token: ${{ secrets.GITHUB_TOKEN }}
+          allowUpdates: true
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
