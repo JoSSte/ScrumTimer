@@ -1,20 +1,19 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ParticipantService } from './participant.service';
 import { SettingsService } from '../settings/settings.service';
 import { Subscription } from 'rxjs/Subscription';
 import { Participant } from '../../models/Participant';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ParticipantService', () => {
   let service: ParticipantService;
   let httpTestingController: HttpTestingController;
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ParticipantService, SettingsService],
-      imports: [
-        HttpClientTestingModule
-      ]
-    });
+    imports: [],
+    providers: [ParticipantService, SettingsService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
   });
 
   beforeEach(() => {
