@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ParticipantService } from './participant.service';
 import { SettingsService } from '../settings/settings.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { Participant } from '../../models/Participant';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
