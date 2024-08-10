@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes, ActivatedRoute } from '@angular/router';
@@ -37,29 +37,23 @@ const appRoutes: Routes = [
 ];
 
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    NavbarComponent,
-    TimerComponent,
-    ParticipantListComponent,
-    SettingsComponent,
-    HelpComponent
-  ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    FormsModule,
-    RouterModule.forRoot(appRoutes, {}),
-    SecsPipe
-  ],
-  providers: [
-    ParticipantService,
-    SettingsService,
-    NavbarService,
-    Location,
-    { provide: LocationStrategy, useClass: HashLocationStrategy }
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        NavbarComponent,
+        TimerComponent,
+        ParticipantListComponent,
+        SettingsComponent,
+        HelpComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        FormsModule,
+        RouterModule.forRoot(appRoutes, {}),
+        SecsPipe], providers: [
+        ParticipantService,
+        SettingsService,
+        NavbarService,
+        Location,
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }

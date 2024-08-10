@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { Participant } from '../../models/Participant';
 import { ParticipantService } from '../../services/participant/participant.service';
@@ -15,21 +15,19 @@ describe('TimerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         TimerComponent
-      ],
-      imports: [
-        RouterTestingModule.withRoutes([]),
-        HttpClientModule,
+    ],
+    imports: [RouterTestingModule.withRoutes([]),
         SecsPipe,
-        FormsModule
-      ],
-      providers: [
+        FormsModule],
+    providers: [
         ParticipantService,
         SettingsService,
-        SecsPipe
-      ]
-    })
+        SecsPipe,
+        provideHttpClient(withInterceptorsFromDi())
+    ]
+})
       .compileComponents();
   }));
 
