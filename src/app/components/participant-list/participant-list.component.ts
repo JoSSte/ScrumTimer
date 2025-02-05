@@ -4,9 +4,10 @@ import { ParticipantService } from '../../services/participant/participant.servi
 
 
 @Component({
-  selector: 'app-participant-list',
-  templateUrl: './participant-list.component.html',
-  styleUrls: ['./participant-list.component.css']
+    selector: 'app-participant-list',
+    templateUrl: './participant-list.component.html',
+    styleUrls: ['./participant-list.component.css'],
+    standalone: false
 })
 export class ParticipantListComponent implements OnInit {
   init = '';
