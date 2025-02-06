@@ -1,6 +1,6 @@
 {
   "name": "scrum-timer",
-  "version": "1.2.9",
+  "version": "1.2.11",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -13,7 +13,7 @@
     "bump-version": "npm version patch -m \"Bump version to %s\" && git push --tags",
     "bump-version-major": "npm version major -m \"Bump version to %s (Major release)\" && git push --tags",
     "bump-version-minor": "npm version minor -m \"Bump version to %s\" && git push --tags",
-    "deploy": "ng build --base-href \"https://josste.github.io/ScrumTimer/\" && cp ./dist/index.html ./dist/404.html && angular-cli-ghpages --no-silent"
+    "deploy": "ng build --base-href \"https://josste.github.io/ScrumTimer/\" && cp ./dist/browser/index.html ./dist/browser/404.html && angular-cli-ghpages --dir=dist/browser --no-silent"
   },
   "private": true,
   "dependencies": {
