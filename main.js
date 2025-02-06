@@ -45300,7 +45300,7 @@ var SettingsComponent = _SettingsComponent;
 // package.json
 var package_default = {
   name: "scrum-timer",
-  version: "1.2.10",
+  version: "1.2.11",
   license: "MIT",
   scripts: {
     ng: "ng",
