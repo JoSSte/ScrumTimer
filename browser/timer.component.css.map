@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/components/timer/timer.component.css"],
+  "sourcesContent": ["/**\n * Progress bars with centered text\n */\n\n.progress {\n    position: relative;\n}\n\n.progress {\n    height: 40px;\n}\n\n.progress-bar {\n    height: 40px;\n}\n\n.progress span {\n    position: absolute;\n    display: block;\n    width: 100%;\n    top: 50%;\n    margin-top: -10px;\n    color: black;\n    font-weight: bold;\n }\n\n"],
+  "mappings": ";AAIA,CAAC;AACG,YAAU;AACd;AAEA,CAJC;AAKG,UAAQ;AACZ;AAEA,CAAC;AACG,UAAQ;AACZ;AAEA,CAZC,SAYS;AACN,YAAU;AACV,WAAS;AACT,SAAO;AACP,OAAK;AACL,cAAY;AACZ,SAAO;AACP,eAAa;AAChB;",
+  "names": []
+}
