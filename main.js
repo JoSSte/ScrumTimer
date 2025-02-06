@@ -45313,7 +45313,7 @@ var package_default = {
     "bump-version": 'npm version patch -m "Bump version to %s" && git push --tags',
     "bump-version-major": 'npm version major -m "Bump version to %s (Major release)" && git push --tags',
     "bump-version-minor": 'npm version minor -m "Bump version to %s" && git push --tags',
-    deploy: 'ng build --base-href "https://josste.github.io/ScrumTimer/" && cp ./dist/browser/index.html ./dist/browser/404.html && angular-cli-ghpages --no-silent'
+    deploy: 'ng build --base-href "https://josste.github.io/ScrumTimer/" && cp ./dist/browser/index.html ./dist/browser/404.html && angular-cli-ghpages --dir=dist/browser --no-silent'
   },
   private: true,
   dependencies: {
