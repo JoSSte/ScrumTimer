@@ -1,18 +1,31 @@
 import { Component, OnInit } from '@angular/core';
+import { VersionCheckService } from '../../services/versioncheck/version-check.service';
 import packageInfo from '../../../../package.json';
 
 @Component({
-    selector: 'app-help',
-    templateUrl: './help.component.html',
-    styleUrls: ['./help.component.css'],
-    standalone: false
+  selector: 'app-help',
+  templateUrl: './help.component.html',
+  styleUrls: ['./help.component.css'],
+  standalone: false
 })
 export class HelpComponent implements OnInit {
-  public version: string = packageInfo.version;
+  currentVersion = packageInfo.version;
+  latestVersion: string | null = null;
+  isNewVersionAvailable = false;
 
-  constructor() { }
+  constructor(private versionCheckService: VersionCheckService) { }
 
   ngOnInit() {
+    this.versionCheckService.getLatestReleaseVersion().subscribe((latest) => {
+      this.latestVersion = latest;
+      this.isNewVersionAvailable = this.compareVersions(this.currentVersion, latest) < 0;
+    });
   }
 
+  compareVersions(v1: string, v2: string): number {
+    const toNums = (v: string) => v.split('.').map(Number);
+    const [a1, a2, a3] = toNums(v1);
+    const [b1, b2, b3] = toNums(v2);
+    return a1 - b1 || a2 - b2 || a3 - b3;
+  }
 }

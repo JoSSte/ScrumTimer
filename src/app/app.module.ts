@@ -11,6 +11,7 @@ import { HashLocationStrategy, Location, LocationStrategy } from '@angular/commo
 import { ParticipantService } from './services/participant/participant.service';
 import { SettingsService } from './services/settings/settings.service';
 import { NavbarService } from './services/navbar/navbar.service';
+import { VersionCheckService } from './services/versioncheck/version-check.service';
 
 // Components
 import { AppComponent } from './app.component';
@@ -22,9 +23,6 @@ import { HelpComponent } from './components/help/help.component';
 
 // Pipes
 import { SecsPipe } from './pipes/secs.pipe';
-
-
-
 
 const appRoutes: Routes = [
   { path: '', component: TimerComponent },
@@ -52,6 +50,7 @@ const appRoutes: Routes = [
         ParticipantService,
         SettingsService,
         NavbarService,
+        VersionCheckService,
         Location,
         { provide: LocationStrategy, useClass: HashLocationStrategy },
         provideHttpClient(withInterceptorsFromDi())
