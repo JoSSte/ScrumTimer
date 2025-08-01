@@ -56,11 +56,7 @@ var require_define_global_property = __commonJS({
     var defineProperty = Object.defineProperty;
     module.exports = function(key, value) {
       try {
-        defineProperty(globalThis2, key, {
-          value,
-          configurable: true,
-          writable: true
-        });
+        defineProperty(globalThis2, key, { value, configurable: true, writable: true });
       } catch (error) {
         globalThis2[key] = value;
       }
@@ -79,10 +75,10 @@ var require_shared_store = __commonJS({
     var SHARED = "__core-js_shared__";
     var store = module.exports = globalThis2[SHARED] || defineGlobalProperty(SHARED, {});
     (store.versions || (store.versions = [])).push({
-      version: "3.40.0",
+      version: "3.44.0",
       mode: IS_PURE ? "pure" : "global",
       copyright: "\xA9 2014-2025 Denis Pushkarev (zloirock.ru)",
-      license: "https://github.com/zloirock/core-js/blob/v3.40.0/LICENSE",
+      license: "https://github.com/zloirock/core-js/blob/v3.44.0/LICENSE",
       source: "https://github.com/zloirock/core-js"
     });
   }
@@ -197,7 +193,7 @@ var require_uid = __commonJS({
     var uncurryThis = require_function_uncurry_this();
     var id = 0;
     var postfix = Math.random();
-    var toString = uncurryThis(1 .toString);
+    var toString = uncurryThis(1.1.toString);
     module.exports = function(key) {
       return "Symbol(" + (key === void 0 ? "" : key) + ")_" + toString(++id + postfix, 36);
     };
@@ -320,11 +316,9 @@ var require_descriptors = __commonJS({
     "use strict";
     var fails = require_fails();
     module.exports = !fails(function() {
-      return Object.defineProperty({}, 1, {
-        get: function() {
-          return 7;
-        }
-      })[1] !== 7;
+      return Object.defineProperty({}, 1, { get: function() {
+        return 7;
+      } })[1] !== 7;
     });
   }
 });
@@ -798,9 +792,7 @@ var require_make_built_in = __commonJS({
     var join = uncurryThis([].join);
     var CONFIGURABLE_LENGTH = DESCRIPTORS && !fails(function() {
       return defineProperty(function() {
-      }, "length", {
-        value: 8
-      }).length !== 8;
+      }, "length", { value: 8 }).length !== 8;
     });
     var TEMPLATE = String(String).split("String");
     var makeBuiltIn = module.exports = function(value, name, options) {
@@ -810,22 +802,15 @@ var require_make_built_in = __commonJS({
       if (options && options.getter) name = "get " + name;
       if (options && options.setter) name = "set " + name;
       if (!hasOwn(value, "name") || CONFIGURABLE_FUNCTION_NAME && value.name !== name) {
-        if (DESCRIPTORS) defineProperty(value, "name", {
-          value: name,
-          configurable: true
-        });
+        if (DESCRIPTORS) defineProperty(value, "name", { value: name, configurable: true });
         else value.name = name;
       }
       if (CONFIGURABLE_LENGTH && options && hasOwn(options, "arity") && value.length !== options.arity) {
-        defineProperty(value, "length", {
-          value: options.arity
-        });
+        defineProperty(value, "length", { value: options.arity });
       }
       try {
         if (options && hasOwn(options, "constructor") && options.constructor) {
-          if (DESCRIPTORS) defineProperty(value, "prototype", {
-            writable: false
-          });
+          if (DESCRIPTORS) defineProperty(value, "prototype", { writable: false });
         } else if (value.prototype) value.prototype = void 0;
       } catch (error) {
       }
@@ -935,9 +920,7 @@ var require_es_object_to_string = __commonJS({
     var defineBuiltIn = require_define_built_in();
     var toString = require_object_to_string();
     if (!TO_STRING_TAG_SUPPORT) {
-      defineBuiltIn(Object.prototype, "toString", toString, {
-        unsafe: true
-      });
+      defineBuiltIn(Object.prototype, "toString", toString, { unsafe: true });
     }
   }
 });
@@ -948,9 +931,7 @@ var require_object_property_is_enumerable = __commonJS({
     "use strict";
     var $propertyIsEnumerable = {}.propertyIsEnumerable;
     var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-    var NASHORN_BUG = getOwnPropertyDescriptor && !$propertyIsEnumerable.call({
-      1: 2
-    }, 1);
+    var NASHORN_BUG = getOwnPropertyDescriptor && !$propertyIsEnumerable.call({ 1: 2 }, 1);
     exports.f = NASHORN_BUG ? function propertyIsEnumerable(V) {
       var descriptor = getOwnPropertyDescriptor(this, V);
       return !!descriptor && descriptor.enumerable;
@@ -1138,7 +1119,15 @@ var require_object_keys_internal = __commonJS({
 var require_enum_bug_keys = __commonJS({
   "node_modules/core-js/internals/enum-bug-keys.js"(exports, module) {
     "use strict";
-    module.exports = ["constructor", "hasOwnProperty", "isPrototypeOf", "propertyIsEnumerable", "toLocaleString", "toString", "valueOf"];
+    module.exports = [
+      "constructor",
+      "hasOwnProperty",
+      "isPrototypeOf",
+      "propertyIsEnumerable",
+      "toLocaleString",
+      "toString",
+      "valueOf"
+    ];
   }
 });
 
@@ -1294,11 +1283,7 @@ var require_es_reflect_apply = __commonJS({
       Reflect.apply(function() {
       });
     });
-    $({
-      target: "Reflect",
-      stat: true,
-      forced: OPTIONAL_ARGUMENTS_LIST
-    }, {
+    $({ target: "Reflect", stat: true, forced: OPTIONAL_ARGUMENTS_LIST }, {
       apply: function apply(target, thisArgument, argumentsList) {
         return functionApply(aCallable(target), thisArgument, anObject(argumentsList));
       }
@@ -1552,12 +1537,7 @@ var require_es_reflect_construct = __commonJS({
       });
     });
     var FORCED = NEW_TARGET_BUG || ARGS_BUG;
-    $({
-      target: "Reflect",
-      stat: true,
-      forced: FORCED,
-      sham: FORCED
-    }, {
+    $({ target: "Reflect", stat: true, forced: FORCED, sham: FORCED }, {
       construct: function construct(Target, args) {
         aConstructor(Target);
         anObject(args);
@@ -1600,18 +1580,9 @@ var require_es_reflect_define_property = __commonJS({
     var definePropertyModule = require_object_define_property();
     var fails = require_fails();
     var ERROR_INSTEAD_OF_FALSE = fails(function() {
-      Reflect.defineProperty(definePropertyModule.f({}, 1, {
-        value: 1
-      }), 1, {
-        value: 2
-      });
+      Reflect.defineProperty(definePropertyModule.f({}, 1, { value: 1 }), 1, { value: 2 });
     });
-    $({
-      target: "Reflect",
-      stat: true,
-      forced: ERROR_INSTEAD_OF_FALSE,
-      sham: !DESCRIPTORS
-    }, {
+    $({ target: "Reflect", stat: true, forced: ERROR_INSTEAD_OF_FALSE, sham: !DESCRIPTORS }, {
       defineProperty: function defineProperty(target, propertyKey, attributes) {
         anObject(target);
         var key = toPropertyKey(propertyKey);
@@ -1634,10 +1605,7 @@ var require_es_reflect_delete_property = __commonJS({
     var $ = require_export();
     var anObject = require_an_object();
     var getOwnPropertyDescriptor = require_object_get_own_property_descriptor().f;
-    $({
-      target: "Reflect",
-      stat: true
-    }, {
+    $({ target: "Reflect", stat: true }, {
       deleteProperty: function deleteProperty(target, propertyKey) {
         var descriptor = getOwnPropertyDescriptor(anObject(target), propertyKey);
         return descriptor && !descriptor.configurable ? false : delete target[propertyKey];
@@ -1714,10 +1682,7 @@ var require_es_reflect_get = __commonJS({
       if (descriptor) return isDataDescriptor(descriptor) ? descriptor.value : descriptor.get === void 0 ? void 0 : call(descriptor.get, receiver);
       if (isObject(prototype = getPrototypeOf(target))) return get(prototype, propertyKey, receiver);
     }
-    $({
-      target: "Reflect",
-      stat: true
-    }, {
+    $({ target: "Reflect", stat: true }, {
       get
     });
   }
@@ -1731,11 +1696,7 @@ var require_es_reflect_get_own_property_descriptor = __commonJS({
     var DESCRIPTORS = require_descriptors();
     var anObject = require_an_object();
     var getOwnPropertyDescriptorModule = require_object_get_own_property_descriptor();
-    $({
-      target: "Reflect",
-      stat: true,
-      sham: !DESCRIPTORS
-    }, {
+    $({ target: "Reflect", stat: true, sham: !DESCRIPTORS }, {
       getOwnPropertyDescriptor: function getOwnPropertyDescriptor(target, propertyKey) {
         return getOwnPropertyDescriptorModule.f(anObject(target), propertyKey);
       }
@@ -1751,11 +1712,7 @@ var require_es_reflect_get_prototype_of = __commonJS({
     var anObject = require_an_object();
     var objectGetPrototypeOf = require_object_get_prototype_of();
     var CORRECT_PROTOTYPE_GETTER = require_correct_prototype_getter();
-    $({
-      target: "Reflect",
-      stat: true,
-      sham: !CORRECT_PROTOTYPE_GETTER
-    }, {
+    $({ target: "Reflect", stat: true, sham: !CORRECT_PROTOTYPE_GETTER }, {
       getPrototypeOf: function getPrototypeOf(target) {
         return objectGetPrototypeOf(anObject(target));
       }
@@ -1768,10 +1725,7 @@ var require_es_reflect_has = __commonJS({
   "node_modules/core-js/modules/es.reflect.has.js"() {
     "use strict";
     var $ = require_export();
-    $({
-      target: "Reflect",
-      stat: true
-    }, {
+    $({ target: "Reflect", stat: true }, {
       has: function has(target, propertyKey) {
         return propertyKey in target;
       }
@@ -1787,9 +1741,7 @@ var require_array_buffer_non_extensible = __commonJS({
     module.exports = fails(function() {
       if (typeof ArrayBuffer == "function") {
         var buffer = new ArrayBuffer(8);
-        if (Object.isExtensible(buffer)) Object.defineProperty(buffer, "a", {
-          value: 8
-        });
+        if (Object.isExtensible(buffer)) Object.defineProperty(buffer, "a", { value: 8 });
       }
     });
   }
@@ -1822,10 +1774,7 @@ var require_es_reflect_is_extensible = __commonJS({
     var $ = require_export();
     var anObject = require_an_object();
     var $isExtensible = require_object_is_extensible();
-    $({
-      target: "Reflect",
-      stat: true
-    }, {
+    $({ target: "Reflect", stat: true }, {
       isExtensible: function isExtensible(target) {
         anObject(target);
         return $isExtensible(target);
@@ -1840,10 +1789,7 @@ var require_es_reflect_own_keys = __commonJS({
     "use strict";
     var $ = require_export();
     var ownKeys = require_own_keys();
-    $({
-      target: "Reflect",
-      stat: true
-    }, {
+    $({ target: "Reflect", stat: true }, {
       ownKeys
     });
   }
@@ -1868,11 +1814,7 @@ var require_es_reflect_prevent_extensions = __commonJS({
     var getBuiltIn = require_get_built_in();
     var anObject = require_an_object();
     var FREEZING = require_freezing();
-    $({
-      target: "Reflect",
-      stat: true,
-      sham: !FREEZING
-    }, {
+    $({ target: "Reflect", stat: true, sham: !FREEZING }, {
       preventExtensions: function preventExtensions(target) {
         anObject(target);
         try {
@@ -1928,16 +1870,10 @@ var require_es_reflect_set = __commonJS({
     var MS_EDGE_BUG = fails(function() {
       var Constructor = function() {
       };
-      var object = definePropertyModule.f(new Constructor(), "a", {
-        configurable: true
-      });
+      var object = definePropertyModule.f(new Constructor(), "a", { configurable: true });
       return Reflect.set(Constructor.prototype, "a", 1, object) !== false;
     });
-    $({
-      target: "Reflect",
-      stat: true,
-      forced: MS_EDGE_BUG
-    }, {
+    $({ target: "Reflect", stat: true, forced: MS_EDGE_BUG }, {
       set
     });
   }
@@ -2021,10 +1957,7 @@ var require_es_reflect_set_prototype_of = __commonJS({
     var anObject = require_an_object();
     var aPossiblePrototype = require_a_possible_prototype();
     var objectSetPrototypeOf = require_object_set_prototype_of();
-    if (objectSetPrototypeOf) $({
-      target: "Reflect",
-      stat: true
-    }, {
+    if (objectSetPrototypeOf) $({ target: "Reflect", stat: true }, {
       setPrototypeOf: function setPrototypeOf(target, proto) {
         anObject(target);
         aPossiblePrototype(proto);
@@ -2050,10 +1983,7 @@ var require_set_to_string_tag = __commonJS({
     module.exports = function(target, TAG, STATIC) {
       if (target && !STATIC) target = target.prototype;
       if (target && !hasOwn(target, TO_STRING_TAG)) {
-        defineProperty(target, TO_STRING_TAG, {
-          configurable: true,
-          value: TAG
-        });
+        defineProperty(target, TO_STRING_TAG, { configurable: true, value: TAG });
       }
     };
   }
@@ -2066,11 +1996,7 @@ var require_es_reflect_to_string_tag = __commonJS({
     var $ = require_export();
     var globalThis2 = require_global_this();
     var setToStringTag = require_set_to_string_tag();
-    $({
-      global: true
-    }, {
-      Reflect: {}
-    });
+    $({ global: true }, { Reflect: {} });
     setToStringTag(globalThis2.Reflect, "Reflect", true);
   }
 });
@@ -2126,14 +2052,15 @@ function initZone() {
     performance && performance["measure"] && performance["measure"](name, label);
   }
   mark("Zone");
-  const _ZoneImpl = class _ZoneImpl {
+  class ZoneImpl {
+    static __symbol__ = __symbol__;
     static assertZonePatched() {
       if (global2["Promise"] !== patches["ZoneAwarePromise"]) {
         throw new Error("Zone.js has detected that ZoneAwarePromise `(window|global).Promise` has been overwritten.\nMost likely cause is that a Promise polyfill has been loaded after Zone.js (Polyfilling Promise api is not necessary when zone.js is loaded. If you must load one, do so before loading zone.js.)");
       }
     }
     static get root() {
-      let zone = _ZoneImpl.current;
+      let zone = ZoneImpl.current;
       while (zone.parent) {
         zone = zone.parent;
       }
@@ -2145,7 +2072,6 @@ function initZone() {
     static get currentTask() {
       return _currentTask;
     }
-    // tslint:disable-next-line:require-internal-with-underscore
     static __load_patch(name, fn, ignoreDuplicate = false) {
       if (patches.hasOwnProperty(name)) {
         const checkDuplicate = global2[__symbol__("forceDuplicateZoneCheck")] === true;
@@ -2155,7 +2081,7 @@ function initZone() {
       } else if (!global2["__Zone_disable_" + name]) {
         const perfName = "Zone:" + name;
         mark(perfName);
-        patches[name] = fn(global2, _ZoneImpl, _api);
+        patches[name] = fn(global2, ZoneImpl, _api);
         performanceMeasure(perfName, perfName);
       }
     }
@@ -2165,6 +2091,10 @@ function initZone() {
     get name() {
       return this._name;
     }
+    _parent;
+    _name;
+    _properties;
+    _zoneDelegate;
     constructor(parent, zoneSpec) {
       this._parent = parent;
       this._name = zoneSpec ? zoneSpec.name || "unnamed" : "<root>";
@@ -2173,7 +2103,8 @@ function initZone() {
     }
     get(key) {
       const zone = this.getZoneWith(key);
-      if (zone) return zone._properties[key];
+      if (zone)
+        return zone._properties[key];
     }
     getZoneWith(key) {
       let current = this;
@@ -2186,7 +2117,8 @@ function initZone() {
       return null;
     }
     fork(zoneSpec) {
-      if (!zoneSpec) throw new Error("ZoneSpec required!");
+      if (!zoneSpec)
+        throw new Error("ZoneSpec required!");
       return this._zoneDelegate.fork(this, zoneSpec);
     }
     wrap(callback, source) {
@@ -2200,10 +2132,7 @@ function initZone() {
       };
     }
     run(callback, applyThis, applyArgs, source) {
-      _currentZoneFrame = {
-        parent: _currentZoneFrame,
-        zone: this
-      };
+      _currentZoneFrame = { parent: _currentZoneFrame, zone: this };
       try {
         return this._zoneDelegate.invoke(this, callback, applyThis, applyArgs, source);
       } finally {
@@ -2211,10 +2140,7 @@ function initZone() {
       }
     }
     runGuarded(callback, applyThis = null, applyArgs, source) {
-      _currentZoneFrame = {
-        parent: _currentZoneFrame,
-        zone: this
-      };
+      _currentZoneFrame = { parent: _currentZoneFrame, zone: this };
       try {
         try {
           return this._zoneDelegate.invoke(this, callback, applyThis, applyArgs, source);
@@ -2232,13 +2158,7 @@ function initZone() {
         throw new Error("A task can only be run in the zone of creation! (Creation: " + (task.zone || NO_ZONE).name + "; Execution: " + this.name + ")");
       }
       const zoneTask = task;
-      const {
-        type,
-        data: {
-          isPeriodic = false,
-          isRefreshable = false
-        } = {}
-      } = task;
+      const { type, data: { isPeriodic = false, isRefreshable = false } = {} } = task;
       if (task.state === notScheduled && (type === eventTask || type === macroTask)) {
         return;
       }
@@ -2246,10 +2166,7 @@ function initZone() {
       reEntryGuard && zoneTask._transitionTo(running, scheduled);
       const previousTask = _currentTask;
       _currentTask = zoneTask;
-      _currentZoneFrame = {
-        parent: _currentZoneFrame,
-        zone: this
-      };
+      _currentZoneFrame = { parent: _currentZoneFrame, zone: this };
       try {
         if (type == macroTask && task.data && !isPeriodic && !isRefreshable) {
           task.cancelFn = void 0;
@@ -2318,7 +2235,8 @@ function initZone() {
       return this.scheduleTask(new ZoneTask(eventTask, source, callback, data, customSchedule, customCancel));
     }
     cancelTask(task) {
-      if (task.zone != this) throw new Error("A task can only be cancelled in the zone of creation! (Creation: " + (task.zone || NO_ZONE).name + "; Execution: " + this.name + ")");
+      if (task.zone != this)
+        throw new Error("A task can only be cancelled in the zone of creation! (Creation: " + (task.zone || NO_ZONE).name + "; Execution: " + this.name + ")");
       if (task.state !== scheduled && task.state !== running) {
         return;
       }
@@ -2344,9 +2262,7 @@ function initZone() {
         zoneDelegates[i]._updateTaskCount(task.type, count);
       }
     }
-  };
-  _ZoneImpl.__symbol__ = __symbol__;
-  let ZoneImpl = _ZoneImpl;
+  }
   const DELEGATE_ZS = {
     name: "",
     onHasTask: (delegate, _, target, hasTaskState) => delegate.hasTask(target, hasTaskState),
@@ -2358,12 +2274,39 @@ function initZone() {
     get zone() {
       return this._zone;
     }
+    _zone;
+    _taskCounts = {
+      "microTask": 0,
+      "macroTask": 0,
+      "eventTask": 0
+    };
+    _parentDelegate;
+    _forkDlgt;
+    _forkZS;
+    _forkCurrZone;
+    _interceptDlgt;
+    _interceptZS;
+    _interceptCurrZone;
+    _invokeDlgt;
+    _invokeZS;
+    _invokeCurrZone;
+    _handleErrorDlgt;
+    _handleErrorZS;
+    _handleErrorCurrZone;
+    _scheduleTaskDlgt;
+    _scheduleTaskZS;
+    _scheduleTaskCurrZone;
+    _invokeTaskDlgt;
+    _invokeTaskZS;
+    _invokeTaskCurrZone;
+    _cancelTaskDlgt;
+    _cancelTaskZS;
+    _cancelTaskCurrZone;
+    _hasTaskDlgt;
+    _hasTaskDlgtOwner;
+    _hasTaskZS;
+    _hasTaskCurrZone;
     constructor(zone, parentDelegate, zoneSpec) {
-      this._taskCounts = {
-        "microTask": 0,
-        "macroTask": 0,
-        "eventTask": 0
-      };
       this._zone = zone;
       this._parentDelegate = parentDelegate;
       this._forkZS = zoneSpec && (zoneSpec && zoneSpec.onFork ? zoneSpec : parentDelegate._forkZS);
@@ -2434,7 +2377,8 @@ function initZone() {
           returnTask._zoneDelegates.push(this._hasTaskDlgtOwner);
         }
         returnTask = this._scheduleTaskZS.onScheduleTask(this._scheduleTaskDlgt, this._scheduleTaskCurrZone, targetZone, task);
-        if (!returnTask) returnTask = task;
+        if (!returnTask)
+          returnTask = task;
       } else {
         if (task.scheduleFn) {
           task.scheduleFn(task);
@@ -2468,7 +2412,6 @@ function initZone() {
         this.handleError(targetZone, err);
       }
     }
-    // tslint:disable-next-line:require-internal-with-underscore
     _updateTaskCount(type, count) {
       const counts = this._taskCounts;
       const prev = counts[type];
@@ -2488,11 +2431,18 @@ function initZone() {
     }
   }
   class ZoneTask {
+    type;
+    source;
+    invoke;
+    callback;
+    data;
+    scheduleFn;
+    cancelFn;
+    _zone = null;
+    runCount = 0;
+    _zoneDelegates = null;
+    _state = "notScheduled";
     constructor(type, source, callback, options, scheduleFn, cancelFn) {
-      this._zone = null;
-      this.runCount = 0;
-      this._zoneDelegates = null;
-      this._state = "notScheduled";
       this.type = type;
       this.source = source;
       this.data = options;
@@ -2535,7 +2485,6 @@ function initZone() {
     cancelScheduleRequest() {
       this._transitionTo(notScheduled, scheduling);
     }
-    // tslint:disable-next-line:require-internal-with-underscore
     _transitionTo(toState, fromState1, fromState2) {
       if (this._state === fromState1 || this._state === fromState2) {
         this._state = toState;
@@ -2612,9 +2561,7 @@ function initZone() {
       _isDrainingMicrotaskQueue = false;
     }
   }
-  const NO_ZONE = {
-    name: "NO ZONE"
-  };
+  const NO_ZONE = { name: "NO ZONE" };
   const notScheduled = "notScheduled", scheduling = "scheduling", scheduled = "scheduled", running = "running", canceling = "canceling", unknown = "unknown";
   const microTask = "microTask", macroTask = "macroTask", eventTask = "eventTask";
   const patches = {};
@@ -2646,10 +2593,7 @@ function initZone() {
     patchCallbacks: () => noop,
     nativeScheduleMicroTask
   };
-  let _currentZoneFrame = {
-    parent: null,
-    zone: new ZoneImpl(null, null)
-  };
+  let _currentZoneFrame = { parent: null, zone: new ZoneImpl(null, null) };
   let _currentTask = null;
   let _numberOfNestedTaskFrames = 0;
   function noop() {
@@ -2779,10 +2723,7 @@ function patchProperty(obj, prop, prototype) {
   if (!desc && prototype) {
     const prototypeDesc = ObjectGetOwnPropertyDescriptor(prototype, prop);
     if (prototypeDesc) {
-      desc = {
-        enumerable: true,
-        configurable: true
-      };
+      desc = { enumerable: true, configurable: true };
     }
   }
   if (!desc || !desc.configurable) {
@@ -2813,7 +2754,7 @@ function patchProperty(obj, prop, prototype) {
     if (typeof previousValue === "function") {
       target.removeEventListener(eventName, wrapFn);
     }
-    originalDescSet && originalDescSet.call(target, null);
+    originalDescSet?.call(target, null);
     target[eventNameSymbol] = newValue;
     if (typeof newValue === "function") {
       target.addEventListener(eventName, wrapFn, false);
@@ -2865,7 +2806,8 @@ function patchOnProperties(obj, properties, prototype) {
 var originalInstanceKey = zoneSymbol("originalInstance");
 function patchClass(className) {
   const OriginalClass = _global[className];
-  if (!OriginalClass) return;
+  if (!OriginalClass)
+    return;
   _global[zoneSymbol(className)] = OriginalClass;
   _global[className] = function() {
     const a = bindArguments(arguments, className);
@@ -2894,7 +2836,8 @@ function patchClass(className) {
   });
   let prop;
   for (prop in instance) {
-    if (className === "XMLHttpRequest" && prop === "responseBlob") continue;
+    if (className === "XMLHttpRequest" && prop === "responseBlob")
+      continue;
     (function(prop2) {
       if (typeof instance[prop2] === "function") {
         _global[className].prototype[prop2] = function() {
@@ -2970,16 +2913,6 @@ function attachOriginToPatched(patched, original) {
 }
 var isDetectedIEOrEdge = false;
 var ieOrEdge = false;
-function isIE() {
-  try {
-    const ua = internalWindow.navigator.userAgent;
-    if (ua.indexOf("MSIE ") !== -1 || ua.indexOf("Trident/") !== -1) {
-      return true;
-    }
-  } catch (error) {
-  }
-  return false;
-}
 function isIEOrEdge() {
   if (isDetectedIEOrEdge) {
     return ieOrEdge;
@@ -2999,20 +2932,6 @@ function isFunction(value) {
 }
 function isNumber(value) {
   return typeof value === "number";
-}
-var passiveSupported = false;
-if (typeof window !== "undefined") {
-  try {
-    const options = Object.defineProperty({}, "passive", {
-      get: function() {
-        passiveSupported = true;
-      }
-    });
-    window.addEventListener("test", options, options);
-    window.removeEventListener("test", options, options);
-  } catch (err) {
-    passiveSupported = false;
-  }
 }
 var OPTIMIZED_ZONE_EVENT_TASK_DATA = {
   useG: true
@@ -3142,28 +3061,17 @@ function patchEventTarget(_global2, api, apis, patchOptions) {
       nativePrependEventListener = proto[zoneSymbol(patchOptions2.prepend)] = proto[patchOptions2.prepend];
     }
     function buildEventListenerOptions(options, passive) {
-      if (!passiveSupported && typeof options === "object" && options) {
-        return !!options.capture;
-      }
-      if (!passiveSupported || !passive) {
+      if (!passive) {
         return options;
       }
       if (typeof options === "boolean") {
-        return {
-          capture: options,
-          passive: true
-        };
+        return { capture: options, passive: true };
       }
       if (!options) {
-        return {
-          passive: true
-        };
+        return { passive: true };
       }
       if (typeof options === "object" && options.passive !== false) {
-        return {
-          ...options,
-          passive: true
-        };
+        return { ...options, passive: true };
       }
       return options;
     }
@@ -3220,14 +3128,12 @@ function patchEventTarget(_global2, api, apis, patchOptions) {
       const typeOfDelegate = typeof delegate;
       return typeOfDelegate === "function" && task.callback === delegate || typeOfDelegate === "object" && task.originalDelegate === delegate;
     };
-    const compare = patchOptions2 && patchOptions2.diff ? patchOptions2.diff : compareTaskCallbackVsDelegate;
+    const compare = patchOptions2?.diff || compareTaskCallbackVsDelegate;
     const unpatchedEvents = Zone[zoneSymbol("UNPATCHED_EVENTS")];
     const passiveEvents = _global2[zoneSymbol("PASSIVE_EVENTS")];
     function copyEventListenerOptions(options) {
       if (typeof options === "object" && options !== null) {
-        const newOptions = {
-          ...options
-        };
+        const newOptions = { ...options };
         if (options.signal) {
           newOptions.signal = options.signal;
         }
@@ -3249,17 +3155,17 @@ function patchEventTarget(_global2, api, apis, patchOptions) {
         if (isNode && eventName === "uncaughtException") {
           return nativeListener.apply(this, arguments);
         }
-        let isHandleEvent = false;
+        let isEventListenerObject = false;
         if (typeof delegate !== "function") {
           if (!delegate.handleEvent) {
             return nativeListener.apply(this, arguments);
           }
-          isHandleEvent = true;
+          isEventListenerObject = true;
         }
         if (validateHandler && !validateHandler(nativeListener, delegate, target, arguments)) {
           return;
         }
-        const passive = passiveSupported && !!passiveEvents && passiveEvents.indexOf(eventName) !== -1;
+        const passive = !!passiveEvents && passiveEvents.indexOf(eventName) !== -1;
         const options = copyEventListenerOptions(buildEventListenerOptions(arguments[2], passive));
         const signal = options?.signal;
         if (signal?.aborted) {
@@ -3327,9 +3233,7 @@ function patchEventTarget(_global2, api, apis, patchOptions) {
         if (signal) {
           taskData.options.signal = signal;
           const onAbort = () => task.zone.cancelTask(task);
-          nativeListener.call(signal, "abort", onAbort, {
-            once: true
-          });
+          nativeListener.call(signal, "abort", onAbort, { once: true });
           task.removeAbortListener = () => signal.removeEventListener("abort", onAbort);
         }
         taskData.target = null;
@@ -3339,13 +3243,13 @@ function patchEventTarget(_global2, api, apis, patchOptions) {
         if (once) {
           taskData.options.once = true;
         }
-        if (!(!passiveSupported && typeof task.options === "boolean")) {
+        if (typeof task.options !== "boolean") {
           task.options = options;
         }
         task.target = target;
         task.capture = capture;
         task.eventName = eventName;
-        if (isHandleEvent) {
+        if (isEventListenerObject) {
           task.originalDelegate = delegate;
         }
         if (!prepend) {
@@ -3552,10 +3456,7 @@ function patchTimer(window2, setName, cancelName, nameSuffix) {
     return task;
   }
   function clearTask(task) {
-    const {
-      handle,
-      handleId
-    } = task.data;
+    const { handle, handleId } = task.data;
     return clearNative.call(window2, handle ?? handleId);
   }
   setNative = patchMethod(window2, setName, (delegate) => function(self2, args) {
@@ -3571,12 +3472,7 @@ function patchTimer(window2, setName, cancelName, nameSuffix) {
         try {
           return callback.apply(this, arguments);
         } finally {
-          const {
-            handle: handle2,
-            handleId: handleId2,
-            isPeriodic: isPeriodic2,
-            isRefreshable: isRefreshable2
-          } = options;
+          const { handle: handle2, handleId: handleId2, isPeriodic: isPeriodic2, isRefreshable: isRefreshable2 } = options;
           if (!isPeriodic2 && !isRefreshable2) {
             if (handleId2) {
               delete tasksByHandleId[handleId2];
@@ -3590,12 +3486,7 @@ function patchTimer(window2, setName, cancelName, nameSuffix) {
       if (!task) {
         return task;
       }
-      const {
-        handleId,
-        handle,
-        isRefreshable,
-        isPeriodic
-      } = task.data;
+      const { handleId, handle, isRefreshable, isPeriodic } = task.data;
       if (handleId) {
         tasksByHandleId[handleId] = task;
       } else if (handle) {
@@ -3603,10 +3494,7 @@ function patchTimer(window2, setName, cancelName, nameSuffix) {
         if (isRefreshable && !isPeriodic) {
           const originalRefresh = handle.refresh;
           handle.refresh = function() {
-            const {
-              zone,
-              state
-            } = task;
+            const { zone, state } = task;
             if (state === "notScheduled") {
               task._state = "scheduled";
               zone._updateTaskCount(task, 1);
@@ -3646,27 +3534,27 @@ function patchTimer(window2, setName, cancelName, nameSuffix) {
   });
 }
 function patchCustomElements(_global2, api) {
-  const {
-    isBrowser: isBrowser2,
-    isMix: isMix2
-  } = api.getGlobalObjects();
+  const { isBrowser: isBrowser2, isMix: isMix2 } = api.getGlobalObjects();
   if (!isBrowser2 && !isMix2 || !_global2["customElements"] || !("customElements" in _global2)) {
     return;
   }
-  const callbacks = ["connectedCallback", "disconnectedCallback", "adoptedCallback", "attributeChangedCallback", "formAssociatedCallback", "formDisabledCallback", "formResetCallback", "formStateRestoreCallback"];
+  const callbacks = [
+    "connectedCallback",
+    "disconnectedCallback",
+    "adoptedCallback",
+    "attributeChangedCallback",
+    "formAssociatedCallback",
+    "formDisabledCallback",
+    "formResetCallback",
+    "formStateRestoreCallback"
+  ];
   api.patchCallbacks(api, _global2.customElements, "customElements", "define", callbacks);
 }
 function eventTargetPatch(_global2, api) {
   if (Zone[api.symbol("patchEventTarget")]) {
     return;
   }
-  const {
-    eventNames,
-    zoneSymbolEventNames: zoneSymbolEventNames2,
-    TRUE_STR: TRUE_STR2,
-    FALSE_STR: FALSE_STR2,
-    ZONE_SYMBOL_PREFIX: ZONE_SYMBOL_PREFIX2
-  } = api.getGlobalObjects();
+  const { eventNames, zoneSymbolEventNames: zoneSymbolEventNames2, TRUE_STR: TRUE_STR2, FALSE_STR: FALSE_STR2, ZONE_SYMBOL_PREFIX: ZONE_SYMBOL_PREFIX2 } = api.getGlobalObjects();
   for (let i = 0; i < eventNames.length; i++) {
     const eventName = eventNames[i];
     const falseEventName = eventName + FALSE_STR2;
@@ -3692,7 +3580,7 @@ function filterProperties(target, onProperties, ignoreProperties) {
     return onProperties;
   }
   const tip = ignoreProperties.filter((ip) => ip.target === target);
-  if (!tip || tip.length === 0) {
+  if (tip.length === 0) {
     return onProperties;
   }
   const targetIgnoreProperties = tip[0].ignoreProperties;
@@ -3719,17 +3607,36 @@ function propertyDescriptorPatch(api, _global2) {
   let patchTargets = [];
   if (isBrowser) {
     const internalWindow2 = window;
-    patchTargets = patchTargets.concat(["Document", "SVGElement", "Element", "HTMLElement", "HTMLBodyElement", "HTMLMediaElement", "HTMLFrameSetElement", "HTMLFrameElement", "HTMLIFrameElement", "HTMLMarqueeElement", "Worker"]);
-    const ignoreErrorProperties = isIE() ? [{
-      target: internalWindow2,
-      ignoreProperties: ["error"]
-    }] : [];
+    patchTargets = patchTargets.concat([
+      "Document",
+      "SVGElement",
+      "Element",
+      "HTMLElement",
+      "HTMLBodyElement",
+      "HTMLMediaElement",
+      "HTMLFrameSetElement",
+      "HTMLFrameElement",
+      "HTMLIFrameElement",
+      "HTMLMarqueeElement",
+      "Worker"
+    ]);
+    const ignoreErrorProperties = [];
     patchFilteredProperties(internalWindow2, getOnEventNames(internalWindow2), ignoreProperties ? ignoreProperties.concat(ignoreErrorProperties) : ignoreProperties, ObjectGetPrototypeOf(internalWindow2));
   }
-  patchTargets = patchTargets.concat(["XMLHttpRequest", "XMLHttpRequestEventTarget", "IDBIndex", "IDBRequest", "IDBOpenDBRequest", "IDBDatabase", "IDBTransaction", "IDBCursor", "WebSocket"]);
+  patchTargets = patchTargets.concat([
+    "XMLHttpRequest",
+    "XMLHttpRequestEventTarget",
+    "IDBIndex",
+    "IDBRequest",
+    "IDBOpenDBRequest",
+    "IDBDatabase",
+    "IDBTransaction",
+    "IDBCursor",
+    "WebSocket"
+  ]);
   for (let i = 0; i < patchTargets.length; i++) {
     const target = _global2[patchTargets[i]];
-    target && target.prototype && patchFilteredProperties(target.prototype, getOnEventNames(target.prototype), ignoreProperties);
+    target?.prototype && patchFilteredProperties(target.prototype, getOnEventNames(target.prototype), ignoreProperties);
   }
 }
 function patchBrowser(Zone2) {
@@ -3995,7 +3902,7 @@ function patchPromise(Zone2) {
       }
     }
     function isThenable(value) {
-      return value && value.then;
+      return value && typeof value.then === "function";
     }
     function forwardResolution(value) {
       return value;
@@ -4116,10 +4023,7 @@ function patchPromise(Zone2) {
         try {
           const handler = Zone3[REJECTION_HANDLED_HANDLER];
           if (handler && typeof handler === "function") {
-            handler.call(this, {
-              rejection: promise[symbolValue],
-              promise
-            });
+            handler.call(this, { rejection: promise[symbolValue], promise });
           }
         } catch (err) {
         }
@@ -4240,14 +4144,8 @@ function patchPromise(Zone2) {
       static allSettled(values) {
         const P = this && this.prototype instanceof ZoneAwarePromise ? this : ZoneAwarePromise;
         return P.allWithCallback(values, {
-          thenCallback: (value) => ({
-            status: "fulfilled",
-            value
-          }),
-          errorCallback: (err) => ({
-            status: "rejected",
-            reason: err
-          })
+          thenCallback: (value) => ({ status: "fulfilled", value }),
+          errorCallback: (err) => ({ status: "rejected", reason: err })
         });
       }
       static allWithCallback(values, callback) {
@@ -4523,7 +4421,7 @@ patchBrowser(Zone$1);
 zone.js/fesm2015/zone.js:
   (**
    * @license Angular v<unknown>
-   * (c) 2010-2024 Google LLC. https://angular.io/
+   * (c) 2010-2025 Google LLC. https://angular.io/
    * License: MIT
    *)
 */
