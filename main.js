@@ -45538,6 +45538,34 @@ var NavbarService = class _NavbarService {
   }], () => [], null);
 })();
 
+// src/app/services/versioncheck/version-check.service.ts
+var VersionCheckService = class _VersionCheckService {
+  constructor(http) {
+    this.http = http;
+    this.githubApiUrl = "https://api.github.com/repos/JoSSte/ScrumTimer/releases/latest";
+  }
+  getLatestReleaseVersion() {
+    return this.http.get(this.githubApiUrl).pipe(
+      map((release) => release.tag_name.replace(/^v/, ""))
+      // Remove leading 'v' if exists
+    );
+  }
+  static {
+    this.\u0275fac = function VersionCheckService_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _VersionCheckService)(\u0275\u0275inject(HttpClient));
+    };
+  }
+  static {
+    this.\u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _VersionCheckService, factory: _VersionCheckService.\u0275fac, providedIn: "root" });
+  }
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(VersionCheckService, [{
+    type: Injectable,
+    args: [{ providedIn: "root" }]
+  }], () => [{ type: HttpClient }], null);
+})();
+
 // src/app/components/navbar/navbar.component.ts
 var _c0 = () => ["active"];
 var _c1 = () => ["timer"];
@@ -46877,19 +46905,50 @@ var package_default = {
 };
 
 // src/app/components/help/help.component.ts
+function HelpComponent_Conditional_54_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "p");
+    \u0275\u0275text(1);
+    \u0275\u0275elementStart(2, "kbd");
+    \u0275\u0275text(3, "CTRL");
+    \u0275\u0275elementEnd();
+    \u0275\u0275text(4, "+");
+    \u0275\u0275elementStart(5, "kbd");
+    \u0275\u0275text(6, "F5");
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const ctx_r0 = \u0275\u0275nextContext();
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1("A new version ", ctx_r0.latestVersion, " is available. Please invalidate your cache and update using ");
+  }
+}
 var HelpComponent = class _HelpComponent {
-  constructor() {
-    this.version = package_default.version;
+  constructor(versionCheckService) {
+    this.versionCheckService = versionCheckService;
+    this.currentVersion = package_default.version;
+    this.latestVersion = null;
+    this.isNewVersionAvailable = false;
   }
   ngOnInit() {
+    this.versionCheckService.getLatestReleaseVersion().subscribe((latest) => {
+      this.latestVersion = latest;
+      this.isNewVersionAvailable = this.compareVersions(this.currentVersion, latest) < 0;
+    });
+  }
+  compareVersions(v1, v2) {
+    const toNums = (v) => v.split(".").map(Number);
+    const [a1, a2, a3] = toNums(v1);
+    const [b1, b2, b3] = toNums(v2);
+    return a1 - b1 || a2 - b2 || a3 - b3;
   }
   static {
     this.\u0275fac = function HelpComponent_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _HelpComponent)();
+      return new (__ngFactoryType__ || _HelpComponent)(\u0275\u0275directiveInject(VersionCheckService));
     };
   }
   static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _HelpComponent, selectors: [["app-help"]], standalone: false, decls: 57, vars: 1, consts: [[1, "container"], ["href", "https://en.wikipedia.org/wiki/Scrum_(software_development)#Daily_scrum", "target", "_blank"], [1, "fa", "fa-users"], [1, "fa", "fa-clock-o"], [1, "btn", "btn-outline-success"], [1, "fa", "fa-hourglass-start"], ["href", "https://github.com/JoSSte/ScrumTimer/releases", "target", "_blank"], [1, "badge", "badge-secondary"], ["href", "https://github.com/JoSSte/ScrumTimer/issues", "target", "_blank"]], template: function HelpComponent_Template(rf, ctx) {
+    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _HelpComponent, selectors: [["app-help"]], standalone: false, decls: 62, vars: 2, consts: [[1, "container"], ["href", "https://en.wikipedia.org/wiki/Scrum_(software_development)#Daily_scrum", "target", "_blank"], [1, "fa", "fa-users"], [1, "fa", "fa-clock-o"], [1, "btn", "btn-outline-success"], [1, "fa", "fa-hourglass-start"], ["href", "https://github.com/JoSSte/ScrumTimer/releases", "target", "_blank"], ["href", "https://github.com/JoSSte/ScrumTimer/issues", "target", "_blank"]], template: function HelpComponent_Template(rf, ctx) {
       if (rf & 1) {
         \u0275\u0275elementStart(0, "div", 0)(1, "h3");
         \u0275\u0275text(2, "What is it?");
@@ -46954,23 +47013,31 @@ var HelpComponent = class _HelpComponent {
         \u0275\u0275elementEnd();
         \u0275\u0275text(47, " to refresh the page.");
         \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(48, "div", 7);
-        \u0275\u0275text(49);
+        \u0275\u0275elementStart(48, "h3");
+        \u0275\u0275text(49, "Version");
         \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(50, "h3");
-        \u0275\u0275text(51, "Bugs / requests for features");
+        \u0275\u0275elementStart(50, "p")(51, "b");
+        \u0275\u0275text(52, "Current version");
         \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(52, "p");
-        \u0275\u0275text(53, "If you find a bug/want a new feature, please report it on the ");
-        \u0275\u0275elementStart(54, "a", 8);
-        \u0275\u0275text(55, "issues");
+        \u0275\u0275text(53);
         \u0275\u0275elementEnd();
-        \u0275\u0275text(56, " page");
+        \u0275\u0275conditionalCreate(54, HelpComponent_Conditional_54_Template, 7, 1, "p");
+        \u0275\u0275elementStart(55, "h3");
+        \u0275\u0275text(56, "Bugs / requests for features");
+        \u0275\u0275elementEnd();
+        \u0275\u0275elementStart(57, "p");
+        \u0275\u0275text(58, "If you find a bug/want a new feature, please report it on the ");
+        \u0275\u0275elementStart(59, "a", 7);
+        \u0275\u0275text(60, "issues");
+        \u0275\u0275elementEnd();
+        \u0275\u0275text(61, " page");
         \u0275\u0275elementEnd()();
       }
       if (rf & 2) {
-        \u0275\u0275advance(49);
-        \u0275\u0275textInterpolate1("Version ", ctx.version);
+        \u0275\u0275advance(53);
+        \u0275\u0275textInterpolate1(" ", ctx.currentVersion);
+        \u0275\u0275advance();
+        \u0275\u0275conditional(ctx.isNewVersionAvailable ? 54 : -1);
       }
     }, encapsulation: 2 });
   }
@@ -46978,11 +47045,11 @@ var HelpComponent = class _HelpComponent {
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(HelpComponent, [{
     type: Component,
-    args: [{ selector: "app-help", standalone: false, template: '<div class="container">\n  <h3>What is it?</h3>\n  <p>\n    A Timer to keep <a href="https://en.wikipedia.org/wiki/Scrum_(software_development)#Daily_scrum"\n      target="_blank">Daily Scrum</a>\n    meetings short. </p>\n  <p>\n    A lot of developers do not like to spend too much time on Scrum "ceremonies". This tool is meant to help you get a\n    viual indication of time spent to avoid it drawing out for online daily Scrum meetings.\n  </p>\n  <h3>How to use</h3>\n\n  <ol>\n    <li>Go to\n      <strong>\n        <i class="fa fa-users"></i> Participants</strong> and make sure that everyone you want in the Scrum Timer\n    </li>\n    <li>\n      Go to the\n      <strong>\n        <i class="fa fa-clock-o"></i> Timer</strong> and mark anyone who is not present as absent.\n    </li>\n    <li>click the\n      <span class="btn btn-outline-success">\n        <i class="fa fa-hourglass-start"></i>\n      </span> start button to start the timer\n    </li>\n    <li>Click the next button for each subsequent participant, and finally the stop button</li>\n  </ol>\n\n  <h3>Notes</h3>\n\n  <ul>\n    <li>If Max time is selected, the time left is distrubuted among the rest of the people in the meeting.</li>\n    <li>If the version badge below this list is older than the version of the newest <a href="https://github.com/JoSSte/ScrumTimer/releases" target="_blank">release</a> press <kbd>CTRL</kbd> + <kbd>F5</kbd> to refresh the page.</li>\n    \n  </ul>\n  <div class="badge badge-secondary">Version {{version}}</div>\n\n  <h3>Bugs / requests for features</h3>\n  <p>If you find a bug/want a new feature, please report it on the <a href="https://github.com/JoSSte/ScrumTimer/issues" target="_blank">issues</a> page</p>\n  \n\n</div>\n' }]
-  }], () => [], null);
+    args: [{ selector: "app-help", standalone: false, template: '<div class="container">\n  <h3>What is it?</h3>\n  <p>\n    A Timer to keep <a href="https://en.wikipedia.org/wiki/Scrum_(software_development)#Daily_scrum"\n      target="_blank">Daily Scrum</a>\n    meetings short. </p>\n  <p>\n    A lot of developers do not like to spend too much time on Scrum "ceremonies". This tool is meant to help you get a\n    viual indication of time spent to avoid it drawing out for online daily Scrum meetings.\n  </p>\n  <h3>How to use</h3>\n\n  <ol>\n    <li>Go to\n      <strong>\n        <i class="fa fa-users"></i> Participants</strong> and make sure that everyone you want in the Scrum Timer\n    </li>\n    <li>\n      Go to the\n      <strong>\n        <i class="fa fa-clock-o"></i> Timer</strong> and mark anyone who is not present as absent.\n    </li>\n    <li>click the\n      <span class="btn btn-outline-success">\n        <i class="fa fa-hourglass-start"></i>\n      </span> start button to start the timer\n    </li>\n    <li>Click the next button for each subsequent participant, and finally the stop button</li>\n  </ol>\n\n  <h3>Notes</h3>\n\n  <ul>\n    <li>If Max time is selected, the time left is distrubuted among the rest of the people in the meeting.</li>\n    <li>If the version badge below this list is older than the version of the newest <a href="https://github.com/JoSSte/ScrumTimer/releases" target="_blank">release</a> press <kbd>CTRL</kbd> + <kbd>F5</kbd> to refresh the page.</li>\n    \n  </ul>\n  <h3>Version</h3>\n    <p><b>Current version</b> {{currentVersion}}</p>\n  @if (isNewVersionAvailable) {\n  <p>A new version {{latestVersion}} is available. Please invalidate your cache and  update using <kbd>CTRL</kbd>+<kbd>F5</kbd></p>\n  }\n\n  <h3>Bugs / requests for features</h3>\n  <p>If you find a bug/want a new feature, please report it on the <a href="https://github.com/JoSSte/ScrumTimer/issues" target="_blank">issues</a> page</p>\n  \n\n</div>\n' }]
+  }], () => [{ type: VersionCheckService }], null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(HelpComponent, { className: "HelpComponent", filePath: "src/app/components/help/help.component.ts", lineNumber: 10 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(HelpComponent, { className: "HelpComponent", filePath: "src/app/components/help/help.component.ts", lineNumber: 11 });
 })();
 
 // src/app/app.module.ts
@@ -47009,6 +47076,7 @@ var AppModule = class _AppModule {
       ParticipantService,
       SettingsService,
       NavbarService,
+      VersionCheckService,
       Location,
       { provide: LocationStrategy, useClass: HashLocationStrategy },
       provideHttpClient(withInterceptorsFromDi())
@@ -47042,6 +47110,7 @@ var AppModule = class _AppModule {
         ParticipantService,
         SettingsService,
         NavbarService,
+        VersionCheckService,
         Location,
         { provide: LocationStrategy, useClass: HashLocationStrategy },
         provideHttpClient(withInterceptorsFromDi())
