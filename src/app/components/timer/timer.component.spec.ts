@@ -40,7 +40,7 @@ describe('TimerComponent', () => {
       component.participantList.push(new Participant('AA', 'Anders And'));
       component.participantList.push(new Participant('DSY', 'Andersine And'));
     }
-    console.info("Participantlist Length:\t" + component.participantList.length);
+    //console.info("Participantlist Length:\t" + component.participantList.length);
   });
   // TODO: improve tests https://angular.io/guide/testing-components-basics
   it('should create', () => {
@@ -57,7 +57,7 @@ describe('TimerComponent', () => {
   });
 
   it('Has some Participants, but none done, none absent as default', () => {
-    console.log(component.participantList.length);
+    //console.log("Number of participants" + component.participantList.length);
     expect(component.participantList.length).toBeGreaterThan(0);
     expect(component.doneParticipants.length).toEqual(0);
     expect(component.absentParticipants.length).toEqual(0);
