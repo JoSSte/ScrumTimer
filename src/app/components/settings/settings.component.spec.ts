@@ -63,7 +63,7 @@ describe('SettingsComponent', () => {
   });
 
   it('should save settings - remote participant list', () => {
-    const url = 'https://josste.github.io/ScrumTimer/assets/json/participants_andeby.json';
+    const url = 'assets/json/participants_andeby.json';
     component.remoteParticipantListURL = url;
     component.useRemoteParticipantList = true;
     component.saveSettings();
