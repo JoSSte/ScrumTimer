@@ -27,7 +27,7 @@ export class NavbarComponent implements OnInit {
       this.noOpener = true;
       openerMessage = 'Displaying pop out link';
     }
-    console.info(openerMessage);
+    //console.info(openerMessage);
   }
 
   openScrumTimer() {
@@ -48,13 +48,13 @@ export class NavbarComponent implements OnInit {
   }
 
   openWindows() {
-    console.debug('Opening windows');
+    //console.debug('Opening windows');
     this.openJira();
     this.openScrumTimer();
   }
 
   ngOnInit() {
-    console.log('[Scrumtimer] Navbar init');
+    //console.log('[Scrumtimer] Navbar init');
   }
 
 }

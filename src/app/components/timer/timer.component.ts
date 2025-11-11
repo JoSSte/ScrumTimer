@@ -58,7 +58,7 @@ export class TimerComponent implements OnInit {
     } else {
       this.individualTime = this.individualMaxTime;
     }
-    console.info('[Scrumtimer] Timer init');
+    //console.info('[Scrumtimer] Timer init');
     if(this.activatedRoute['_routerState'].snapshot.url === '/popin'){
       this.nav.hide();
     }else{

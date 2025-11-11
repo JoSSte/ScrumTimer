@@ -17,7 +17,7 @@ export class ParticipantService {
   getLastSync() {
     const localSync = localStorage.getItem('lastSync');
     if (localSync == null) {
-      console.debug('never synced');
+      //console.debug('never synced');
     } else {
       console.info('Last sync: ' + localSync);
     }
