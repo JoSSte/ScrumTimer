@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { NavbarService } from '../../services/navbar/navbar.service';
 
 @Component({
     selector: 'app-navbar',
     templateUrl: './navbar.component.html',
     styleUrls: ['./navbar.component.css'],
+    // eslint-disable-next-line @angular-eslint/prefer-standalone
     standalone: false
 })
 export class NavbarComponent implements OnInit {
@@ -13,8 +14,9 @@ export class NavbarComponent implements OnInit {
   jiraTimerWindow = null;
   private windowProps = 'resizable=no,scrollbars,status,top=0,right=0,width=';
   private popupWidth = 360;
+  public nav = inject(NavbarService);
   constructor(
-    public nav: NavbarService
+    
   ) {
     const hasOpener = window.opener;
     let openerMessage = '';
@@ -27,7 +29,7 @@ export class NavbarComponent implements OnInit {
       this.noOpener = true;
       openerMessage = 'Displaying pop out link';
     }
-    //console.info(openerMessage);
+    console.info(openerMessage);
   }
 
   openScrumTimer() {
@@ -54,7 +56,7 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit() {
-    //console.log('[Scrumtimer] Navbar init');
+    console.log('[Scrumtimer] Navbar init');
   }
 
 }

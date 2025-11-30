@@ -10,8 +10,8 @@ import { Participant } from '../../models/Participant';
 
 describe('ParticipantListComponent', () => {
   let component: ParticipantListComponent;
-  let partService: ParticipantService;
-  let settingService: SettingsService;
+  //let partService: ParticipantService;
+  //let settingService: SettingsService;
   let fixture: ComponentFixture<ParticipantListComponent>;
 
   beforeEach(waitForAsync(() => {
@@ -28,8 +28,8 @@ describe('ParticipantListComponent', () => {
     ]
 })
       .compileComponents();
-    partService = TestBed.inject(ParticipantService);
-    settingService = TestBed.inject(SettingsService);
+    //partService = TestBed.inject(ParticipantService);
+    //settingService = TestBed.inject(SettingsService);
   }));
 
   beforeEach(() => {
@@ -38,7 +38,7 @@ describe('ParticipantListComponent', () => {
     fixture.detectChanges();
   });
 
-  // eslint-disable-next-line max-len
+   
   const pJSON = '[{"init":"GG","name":"Giro Gearloose","time":0},{"init":"DD","name":"Donald Duck","time":0},{"init":"SMD","name":"Scrooge McDuck","time":0}]';
 
   const p1 = new Participant('SMD', 'Scrooge McDuck', 0);

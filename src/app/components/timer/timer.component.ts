@@ -1,5 +1,5 @@
 import { SettingsService } from '../../services/settings/settings.service';
-import { Component, ElementRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Participant } from '../../models/Participant';
 import { ParticipantService } from '../../services/participant/participant.service';
 import { NavbarService } from '../../services/navbar/navbar.service';
@@ -10,13 +10,19 @@ import { ActivatedRoute } from '@angular/router';
     selector: 'app-timer',
     templateUrl: './timer.component.html',
     styleUrls: ['./timer.component.css'],
+    // eslint-disable-next-line @angular-eslint/prefer-standalone
     standalone: false
 })
 export class TimerComponent implements OnInit {
+    private activatedRoute =  inject(ActivatedRoute);
+    private nav = inject(NavbarService);
+    public participantService = inject(ParticipantService);
+    public settingsService = inject(SettingsService);
+
   timerSubscription: Subscription;
   participantList: Participant[];
-  absentParticipants: Participant[] = Array();
-  doneParticipants: Participant[] = Array();
+  absentParticipants: Participant[] = [];
+  doneParticipants: Participant[] = [];
 
   // variables for session
   totalMaxTime = this.settingsService.getGlobalMaxTime();
@@ -39,13 +45,7 @@ export class TimerComponent implements OnInit {
   currentElapsed = 0;
   timerActive = false;
 
-  constructor(
-    private activatedRoute: ActivatedRoute,
-    private nav: NavbarService,
-    public participantService: ParticipantService,
-    public settingsService: SettingsService
-    ) {
-  }
+  
 
   ngOnInit() {
     this.participantList = this.participantService.getParticipants();
@@ -109,6 +109,7 @@ export class TimerComponent implements OnInit {
       this.currentPercent = Math.round((this.currentElapsed / this.individualTime) * 100);
       this.currentTotalElapsed = this.totalElapsed + this.currentElapsed;
       this.totalTimePercent = Math.round(((this.totalElapsed + this.currentElapsed) / this.totalMaxTime) * 100) ;
+      console.log("timer: " + val);
     });
 
     this.timerActive = true;
@@ -179,8 +180,8 @@ export class TimerComponent implements OnInit {
    *
    * @param array
    */
-  shuffle(array: any[]) {
-    let currentIndex = array.length, temporaryValue: any, randomIndex: number;
+  shuffle(array: Participant[]) {
+    let currentIndex = array.length, temporaryValue: Participant, randomIndex: number;
 
     // While there remain elements to shuffle...
     while (0 !== currentIndex) {

@@ -33,7 +33,7 @@
               <input class="form-control" type="text" id="name" name="name" [(ngModel)]="name">
             </td>
             <td>
-              <button type="submit" class="btn btn-sm btn-outline-primary" [disabled]="name =='' || init == ''"><i class="fa fa-plus"></i> Add</button>
+              <button type="submit" class="btn btn-sm btn-outline-primary" [disabled]="name ==='' || init === ''"><i class="fa fa-plus"></i> Add</button>
             </td>
           </tr>
         </tfoot>
@@ -46,8 +46,8 @@
 </div>
 <div class="container">
 
-  <button class="btn btn-sm btn-outline-dark" (click)="exportParticipants()" [disabled]="participantList.length == 0"><i class="fa fa-upload" ></i> Export list ({{ participantList.length }})</button>
+  <button class="btn btn-sm btn-outline-dark" (click)="exportParticipants()" [disabled]="participantList.length === 0"><i class="fa fa-upload" ></i> Export list ({{ participantList.length }})</button>
   <button class="btn btn-sm btn-outline-success" [disabled]="! isJsonString(jsonParticipants)" (click)="importParticipants()"><i class="fa fa-download"></i> Import List</button>
-  <button class="btn btn-sm btn-outline-danger" (click)="jsonParticipants ='' " [disabled]="jsonParticipants.length == 0"><i class="fa fa-eraser"></i> Clear</button>
+  <button class="btn btn-sm btn-outline-danger" (click)="jsonParticipants ='' " [disabled]="jsonParticipants.length === 0"><i class="fa fa-eraser"></i> Clear</button>
 
 </div>
