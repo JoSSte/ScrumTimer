@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Participant, ParticipantAdapter } from '../../models/Participant';
 import { SettingsService } from '../settings/settings.service';
 import { HttpClient } from '@angular/common/http';
@@ -9,8 +9,11 @@ import { map } from 'rxjs/operators';
 export class ParticipantService {
   participants!: Participant[];
   lastSync: Date = new Date('2000-01-01T00:00:00.000Z');
+  public settings = inject(SettingsService);
+  private http = inject(HttpClient);
+  private adapter = inject(ParticipantAdapter);
 
-  constructor(public settings: SettingsService, private http: HttpClient, private adapter: ParticipantAdapter) {
+  constructor() {
     this.getLastSync();
   }
 
@@ -88,7 +91,7 @@ export class ParticipantService {
         // console.debug('Seconds since last sync: ' + durationSinceLastSync + ' syncing from ' + url + ' . . .');
         return this.http
         .get(url)
-        .pipe(map((data: any[]) => data.map((item) => this.adapter.adapt(item))));
+        .pipe(map((data: string[]) => data.map((item) => this.adapter.adapt(item))));
 
       } else {
         console.error(new Error('not syncing'));

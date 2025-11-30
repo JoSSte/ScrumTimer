@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Participant } from '../../models/Participant';
 import { ParticipantService } from '../../services/participant/participant.service';
 
@@ -7,6 +7,7 @@ import { ParticipantService } from '../../services/participant/participant.servi
     selector: 'app-participant-list',
     templateUrl: './participant-list.component.html',
     styleUrls: ['./participant-list.component.css'],
+    // eslint-disable-next-line @angular-eslint/prefer-standalone
     standalone: false
 })
 export class ParticipantListComponent implements OnInit {
@@ -15,9 +16,7 @@ export class ParticipantListComponent implements OnInit {
   participantList: Participant[];
   jsonParticipants = '';
 
-  constructor(public participantService: ParticipantService) {
-
-  }
+  public participantService =  inject(ParticipantService);
 
   ngOnInit() {
     this.participantList = this.participantService.getParticipants();
@@ -58,6 +57,7 @@ export class ParticipantListComponent implements OnInit {
     try {
       JSON.parse(str);
     } catch (e) {
+      console.log(e.message);
       return false;
     }
     return true;

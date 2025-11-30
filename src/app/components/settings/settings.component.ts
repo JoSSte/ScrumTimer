@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { SettingsService } from '../../services/settings/settings.service';
 
 @Component({
     selector: 'app-settings',
     templateUrl: './settings.component.html',
     styleUrls: ['./settings.component.css'],
+    // eslint-disable-next-line @angular-eslint/prefer-standalone
     standalone: false
 })
 export class SettingsComponent implements OnInit {
@@ -15,9 +16,7 @@ export class SettingsComponent implements OnInit {
   jiraLinkURL: string;
   useJiraLinkURL: boolean;
 
-  constructor(public settings: SettingsService) {
-
-  }
+  public settings = inject(SettingsService);
 
   ngOnInit() {
     this.useGlobalMaxTime = this.settings.getUseGlobalMaxTime();

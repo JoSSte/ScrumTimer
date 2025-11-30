@@ -32,7 +32,7 @@
             <br>
               <div class="btn-toolbar" role="toolbar" aria-label="Toolbar">
                 <div class="btn-group mr-2" role="group">
-                  <button class="btn btn-outline-danger " (click)="stopTimer()" title="Stop Timer" [disabled]="totalPercent == 0 && currentPercent == 0 || !timerActive">
+                  <button class="btn btn-outline-danger " (click)="stopTimer()" title="Stop Timer" [disabled]="totalPercent === 0 && currentPercent === 0 || !timerActive">
                     <i class="fa fa-hourglass-end"></i>
                   </button>
                   <button class="btn btn-outline-secondary" (click)="resetTimer()" title="Reset">
@@ -41,7 +41,7 @@
                 </div>
                 @if (!timerActive) {
                   <div class="btn-group mr-2" role="group">
-                    <button class="btn btn-outline-success" (click)="startTimer()" title="Start Timer" [disabled]="participantList.length == 0 || timerActive">
+                    <button class="btn btn-outline-success" (click)="startTimer()" title="Start Timer" [disabled]="participantList.length === 0 || timerActive">
                       <i class="fa fa-hourglass-start"></i> {{ currentParticipant.init }}
                     </button>
                   </div>
@@ -112,8 +112,8 @@
                         </h4>
                         <ul class="participant-list list-group">
                           @for (p of participantList; track p; let i = $index) {
-                            <li class="list-group-item" [ngClass]="{'text-success' : i == 0, 'text-primary': i == 1}">
-                              <button class="btn btn-outline-secondary btn-sm" (click)="markAbsent(p)" title="Mark as absent" [disabled]="participantList.length <= 2 || (i == 0 && timerActive)">
+                            <li class="list-group-item" [ngClass]="{'text-success' : i === 0, 'text-primary': i === 1}">
+                              <button class="btn btn-outline-secondary btn-sm" (click)="markAbsent(p)" title="Mark as absent" [disabled]="participantList.length <= 2 || (i === 0 && timerActive)">
                                 <i class="fa fa-minus-circle"></i>
                               </button> {{ p.name }} [{{ p.init }}]</li>
                             }
@@ -131,7 +131,7 @@
                             </ul>
                           </div>
                         }
-                        @if (participantList.length == 0 && doneParticipants.length == 0) {
+                        @if (participantList.length === 0 && doneParticipants.length === 0) {
                           <div class="jumbotron">
                             <p>There are no participants in your list. </p>
                             <p>To start using the Scrum Timer, please go to the

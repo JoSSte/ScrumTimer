@@ -6,7 +6,7 @@ export class SettingsService {
   private remoteParticipantList = '';
   private jiraURL = '';
 
-  constructor() { }
+  //constructor() { }
 
   getGlobalMaxTime(): number {
     if (localStorage.getItem('settings') === null) {
