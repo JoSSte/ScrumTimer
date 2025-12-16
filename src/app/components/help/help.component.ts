@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { VersionCheckService } from '../../services/versioncheck/version-check.service';
 import packageInfo from '../../../../package.json';
 
@@ -6,6 +6,7 @@ import packageInfo from '../../../../package.json';
   selector: 'app-help',
   templateUrl: './help.component.html',
   styleUrls: ['./help.component.css'],
+  // eslint-disable-next-line @angular-eslint/prefer-standalone
   standalone: false
 })
 export class HelpComponent implements OnInit {
@@ -13,7 +14,7 @@ export class HelpComponent implements OnInit {
   latestVersion: string | null = null;
   isNewVersionAvailable = false;
 
-  constructor(private versionCheckService: VersionCheckService) { }
+  private versionCheckService = inject(VersionCheckService);
 
   ngOnInit() {
     this.versionCheckService.getLatestReleaseVersion().subscribe((latest) => {

@@ -2,24 +2,33 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NavbarComponent } from './navbar.component';
+import { NavbarService } from '../../services/navbar/navbar.service';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
   let fixture: ComponentFixture<NavbarComponent>;
+  /*
   const previewWindowMock = {
     document: {
-      write() { },
+      write() { 
+        console.log('mock write called');
+      },
       body: {
-        setAttribute() { }
+        setAttribute() {
+          console.log('mock setAttribute called');
+         }
       }
     }
   } as unknown as Window;
-
+*/
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [NavbarComponent],
       imports: [
         RouterTestingModule.withRoutes([])
+      ],
+      providers: [
+        { provide: NavbarService, useValue: { hide: jasmine.createSpy('hide'), visible: true } }
       ]
     })
       .compileComponents();
@@ -39,15 +48,16 @@ describe('NavbarComponent', () => {
   describe('with opener', () => {
     beforeEach(() => {
       // set opener to something
-      window.opener = {} as any;
+      window.opener = {} as object;
       fixture = TestBed.createComponent(NavbarComponent);
       component = fixture.componentInstance;
     });
     afterEach(() => {
       // reset the opener property to undefined so it's not set for other tests
-      window.opener = undefined as any;
+      window.opener = undefined as object;
     });
     it('should hide the navbar when opened by a link',() => {
+      component.ngOnInit();
       expect(component.noOpener).toBeFalsy();
     });
   });

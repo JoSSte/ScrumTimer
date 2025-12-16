@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule, Routes, ActivatedRoute } from '@angular/router';
+import { RouterModule, Routes/*, ActivatedRoute */} from '@angular/router';
 import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
 // import { Timer } from 'angular-timer'; // AngularJS - not 4??
 
@@ -41,12 +41,12 @@ const appRoutes: Routes = [
         TimerComponent,
         ParticipantListComponent,
         SettingsComponent,
-        HelpComponent
+        HelpComponent,
+        SecsPipe
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
         FormsModule,
-        RouterModule.forRoot(appRoutes, {}),
-        SecsPipe], providers: [
+        RouterModule.forRoot(appRoutes, {})], providers: [
         ParticipantService,
         SettingsService,
         NavbarService,

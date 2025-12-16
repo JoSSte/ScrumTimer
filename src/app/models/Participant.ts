@@ -5,7 +5,7 @@ export class Participant {
     constructor(
         public init: string,
         public name: string,
-        public time: number = 0
+        public time = 0
     ) { }
 }
 
@@ -13,6 +13,7 @@ export class Participant {
     providedIn: 'root',
 })
 export class ParticipantAdapter implements Adapter<Participant> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     adapt(item: any): Participant {
         return new Participant(item.init, item.name, item.time);
     }
