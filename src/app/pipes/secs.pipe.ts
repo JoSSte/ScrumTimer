@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'secs',
-  standalone: true,
+  standalone: false,
   pure: true
 })
 export class SecsPipe implements PipeTransform {

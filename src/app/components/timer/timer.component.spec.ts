@@ -16,10 +16,10 @@ describe('TimerComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
     declarations: [
-        TimerComponent
+        TimerComponent,
+        SecsPipe
     ],
     imports: [RouterTestingModule.withRoutes([]),
-        SecsPipe,
         FormsModule],
     providers: [
         ParticipantService,

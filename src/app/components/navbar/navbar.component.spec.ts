@@ -2,10 +2,12 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NavbarComponent } from './navbar.component';
+import { NavbarService } from '../../services/navbar/navbar.service';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
   let fixture: ComponentFixture<NavbarComponent>;
+  /*
   const previewWindowMock = {
     document: {
       write() { 
@@ -18,12 +20,15 @@ describe('NavbarComponent', () => {
       }
     }
   } as unknown as Window;
-
+*/
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [NavbarComponent],
       imports: [
         RouterTestingModule.withRoutes([])
+      ],
+      providers: [
+        { provide: NavbarService, useValue: { hide: jasmine.createSpy('hide'), visible: true } }
       ]
     })
       .compileComponents();
@@ -52,6 +57,7 @@ describe('NavbarComponent', () => {
       window.opener = undefined as object;
     });
     it('should hide the navbar when opened by a link',() => {
+      component.ngOnInit();
       expect(component.noOpener).toBeFalsy();
     });
   });

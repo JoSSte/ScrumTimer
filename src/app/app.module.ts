@@ -41,12 +41,12 @@ const appRoutes: Routes = [
         TimerComponent,
         ParticipantListComponent,
         SettingsComponent,
-        HelpComponent
+        HelpComponent,
+        SecsPipe
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
         FormsModule,
-        RouterModule.forRoot(appRoutes, {}),
-        SecsPipe], providers: [
+        RouterModule.forRoot(appRoutes, {})], providers: [
         ParticipantService,
         SettingsService,
         NavbarService,

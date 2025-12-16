@@ -2,11 +2,11 @@ import { Component, OnInit, inject } from '@angular/core';
 import { NavbarService } from '../../services/navbar/navbar.service';
 
 @Component({
-    selector: 'app-navbar',
-    templateUrl: './navbar.component.html',
-    styleUrls: ['./navbar.component.css'],
-    // eslint-disable-next-line @angular-eslint/prefer-standalone
-    standalone: false
+  selector: 'app-navbar',
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.css'],
+  // eslint-disable-next-line @angular-eslint/prefer-standalone
+  standalone: false
 })
 export class NavbarComponent implements OnInit {
   noOpener = true;
@@ -15,9 +15,8 @@ export class NavbarComponent implements OnInit {
   private windowProps = 'resizable=no,scrollbars,status,top=0,right=0,width=';
   private popupWidth = 360;
   public nav = inject(NavbarService);
-  constructor(
-    
-  ) {
+
+  ngOnInit() {
     const hasOpener = window.opener;
     let openerMessage = '';
 
@@ -53,10 +52,6 @@ export class NavbarComponent implements OnInit {
     //console.debug('Opening windows');
     this.openJira();
     this.openScrumTimer();
-  }
-
-  ngOnInit() {
-    console.log('[Scrumtimer] Navbar init');
   }
 
 }
