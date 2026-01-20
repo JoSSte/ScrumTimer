@@ -10,7 +10,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (participant of participantList; track participant) {
+          @for (participant of participantList; track participant.init) {
             <tr>
               <td>
                 {{ participant.init }}

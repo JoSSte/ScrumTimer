@@ -4,11 +4,11 @@ import { ParticipantService } from '../../services/participant/participant.servi
 
 
 @Component({
-    selector: 'app-participant-list',
-    templateUrl: './participant-list.component.html',
-    styleUrls: ['./participant-list.component.css'],
-    // eslint-disable-next-line @angular-eslint/prefer-standalone
-    standalone: false
+  selector: 'app-participant-list',
+  templateUrl: './participant-list.component.html',
+  styleUrls: ['./participant-list.component.css'],
+  // eslint-disable-next-line @angular-eslint/prefer-standalone
+  standalone: false
 })
 export class ParticipantListComponent implements OnInit {
   init = '';
@@ -16,18 +16,18 @@ export class ParticipantListComponent implements OnInit {
   participantList: Participant[];
   jsonParticipants = '';
 
-  public participantService =  inject(ParticipantService);
+  public participantService = inject(ParticipantService);
 
   ngOnInit() {
     this.participantList = this.participantService.getParticipants();
     // check for updated remote participants
-    if(this.participantService.settings.usesRemoteParticipantList()){
+    if (this.participantService.settings.usesRemoteParticipantList()) {
       this.participantService.updateRemoteParticipants();
     }
   }
 
   addParticipant() {
-    if (this.init.length > 1 && this.name.length > 2){
+    if (this.init.length > 1 && this.name.length > 2) {
       this.participantService.addParticipant(new Participant(this.init, this.name));
     }
     this.init = '';
@@ -54,12 +54,16 @@ export class ParticipantListComponent implements OnInit {
 
 
   isJsonString(str) {
-    try {
-      JSON.parse(str);
-    } catch (e) {
-      console.log(e.message);
+    if (str.length > 2) {
+      try {
+        JSON.parse(str);
+      } catch (e) {
+        console.log(e.message);
+        return false;
+      }
+      return true;
+    } else {
       return false;
     }
-    return true;
   }
 }

@@ -111,18 +111,18 @@
                           </button>
                         </h4>
                         <ul class="participant-list list-group">
-                          @for (p of participantList; track p; let i = $index) {
+                          @for (p of participantList; track p.init; let i = $index) {
                             <li class="list-group-item" [ngClass]="{'text-success' : i === 0, 'text-primary': i === 1}">
                               <button class="btn btn-outline-secondary btn-sm" (click)="markAbsent(p)" title="Mark as absent" [disabled]="participantList.length <= 2 || (i === 0 && timerActive)">
                                 <i class="fa fa-minus-circle"></i>
                               </button> {{ p.name }} [{{ p.init }}]</li>
                             }
-                            @for (dp of doneParticipants; track dp) {
+                            @for (dp of doneParticipants; track dp.init) {
                               <li class="list-group-item list-group-item-secondary"> {{ dp.name }} [{{ dp.init }}] -
                                 <span [ngClass]="{'text-danger' : dp.time >= individualTime}">{{ dp.time | secs }}</span>
                               </li>
                             }
-                            @for (ap of absentParticipants; track ap) {
+                            @for (ap of absentParticipants; track ap.init) {
                               <li class="list-group-item list-group-item-danger">
                                 <button class="btn btn-outline-secondary btn-sm" (click)="markPresent(ap)" title="Mark as present">
                                   <i class="fa fa-plus-circle"></i>
