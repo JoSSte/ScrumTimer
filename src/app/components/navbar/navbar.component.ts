@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, isDevMode } from '@angular/core';
 import { NavbarService } from '../../services/navbar/navbar.service';
 
 @Component({
@@ -28,7 +28,9 @@ export class NavbarComponent implements OnInit {
       this.noOpener = true;
       openerMessage = 'Displaying pop out link';
     }
-    console.info(openerMessage);
+    if( isDevMode() ) {
+      console.info(openerMessage);
+  }
   }
 
   openScrumTimer() {
