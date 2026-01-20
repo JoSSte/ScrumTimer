@@ -247,7 +247,7 @@ var require_symbol_constructor_detection = __commonJS({
     var globalThis2 = require_global_this();
     var $String = globalThis2.String;
     module.exports = !!Object.getOwnPropertySymbols && !fails(function() {
-      var symbol = Symbol("symbol detection");
+      var symbol = /* @__PURE__ */ Symbol("symbol detection");
       return !$String(symbol) || !(Object(symbol) instanceof Symbol) || // Chrome 38-40 symbols are not inherited from DOM collections prototypes to instances
       !Symbol.sham && V8_VERSION && V8_VERSION < 41;
     });
