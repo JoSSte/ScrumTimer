@@ -2233,6 +2233,9 @@ function linkedSignalSetFn(node, newValue) {
 }
 function linkedSignalUpdateFn(node, updater) {
   producerUpdateValueVersion(node);
+  if (node.value === ERRORED) {
+    throw node.error;
+  }
   signalUpdateFn(node, updater);
   producerMarkClean(node);
 }
@@ -2306,7 +2309,7 @@ var formatter = {
     if (!isSignal(sig)) return false;
     try {
       sig();
-    } catch {
+    } catch (e) {
       return false;
     }
     return !config2?.ngSkipFormatting;
@@ -2394,7 +2397,7 @@ var Version = class {
     this.patch = parts.slice(2).join(".");
   }
 };
-var VERSION = /* @__PURE__ */ new Version("21.1.0");
+var VERSION = /* @__PURE__ */ new Version("21.1.4");
 var DOC_PAGE_BASE_URL = (() => {
   const full = VERSION.full;
   const isPreRelease = full.includes("-next") || full.includes("-rc") || full === "0.0.0-PLACEHOLDER";
@@ -4599,7 +4602,7 @@ function scheduleCallbackWithRafRace(callback) {
       if (timeoutId !== void 0) {
         clearTimeout(timeoutId);
       }
-    } catch {
+    } catch (e) {
     }
   }
   timeoutId = setTimeout(() => {
@@ -6224,8 +6227,9 @@ function getNodeInjectable(lView, tView, index, tNode, flags) {
     const factory = value;
     ngDevMode && injectionPath.push(factory.name ?? "unknown");
     if (factory.resolving) {
-      const token2 = stringifyForError(tData[index]);
+      let token2 = "";
       if (ngDevMode) {
+        token2 = stringifyForError(tData[index]);
         throw cyclicDependencyErrorWithDetails(token2, injectionPath);
       } else {
         throw cyclicDependencyError(token2);
@@ -7538,7 +7542,7 @@ function getPolicy$1() {
           createScript: (s) => s,
           createScriptURL: (s) => s
         });
-      } catch {
+      } catch (e) {
       }
     }
   }
@@ -7561,7 +7565,7 @@ function getPolicy() {
           createScript: (s) => s,
           createScriptURL: (s) => s
         });
-      } catch {
+      } catch (e) {
       }
     }
   }
@@ -7657,7 +7661,7 @@ var DOMParserHelper = class {
       }
       body.firstChild?.remove();
       return body;
-    } catch {
+    } catch (e) {
       return null;
     }
   }
@@ -7678,7 +7682,7 @@ var InertDocumentHelper = class {
 function isDOMParserAvailable() {
   try {
     return !!new window.DOMParser().parseFromString(trustedHTMLFromString(""), "text/html");
-  } catch {
+  } catch (e) {
     return false;
   }
 }
@@ -8970,6 +8974,16 @@ function queueEnterAnimations(injector, enterAnimations) {
     addToAnimationQueue(injector, nodeAnimations.animateFns);
   }
 }
+function removeAnimationsFromQueue(injector, animationFns) {
+  const animationQueue = injector.get(ANIMATION_QUEUE);
+  if (Array.isArray(animationFns)) {
+    for (const animateFn of animationFns) {
+      animationQueue.queue.delete(animateFn);
+    }
+  } else {
+    animationQueue.queue.delete(animationFns);
+  }
+}
 function maybeQueueEnterAnimation(parentLView, parent, tNode, injector) {
   const enterAnimations = parentLView?.[ANIMATIONS]?.enter;
   if (parent !== null && enterAnimations && enterAnimations.has(tNode.index)) {
@@ -9104,6 +9118,9 @@ function cleanUpView(tView, lView) {
 }
 function runLeaveAnimationsWithCallback(lView, tNode, injector, callback) {
   const animations = lView?.[ANIMATIONS];
+  if (animations?.enter?.has(tNode.index)) {
+    removeAnimationsFromQueue(injector, animations.enter.get(tNode.index).animateFns);
+  }
   if (animations == null || animations.leave == void 0 || !animations.leave.has(tNode.index)) return callback(false);
   if (lView) allLeavingAnimations.add(lView[ID]);
   addToAnimationQueue(injector, () => {
@@ -9732,7 +9749,7 @@ function handleUncaughtError(lView, error) {
   let errorHandler2;
   try {
     errorHandler2 = injector.get(INTERNAL_APPLICATION_ERROR_HANDLER, null);
-  } catch {
+  } catch (e) {
     errorHandler2 = null;
   }
   errorHandler2?.(error);
@@ -10438,7 +10455,7 @@ var ViewRef = class {
     if (ngDevMode) {
       try {
         this.exhaustive ??= this._lView[INJECTOR].get(UseExhaustiveCheckNoChanges, USE_EXHAUSTIVE_CHECK_NO_CHANGES_DEFAULT);
-      } catch {
+      } catch (e) {
         this.exhaustive = USE_EXHAUSTIVE_CHECK_NO_CHANGES_DEFAULT;
       }
       checkNoChangesInternal(this._lView, this.exhaustive);
@@ -11151,10 +11168,10 @@ function verifyStandaloneImport(depType, importingType) {
   }
 }
 var DepsTracker = class {
-  ownerNgModule = /* @__PURE__ */ new Map();
+  ownerNgModule = /* @__PURE__ */ new WeakMap();
   ngModulesWithSomeUnresolvedDecls = /* @__PURE__ */ new Set();
-  ngModulesScopeCache = /* @__PURE__ */ new Map();
-  standaloneComponentsScopeCache = /* @__PURE__ */ new Map();
+  ngModulesScopeCache = /* @__PURE__ */ new WeakMap();
+  standaloneComponentsScopeCache = /* @__PURE__ */ new WeakMap();
   resolveNgModulesDecls() {
     if (this.ngModulesWithSomeUnresolvedDecls.size === 0) {
       return;
@@ -12032,7 +12049,7 @@ var ComponentFactory2 = class extends ComponentFactory$1 {
   }
 };
 function createRootTView(rootSelectorOrNode, componentDef, componentBindings, directives) {
-  const tAttributes = rootSelectorOrNode ? ["ng-version", "21.1.0"] : extractAttrsAndClassesFromSelector(componentDef.selectors[0]);
+  const tAttributes = rootSelectorOrNode ? ["ng-version", "21.1.4"] : extractAttrsAndClassesFromSelector(componentDef.selectors[0]);
   let creationBindings = null;
   let updateBindings = null;
   let varsToAllocate = 0;
@@ -16521,16 +16538,16 @@ function \u0275\u0275animateEnter(value) {
   }
   const tNode = getCurrentTNode();
   cancelLeavingNodes(tNode, lView);
-  addAnimationToLView(getLViewEnterAnimations(lView), tNode, () => runEnterAnimation(lView, tNode, value));
+  const ngZone = lView[INJECTOR].get(NgZone);
+  addAnimationToLView(getLViewEnterAnimations(lView), tNode, () => runEnterAnimation(lView, tNode, value, ngZone));
   initializeAnimationQueueScheduler(lView[INJECTOR]);
   queueEnterAnimations(lView[INJECTOR], getLViewEnterAnimations(lView));
   return \u0275\u0275animateEnter;
 }
-function runEnterAnimation(lView, tNode, value) {
+function runEnterAnimation(lView, tNode, value, ngZone) {
   const nativeElement = getNativeByTNode(tNode, lView);
   ngDevMode && assertElementNodes(nativeElement, "animate.enter");
   const renderer = lView[RENDERER];
-  const ngZone = lView[INJECTOR].get(NgZone);
   const activeClasses = getClassListFromValue(value);
   const cleanupFns = [];
   const handleEnterAnimationStart = (event) => {
@@ -16615,11 +16632,12 @@ function \u0275\u0275animateLeave(value) {
   }
   const tNode = getCurrentTNode();
   cancelLeavingNodes(tNode, lView);
-  addAnimationToLView(getLViewLeaveAnimations(lView), tNode, () => runLeaveAnimations(lView, tNode, value));
+  const ngZone = lView[INJECTOR].get(NgZone);
+  addAnimationToLView(getLViewLeaveAnimations(lView), tNode, () => runLeaveAnimations(lView, tNode, value, ngZone));
   initializeAnimationQueueScheduler(lView[INJECTOR]);
   return \u0275\u0275animateLeave;
 }
-function runLeaveAnimations(lView, tNode, value) {
+function runLeaveAnimations(lView, tNode, value, ngZone) {
   const {
     promise,
     resolve
@@ -16627,7 +16645,6 @@ function runLeaveAnimations(lView, tNode, value) {
   const nativeElement = getNativeByTNode(tNode, lView);
   ngDevMode && assertElementNodes(nativeElement, "animate.leave");
   const renderer = lView[RENDERER];
-  const ngZone = lView[INJECTOR].get(NgZone);
   allLeavingAnimations.add(lView[ID]);
   (getLViewLeaveAnimations(lView).get(tNode.index).resolvers ??= []).push(resolve);
   const activeClasses = getClassListFromValue(value);
@@ -16689,11 +16706,13 @@ function \u0275\u0275animateLeaveListener(value) {
   const tNode = getCurrentTNode();
   cancelLeavingNodes(tNode, lView);
   allLeavingAnimations.add(lView[ID]);
-  addAnimationToLView(getLViewLeaveAnimations(lView), tNode, () => runLeaveAnimationFunction(lView, tNode, value));
+  const ngZone = lView[INJECTOR].get(NgZone);
+  const maxAnimationTimeout = lView[INJECTOR].get(MAX_ANIMATION_TIMEOUT);
+  addAnimationToLView(getLViewLeaveAnimations(lView), tNode, () => runLeaveAnimationFunction(lView, tNode, value, ngZone, maxAnimationTimeout));
   initializeAnimationQueueScheduler(lView[INJECTOR]);
   return \u0275\u0275animateLeaveListener;
 }
-function runLeaveAnimationFunction(lView, tNode, value) {
+function runLeaveAnimationFunction(lView, tNode, value, ngZone, maxAnimationTimeout) {
   const {
     promise,
     resolve
@@ -16703,8 +16722,6 @@ function runLeaveAnimationFunction(lView, tNode, value) {
   const cleanupFns = [];
   const renderer = lView[RENDERER];
   const animationsDisabled = areAnimationsDisabled(lView);
-  const ngZone = lView[INJECTOR].get(NgZone);
-  const maxAnimationTimeout = lView[INJECTOR].get(MAX_ANIMATION_TIMEOUT);
   (getLViewLeaveAnimations(lView).get(tNode.index).resolvers ??= []).push(resolve);
   const resolvers = getLViewLeaveAnimations(lView).get(tNode.index)?.resolvers;
   if (animationsDisabled) {
@@ -16760,7 +16777,7 @@ function \u0275\u0275controlCreate() {
   } else if (tNode.flags & 8192) {
     initializeNativeControl(lView, tNode, fieldDirective);
   }
-  fieldDirective.\u0275register();
+  fieldDirective.registerAsBinding(getCustomControl(tNode, lView));
 }
 function \u0275\u0275control(value, name, sanitizer) {
   const lView = getLView();
@@ -16856,7 +16873,11 @@ function isNativeControlFirstCreatePass(tNode) {
 }
 function getFieldDirective(tNode, lView) {
   const index = tNode.fieldIndex;
-  return index === -1 ? null : lView[index];
+  return index === -1 ? void 0 : lView[index];
+}
+function getCustomControl(tNode, lView) {
+  const index = tNode.customControlIndex;
+  return index === -1 ? void 0 : lView[index];
 }
 function hasModelInput(directiveDef, name) {
   return hasInput(directiveDef, name) && hasOutput(directiveDef, name + "Change");
@@ -16877,14 +16898,11 @@ function initializeCustomControl(lView, tNode, fieldDirective, modelName) {
   if (hasOutput(directiveDef, touchedOutputName)) {
     listenToOutput(tNode, lView, directiveIndex, touchedOutputName, touchedOutputName, wrapListener(tNode, lView, () => fieldDirective.state().markAsTouched()));
   }
-  const customControl = lView[directiveIndex];
-  fieldDirective.focus = () => customControl.focus ? customControl.focus() : fieldDirective.element.focus();
 }
 function initializeInteropControl(fieldDirective) {
   const interopControl = fieldDirective.\u0275interopControl;
   interopControl.registerOnChange((value) => fieldDirective.state().setControlValue(value));
   interopControl.registerOnTouched(() => fieldDirective.state().markAsTouched());
-  fieldDirective.focus = () => fieldDirective.element.focus();
 }
 function isNativeControl(tNode) {
   if (tNode.type !== 2) {
@@ -16910,7 +16928,6 @@ function initializeNativeControl(lView, tNode, fieldDirective) {
     const observer = observeSelectMutations(element, fieldDirective);
     storeCleanupWithContext(tView, lView, observer, observer.disconnect);
   }
-  fieldDirective.focus = () => element.focus();
 }
 function observeSelectMutations(select, controlDirective) {
   const observer = new MutationObserver((mutations) => {
@@ -19605,6 +19622,10 @@ function toStylingKeyValueArray(keyValueArraySet2, stringParser, value) {
     for (let i = 0; i < unwrappedValue.length; i++) {
       keyValueArraySet2(styleKeyValueArray, unwrappedValue[i], true);
     }
+  } else if (unwrappedValue instanceof Set) {
+    for (const current of unwrappedValue) {
+      keyValueArraySet2(styleKeyValueArray, current, true);
+    }
   } else if (typeof unwrappedValue === "object") {
     for (const key in unwrappedValue) {
       if (unwrappedValue.hasOwnProperty(key)) {
@@ -19736,14 +19757,14 @@ function \u0275\u0275text(index, value = "") {
   const adjustedIndex = index + HEADER_OFFSET;
   ngDevMode && assertTNodeCreationIndex(lView, index);
   const tNode = tView.firstCreatePass ? getOrCreateTNode(tView, adjustedIndex, 1, value, null) : tView.data[adjustedIndex];
-  const textNative = _locateOrCreateTextNode(tView, lView, tNode, value, index);
+  const textNative = _locateOrCreateTextNode(tView, lView, tNode, value);
   lView[adjustedIndex] = textNative;
   if (wasLastNodeCreated()) {
     appendChild(tView, lView, textNative, tNode);
   }
   setCurrentTNode(tNode, false);
 }
-var _locateOrCreateTextNode = (tView, lView, tNode, value, index) => {
+var _locateOrCreateTextNode = (tView, lView, tNode, value) => {
   lastNodeWasCreated(true);
   return createTextNode(lView[RENDERER], value);
 };
@@ -22806,8 +22827,6 @@ function createViewRef(tNode, lView, isPipe2) {
   return null;
 }
 var DefaultIterableDifferFactory = class {
-  constructor() {
-  }
   supports(obj) {
     return isListLikeIterable(obj);
   }
@@ -23262,8 +23281,6 @@ function getPreviousIndex(item, addRemoveOffset, moveOffsets) {
   return previousIndex + addRemoveOffset + moveOffset;
 }
 var DefaultKeyValueDifferFactory = class {
-  constructor() {
-  }
   supports(obj) {
     return obj instanceof Map || isJsObject(obj);
   }
@@ -23281,7 +23298,6 @@ var DefaultKeyValueDiffer = class {
   _additionsHead = null;
   _additionsTail = null;
   _removalsHead = null;
-  _removalsTail = null;
   get isDirty() {
     return this._additionsHead !== null || this._changesHead !== null || this._removalsHead !== null;
   }
@@ -23322,8 +23338,6 @@ var DefaultKeyValueDiffer = class {
       throw new RuntimeError(900, ngDevMode && `Error trying to diff '${stringify(map2)}'. Only maps and objects are allowed`);
     }
     return this.check(map2) ? this : null;
-  }
-  onDestroy() {
   }
   check(map2) {
     this._reset();
@@ -25573,7 +25587,7 @@ var NgForOf = class _NgForOf {
         if (typeof ngDevMode === "undefined" || ngDevMode) {
           try {
             this._differ = this._differs.find(value).create(this.ngForTrackBy);
-          } catch {
+          } catch (e) {
             let errorMessage = `Cannot find a differ supporting object '${value}' of type '${getTypeName(value)}'. NgFor only supports binding to Iterables, such as Arrays.`;
             if (typeof value === "object") {
               errorMessage += " Did you mean to use the keyvalue pipe?";
@@ -26282,9 +26296,7 @@ var AsyncPipe = class _AsyncPipe {
 var LowerCasePipe = class _LowerCasePipe {
   transform(value) {
     if (value == null) return null;
-    if (typeof value !== "string") {
-      throw invalidPipeArgumentError(_LowerCasePipe, value);
-    }
+    assertPipeArgument(_LowerCasePipe, value);
     return value.toLowerCase();
   }
   static \u0275fac = function LowerCasePipe_Factory(__ngFactoryType__) {
@@ -26308,9 +26320,7 @@ var unicodeWordMatch = /(?:[0-9A-Za-z\xAA\xB5\xBA\xC0-\xD6\xD8-\xF6\xF8-\u02C1\u
 var TitleCasePipe = class _TitleCasePipe {
   transform(value) {
     if (value == null) return null;
-    if (typeof value !== "string") {
-      throw invalidPipeArgumentError(_TitleCasePipe, value);
-    }
+    assertPipeArgument(_TitleCasePipe, value);
     return value.replace(unicodeWordMatch, (txt) => txt[0].toUpperCase() + txt.slice(1).toLowerCase());
   }
   static \u0275fac = function TitleCasePipe_Factory(__ngFactoryType__) {
@@ -26333,9 +26343,7 @@ var TitleCasePipe = class _TitleCasePipe {
 var UpperCasePipe = class _UpperCasePipe {
   transform(value) {
     if (value == null) return null;
-    if (typeof value !== "string") {
-      throw invalidPipeArgumentError(_UpperCasePipe, value);
-    }
+    assertPipeArgument(_UpperCasePipe, value);
     return value.toUpperCase();
   }
   static \u0275fac = function UpperCasePipe_Factory(__ngFactoryType__) {
@@ -26355,6 +26363,11 @@ var UpperCasePipe = class _UpperCasePipe {
     }]
   }], null, null);
 })();
+function assertPipeArgument(pipe2, value) {
+  if (typeof value !== "string") {
+    throw invalidPipeArgumentError(pipe2, value);
+  }
+}
 var DEFAULT_DATE_FORMAT = "mediumDate";
 var DATE_PIPE_DEFAULT_TIMEZONE = new InjectionToken(typeof ngDevMode !== "undefined" && ngDevMode ? "DATE_PIPE_DEFAULT_TIMEZONE" : "");
 var DATE_PIPE_DEFAULT_OPTIONS = new InjectionToken(typeof ngDevMode !== "undefined" && ngDevMode ? "DATE_PIPE_DEFAULT_OPTIONS" : "");
@@ -26916,7 +26929,7 @@ var BrowserViewportScroller = class {
   setHistoryScrollRestoration(scrollRestoration) {
     try {
       this.window.history.scrollRestoration = scrollRestoration;
-    } catch {
+    } catch (e) {
       console.warn(formatRuntimeError(2400, ngDevMode && "Failed to set `window.history.scrollRestoration`. This may occur when:\n\u2022 The script is running inside a sandboxed iframe\n\u2022 The window is partially navigated or inactive\n\u2022 The script is executed in an untrusted or special context (e.g., test runners, browser extensions, or content previews)\nScroll position may not be preserved across navigation."));
     }
   }
@@ -26970,7 +26983,7 @@ function isValidPath(path) {
   try {
     const url = new URL(path);
     return true;
-  } catch {
+  } catch (e) {
     return false;
   }
 }
@@ -30827,7 +30840,7 @@ function xsrfInterceptorFn(req, next) {
     if (locationOrigin !== requestOrigin) {
       return next(req);
     }
-  } catch {
+  } catch (e) {
     return next(req);
   }
   const token = inject2(HttpXsrfTokenExtractor).getToken();
@@ -32117,7 +32130,7 @@ var AbstractControlDirective = class {
     this._onDestroyCallbacks = [];
   }
   reset(value = void 0) {
-    if (this.control) this.control.reset(value);
+    this.control?.reset(value);
   }
   hasError(errorCode, path) {
     return this.control ? this.control.hasError(errorCode, path) : false;
@@ -32306,7 +32319,7 @@ var ngModelWithFormGroupExample = `
       <input [(ngModel)]="showMoreControls" [ngModelOptions]="{standalone: true}">
   </div>
 `;
-var VERSION2 = /* @__PURE__ */ new Version("21.1.0");
+var VERSION2 = /* @__PURE__ */ new Version("21.1.4");
 function controlParentException(nameOrIndex) {
   return new RuntimeError(1050, `formControlName must be used with a parent formGroup or formArray directive. You'll want to add a formGroup/formArray
       directive and pass it an existing FormGroup/FormArray instance (you can create one in your class).
@@ -32642,8 +32655,8 @@ var AbstractControl = class {
     const changed = this.touched === false;
     this.touched = true;
     const sourceControl = opts.sourceControl ?? this;
-    if (this._parent && !opts.onlySelf) {
-      this._parent.markAsTouched(__spreadProps(__spreadValues({}, opts), {
+    if (!opts.onlySelf) {
+      this._parent?.markAsTouched(__spreadProps(__spreadValues({}, opts), {
         sourceControl
       }));
     }
@@ -32679,8 +32692,8 @@ var AbstractControl = class {
         sourceControl
       });
     });
-    if (this._parent && !opts.onlySelf) {
-      this._parent._updateTouched(opts, sourceControl);
+    if (!opts.onlySelf) {
+      this._parent?._updateTouched(opts, sourceControl);
     }
     if (changed && opts.emitEvent !== false) {
       this._events.next(new TouchedChangeEvent(false, sourceControl));
@@ -32690,8 +32703,8 @@ var AbstractControl = class {
     const changed = this.pristine === true;
     this.pristine = false;
     const sourceControl = opts.sourceControl ?? this;
-    if (this._parent && !opts.onlySelf) {
-      this._parent.markAsDirty(__spreadProps(__spreadValues({}, opts), {
+    if (!opts.onlySelf) {
+      this._parent?.markAsDirty(__spreadProps(__spreadValues({}, opts), {
         sourceControl
       }));
     }
@@ -32710,8 +32723,8 @@ var AbstractControl = class {
         emitEvent: opts.emitEvent
       });
     });
-    if (this._parent && !opts.onlySelf) {
-      this._parent._updatePristine(opts, sourceControl);
+    if (!opts.onlySelf) {
+      this._parent?._updatePristine(opts, sourceControl);
     }
     if (changed && opts.emitEvent !== false) {
       this._events.next(new PristineChangeEvent(true, sourceControl));
@@ -32724,8 +32737,8 @@ var AbstractControl = class {
       this._events.next(new StatusChangeEvent(this.status, sourceControl));
       this.statusChanges.emit(this.status);
     }
-    if (this._parent && !opts.onlySelf) {
-      this._parent.markAsPending(__spreadProps(__spreadValues({}, opts), {
+    if (!opts.onlySelf) {
+      this._parent?.markAsPending(__spreadProps(__spreadValues({}, opts), {
         sourceControl
       }));
     }
@@ -32770,12 +32783,12 @@ var AbstractControl = class {
     this._onDisabledChange.forEach((changeFn) => changeFn(false));
   }
   _updateAncestors(opts, sourceControl) {
-    if (this._parent && !opts.onlySelf) {
-      this._parent.updateValueAndValidity(opts);
+    if (!opts.onlySelf) {
+      this._parent?.updateValueAndValidity(opts);
       if (!opts.skipPristineCheck) {
-        this._parent._updatePristine({}, sourceControl);
+        this._parent?._updatePristine({}, sourceControl);
       }
-      this._parent._updateTouched({}, sourceControl);
+      this._parent?._updateTouched({}, sourceControl);
     }
   }
   setParent(parent) {
@@ -32802,8 +32815,8 @@ var AbstractControl = class {
       this.valueChanges.emit(this.value);
       this.statusChanges.emit(this.status);
     }
-    if (this._parent && !opts.onlySelf) {
-      this._parent.updateValueAndValidity(__spreadProps(__spreadValues({}, opts), {
+    if (!opts.onlySelf) {
+      this._parent?.updateValueAndValidity(__spreadProps(__spreadValues({}, opts), {
         sourceControl
       }));
     }
@@ -32862,7 +32875,7 @@ var AbstractControl = class {
   }
   getError(errorCode, path) {
     const control = path ? this.get(path) : this;
-    return control && control.errors ? control.errors[errorCode] : null;
+    return control?.errors ? control.errors[errorCode] : null;
   }
   hasError(errorCode, path) {
     return !!this.getError(errorCode, path);
@@ -32910,8 +32923,8 @@ var AbstractControl = class {
     const newPristine = !this._anyControlsDirty();
     const changed = this.pristine !== newPristine;
     this.pristine = newPristine;
-    if (this._parent && !opts.onlySelf) {
-      this._parent._updatePristine(opts, changedControl);
+    if (!opts.onlySelf) {
+      this._parent?._updatePristine(opts, changedControl);
     }
     if (changed) {
       this._events.next(new PristineChangeEvent(this.pristine, changedControl));
@@ -32920,8 +32933,8 @@ var AbstractControl = class {
   _updateTouched(opts = {}, changedControl) {
     this.touched = this._anyControlsTouched();
     this._events.next(new TouchedChangeEvent(this.touched, changedControl));
-    if (this._parent && !opts.onlySelf) {
-      this._parent._updateTouched(opts, changedControl);
+    if (!opts.onlySelf) {
+      this._parent?._updateTouched(opts, changedControl);
     }
   }
   _onDisabledChange = [];
@@ -32934,8 +32947,7 @@ var AbstractControl = class {
     }
   }
   _parentMarkedDirty(onlySelf) {
-    const parentDirty = this._parent && this._parent.dirty;
-    return !onlySelf && !!parentDirty && !this._parent._anyControlsDirty();
+    return !onlySelf && !!this._parent?.dirty && !this._parent._anyControlsDirty();
   }
   _find(name) {
     return null;
@@ -33138,10 +33150,8 @@ function cleanUpControl(control, dir, validateControlPresenceOnChange = true) {
       _noControlError(dir);
     }
   };
-  if (dir.valueAccessor) {
-    dir.valueAccessor.registerOnChange(noop5);
-    dir.valueAccessor.registerOnTouched(noop5);
-  }
+  dir?.valueAccessor?.registerOnChange(noop5);
+  dir?.valueAccessor?.registerOnTouched(noop5);
   cleanUpValidators(control, dir);
   if (control) {
     dir._invokeOnDestroyCallbacks();
@@ -33386,9 +33396,7 @@ var NgForm = class _NgForm extends ControlContainer {
   removeControl(dir) {
     resolvedPromise$1.then(() => {
       const container = this._findContainer(dir.path);
-      if (container) {
-        container.removeControl(dir.name);
-      }
+      container?.removeControl(dir.name);
       this._directives.delete(dir);
     });
   }
@@ -33406,9 +33414,7 @@ var NgForm = class _NgForm extends ControlContainer {
   removeFormGroup(dir) {
     resolvedPromise$1.then(() => {
       const container = this._findContainer(dir.path);
-      if (container) {
-        container.removeControl(dir.name);
-      }
+      container?.removeControl?.(dir.name);
     });
   }
   getFormGroup(dir) {
@@ -33632,9 +33638,7 @@ var AbstractFormGroupDirective = class _AbstractFormGroupDirective extends Contr
     this.formDirective.addFormGroup(this);
   }
   ngOnDestroy() {
-    if (this.formDirective) {
-      this.formDirective.removeFormGroup(this);
-    }
+    this.formDirective?.removeFormGroup(this);
   }
   get control() {
     return this.formDirective.getFormGroup(this);
@@ -33835,7 +33839,7 @@ var NgModel = class _NgModel extends NgControl {
     }
   }
   ngOnDestroy() {
-    this.formDirective && this.formDirective.removeControl(this);
+    this.formDirective?.removeControl(this);
   }
   get path() {
     return this._getPath(this.name);
@@ -34584,24 +34588,20 @@ var AbstractFormDirective = class _AbstractFormDirective extends ControlContaine
     });
   }
   _cleanUpFormContainer(dir) {
-    if (this.form) {
-      const ctrl = this.form.get(dir.path);
-      if (ctrl) {
-        const isControlUpdated = cleanUpFormContainer(ctrl, dir);
-        if (isControlUpdated) {
-          ctrl.updateValueAndValidity({
-            emitEvent: false
-          });
-        }
+    const ctrl = this.form?.get(dir.path);
+    if (ctrl) {
+      const isControlUpdated = cleanUpFormContainer(ctrl, dir);
+      if (isControlUpdated) {
+        ctrl.updateValueAndValidity({
+          emitEvent: false
+        });
       }
     }
   }
   _updateRegistrations() {
     this.form._registerOnCollectionChange(this._onCollectionChange);
-    if (this._oldForm) {
-      this._oldForm._registerOnCollectionChange(() => {
-      });
-    }
+    this._oldForm?._registerOnCollectionChange(() => {
+    });
   }
   _updateValidators() {
     setUpValidators(this.form, this);
@@ -35077,9 +35077,7 @@ var FormControlName = class _FormControlName extends NgControl {
     }
   }
   ngOnDestroy() {
-    if (this.formDirective) {
-      this.formDirective.removeControl(this);
-    }
+    this.formDirective?.removeControl(this);
   }
   viewToModelUpdate(newValue) {
     this.viewModel = newValue;
@@ -35392,16 +35390,14 @@ var NgSelectOption = class _NgSelectOption {
   }
   set value(value) {
     this._setElementValue(value);
-    if (this._select) this._select._writeValueAfterRender();
+    this._select?._writeValueAfterRender();
   }
   _setElementValue(value) {
     this._renderer.setProperty(this._element.nativeElement, "value", value);
   }
   ngOnDestroy() {
-    if (this._select) {
-      this._select._optionMap.delete(this.id);
-      this._select._writeValueAfterRender();
-    }
+    this._select?._optionMap.delete(this.id);
+    this._select?._writeValueAfterRender();
   }
   static \u0275fac = function NgSelectOption_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _NgSelectOption)(\u0275\u0275directiveInject(ElementRef), \u0275\u0275directiveInject(Renderer2), \u0275\u0275directiveInject(SelectControlValueAccessor, 9));
@@ -35666,9 +35662,7 @@ var AbstractValidatorDirective = class _AbstractValidatorDirective {
       const input2 = this.normalizeInput(changes[this.inputName].currentValue);
       this._enabled = this.enabled(input2);
       this._validator = this._enabled ? this.createValidator(input2) : nullValidator;
-      if (this._onChange) {
-        this._onChange();
-      }
+      this._onChange?.();
     }
   }
   validate(control) {
@@ -36725,7 +36719,10 @@ var UrlParser = class {
   parseFragment() {
     return this.consumeOptional("#") ? decodeURIComponent(this.remaining) : null;
   }
-  parseChildren() {
+  parseChildren(depth = 0) {
+    if (depth > 50) {
+      throw new RuntimeError(4010, (typeof ngDevMode === "undefined" || ngDevMode) && "URL is too deep");
+    }
     if (this.remaining === "") {
       return {};
     }
@@ -36741,11 +36738,11 @@ var UrlParser = class {
     let children = {};
     if (this.peekStartsWith("/(")) {
       this.capture("/");
-      children = this.parseParens(true);
+      children = this.parseParens(true, depth);
     }
     let res = {};
     if (this.peekStartsWith("(")) {
-      res = this.parseParens(false);
+      res = this.parseParens(false, depth);
     }
     if (segments.length > 0 || Object.keys(children).length > 0) {
       res[PRIMARY_OUTLET] = new UrlSegmentGroup(segments, children);
@@ -36810,7 +36807,7 @@ var UrlParser = class {
       params[decodedKey] = decodedVal;
     }
   }
-  parseParens(allowPrimary) {
+  parseParens(allowPrimary, depth) {
     const segments = {};
     this.capture("(");
     while (!this.consumeOptional(")") && this.remaining.length > 0) {
@@ -36827,7 +36824,7 @@ var UrlParser = class {
       } else if (allowPrimary) {
         outletName = PRIMARY_OUTLET;
       }
-      const children = this.parseChildren();
+      const children = this.parseChildren(depth + 1);
       segments[outletName ?? PRIMARY_OUTLET] = Object.keys(children).length === 1 && children[PRIMARY_OUTLET] ? children[PRIMARY_OUTLET] : new UrlSegmentGroup([], children);
       this.consumeOptional("//");
     }
@@ -40597,9 +40594,7 @@ var Router = class _Router {
       currentSnapshot: this.routerState.snapshot,
       currentRouterState: this.routerState
     });
-    return promise.catch((e) => {
-      return Promise.reject(e);
-    });
+    return promise.catch(Promise.reject.bind(Promise));
   }
   static \u0275fac = function Router_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _Router)();
@@ -41348,7 +41343,7 @@ var NavigationStateManager = class _NavigationStateManager extends StateManager 
     const {
       navigationEvent
     } = this.currentNavigation;
-    if (navigationEvent && (navigationEvent.navigationType === "traverse" || navigationEvent.navigationType === "reload") && this.eventAndRouterDestinationsMatch(navigationEvent, transition)) {
+    if (navigationEvent && navigationEvent.navigationType === "traverse" && this.eventAndRouterDestinationsMatch(navigationEvent, transition)) {
       return;
     }
     this.currentNavigation.removeAbortListener?.();
@@ -41427,7 +41422,7 @@ var NavigationStateManager = class _NavigationStateManager extends StateManager 
     this.rawUrlTree = traversalReset ? this.stateMemento.rawUrlTree : this.urlHandlingStrategy.merge(this.currentUrlTree, finalUrl ?? this.rawUrlTree);
   }
   handleNavigate(event) {
-    if (!event.canIntercept) {
+    if (!event.canIntercept || event.navigationType === "reload") {
       return;
     }
     const routerInfo = event?.info?.\u0275routerInfo;
@@ -41766,6 +41761,9 @@ function provideRouterInitializer() {
 
 // src/app/models/Participant.ts
 var Participant = class {
+  init;
+  name;
+  time;
   constructor(init, name, time = 0) {
     this.init = init;
     this.name = name;
@@ -41777,14 +41775,10 @@ var ParticipantAdapter = class _ParticipantAdapter {
   adapt(item) {
     return new Participant(item.init, item.name, item.time);
   }
-  static {
-    this.\u0275fac = function ParticipantAdapter_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _ParticipantAdapter)();
-    };
-  }
-  static {
-    this.\u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _ParticipantAdapter, factory: _ParticipantAdapter.\u0275fac, providedIn: "root" });
-  }
+  static \u0275fac = function ParticipantAdapter_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _ParticipantAdapter)();
+  };
+  static \u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _ParticipantAdapter, factory: _ParticipantAdapter.\u0275fac, providedIn: "root" });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ParticipantAdapter, [{
@@ -41797,12 +41791,10 @@ var ParticipantAdapter = class _ParticipantAdapter {
 
 // src/app/services/settings/settings.service.ts
 var SettingsService = class _SettingsService {
-  constructor() {
-    this.useGlobalMaxTime = true;
-    this.globalMaxTime = 60 * 15;
-    this.remoteParticipantList = "";
-    this.jiraURL = "";
-  }
+  useGlobalMaxTime = true;
+  globalMaxTime = 60 * 15;
+  remoteParticipantList = "";
+  jiraURL = "";
   //constructor() { }
   getGlobalMaxTime() {
     if (localStorage.getItem("settings") === null) {
@@ -41870,14 +41862,10 @@ var SettingsService = class _SettingsService {
     localStorage.setItem("participants", jsonSettings);
     this.exportSettings();
   }
-  static {
-    this.\u0275fac = function SettingsService_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _SettingsService)();
-    };
-  }
-  static {
-    this.\u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _SettingsService, factory: _SettingsService.\u0275fac });
-  }
+  static \u0275fac = function SettingsService_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _SettingsService)();
+  };
+  static \u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _SettingsService, factory: _SettingsService.\u0275fac });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(SettingsService, [{
@@ -41887,11 +41875,12 @@ var SettingsService = class _SettingsService {
 
 // src/app/services/participant/participant.service.ts
 var ParticipantService = class _ParticipantService {
+  participants;
+  lastSync = /* @__PURE__ */ new Date("2000-01-01T00:00:00.000Z");
+  settings = inject2(SettingsService);
+  http = inject2(HttpClient);
+  adapter = inject2(ParticipantAdapter);
   constructor() {
-    this.lastSync = /* @__PURE__ */ new Date("2000-01-01T00:00:00.000Z");
-    this.settings = inject2(SettingsService);
-    this.http = inject2(HttpClient);
-    this.adapter = inject2(ParticipantAdapter);
     this.getLastSync();
   }
   getLastSync() {
@@ -41905,10 +41894,11 @@ var ParticipantService = class _ParticipantService {
     localStorage.setItem("lastSync", d.toISOString());
   }
   getParticipants() {
-    if (localStorage.getItem("participants") === null) {
+    const stored = localStorage.getItem("participants");
+    if (stored === null) {
       this.participants = [];
     } else {
-      this.participants = JSON.parse(localStorage.getItem("participants"));
+      this.participants = JSON.parse(stored);
     }
     return this.participants;
   }
@@ -41954,8 +41944,10 @@ var ParticipantService = class _ParticipantService {
         return this.http.get(url).pipe(map((data) => data.map((item) => this.adapter.adapt(item))));
       } else {
         console.error(new Error("not syncing"));
+        return new Observable((observer) => observer.next([]));
       }
     }
+    return new Observable((observer) => observer.next([]));
   }
   updateRemoteParticipants() {
     this.getRemoteParticipants().subscribe((resp) => {
@@ -41964,14 +41956,10 @@ var ParticipantService = class _ParticipantService {
       this.setLastSync(/* @__PURE__ */ new Date());
     });
   }
-  static {
-    this.\u0275fac = function ParticipantService_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _ParticipantService)();
-    };
-  }
-  static {
-    this.\u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _ParticipantService, factory: _ParticipantService.\u0275fac });
-  }
+  static \u0275fac = function ParticipantService_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _ParticipantService)();
+  };
+  static \u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _ParticipantService, factory: _ParticipantService.\u0275fac });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ParticipantService, [{
@@ -41981,6 +41969,7 @@ var ParticipantService = class _ParticipantService {
 
 // src/app/services/navbar/navbar.service.ts
 var NavbarService = class _NavbarService {
+  visible;
   constructor() {
     this.visible = true;
   }
@@ -41993,14 +41982,10 @@ var NavbarService = class _NavbarService {
   toggle() {
     this.visible = !this.visible;
   }
-  static {
-    this.\u0275fac = function NavbarService_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _NavbarService)();
-    };
-  }
-  static {
-    this.\u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _NavbarService, factory: _NavbarService.\u0275fac, providedIn: "root" });
-  }
+  static \u0275fac = function NavbarService_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NavbarService)();
+  };
+  static \u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _NavbarService, factory: _NavbarService.\u0275fac, providedIn: "root" });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NavbarService, [{
@@ -42013,24 +41998,18 @@ var NavbarService = class _NavbarService {
 
 // src/app/services/versioncheck/version-check.service.ts
 var VersionCheckService = class _VersionCheckService {
-  constructor() {
-    this.githubApiUrl = "https://api.github.com/repos/JoSSte/ScrumTimer/releases/latest";
-    this.http = inject2(HttpClient);
-  }
+  githubApiUrl = "https://api.github.com/repos/JoSSte/ScrumTimer/releases/latest";
+  http = inject2(HttpClient);
   getLatestReleaseVersion() {
     return this.http.get(this.githubApiUrl).pipe(
       map((release) => release.tag_name.replace(/^v/, ""))
       // Remove leading 'v' if exists
     );
   }
-  static {
-    this.\u0275fac = function VersionCheckService_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _VersionCheckService)();
-    };
-  }
-  static {
-    this.\u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _VersionCheckService, factory: _VersionCheckService.\u0275fac, providedIn: "root" });
-  }
+  static \u0275fac = function VersionCheckService_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _VersionCheckService)();
+  };
+  static \u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _VersionCheckService, factory: _VersionCheckService.\u0275fac, providedIn: "root" });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(VersionCheckService, [{
@@ -42044,16 +42023,16 @@ var _c0 = () => ["active"];
 var _c1 = () => ["timer"];
 var _c2 = () => ["participants"];
 var _c3 = () => ["settings"];
-function NavbarComponent_Conditional_0_li_23_Template(rf, ctx) {
+function NavbarComponent_Conditional_0_Conditional_23_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "li", 6)(1, "a", 14);
-    \u0275\u0275listener("click", function NavbarComponent_Conditional_0_li_23_Template_a_click_1_listener() {
+    \u0275\u0275elementStart(0, "li", 6)(1, "a", 13);
+    \u0275\u0275listener("click", function NavbarComponent_Conditional_0_Conditional_23_Template_a_click_1_listener() {
       \u0275\u0275restoreView(_r1);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.openWindows());
     });
-    \u0275\u0275element(2, "i", 15);
+    \u0275\u0275element(2, "i", 14);
     \u0275\u0275text(3, "PopOut");
     \u0275\u0275elementEnd()();
   }
@@ -42085,7 +42064,7 @@ function NavbarComponent_Conditional_0_Template(rf, ctx) {
     \u0275\u0275element(21, "i", 12);
     \u0275\u0275text(22, " Help");
     \u0275\u0275elementEnd()();
-    \u0275\u0275template(23, NavbarComponent_Conditional_0_li_23_Template, 4, 2, "li", 13);
+    \u0275\u0275conditionalCreate(23, NavbarComponent_Conditional_0_Conditional_23_Template, 4, 2, "li", 6);
     \u0275\u0275elementEnd()()();
   }
   if (rf & 2) {
@@ -42105,18 +42084,16 @@ function NavbarComponent_Conditional_0_Template(rf, ctx) {
     \u0275\u0275advance(3);
     \u0275\u0275property("routerLinkActive", \u0275\u0275pureFunction0(14, _c0));
     \u0275\u0275advance(4);
-    \u0275\u0275property("ngIf", ctx_r1.noOpener);
+    \u0275\u0275conditional(ctx_r1.noOpener ? 23 : -1);
   }
 }
 var NavbarComponent = class _NavbarComponent {
-  constructor() {
-    this.noOpener = true;
-    this.scrumTimerWindow = null;
-    this.jiraTimerWindow = null;
-    this.windowProps = "resizable=no,scrollbars,status,top=0,right=0,width=";
-    this.popupWidth = 360;
-    this.nav = inject2(NavbarService);
-  }
+  noOpener = true;
+  scrumTimerWindow = null;
+  jiraTimerWindow = null;
+  windowProps = "resizable=no,scrollbars,status,top=0,right=0,width=";
+  popupWidth = 360;
+  nav = inject2(NavbarService);
   ngOnInit() {
     const hasOpener = window.opener;
     let openerMessage = "";
@@ -42151,21 +42128,17 @@ var NavbarComponent = class _NavbarComponent {
     this.openJira();
     this.openScrumTimer();
   }
-  static {
-    this.\u0275fac = function NavbarComponent_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _NavbarComponent)();
-    };
-  }
-  static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _NavbarComponent, selectors: [["app-navbar"]], standalone: false, decls: 1, vars: 1, consts: [[1, "navbar", "navbar-dark", "bg-dark", "navbar-expand-md"], ["href", "#", 1, "navbar-brand"], ["type", "button", "data-toggle", "collapse", "data-target", "#ScrumNavBar", "aria-controls", "ScrumNavBar", "aria-expanded", "false", "aria-label", "Toggle navigation", 1, "navbar-toggler"], [1, "navbar-toggler-icon"], ["id", "ScrumNavBar", 1, "collapse", "navbar-collapse"], [1, "navbar-nav", "mr-auto"], [1, "nav-item", 3, "routerLinkActive"], ["href", "#", 1, "nav-link", 3, "routerLink"], [1, "fa", "fa-clock-o"], [1, "fa", "fa-users"], [1, "fa", "fa-cog"], ["href", "#", "routerLink", "/help", 1, "nav-link"], [1, "fa", "fa-question-circle"], ["class", "nav-item", 3, "routerLinkActive", 4, "ngIf"], ["href", "#", 1, "nav-link", 3, "click"], [1, "fa", "fa-external-link-alt"]], template: function NavbarComponent_Template(rf, ctx) {
-      if (rf & 1) {
-        \u0275\u0275conditionalCreate(0, NavbarComponent_Conditional_0_Template, 24, 15, "nav", 0);
-      }
-      if (rf & 2) {
-        \u0275\u0275conditional(ctx.nav.visible ? 0 : -1);
-      }
-    }, dependencies: [NgIf, RouterLink, RouterLinkActive], encapsulation: 2 });
-  }
+  static \u0275fac = function NavbarComponent_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NavbarComponent)();
+  };
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _NavbarComponent, selectors: [["app-navbar"]], standalone: false, decls: 1, vars: 1, consts: [[1, "navbar", "navbar-dark", "bg-dark", "navbar-expand-md"], ["href", "#", 1, "navbar-brand"], ["type", "button", "data-toggle", "collapse", "data-target", "#ScrumNavBar", "aria-controls", "ScrumNavBar", "aria-expanded", "false", "aria-label", "Toggle navigation", 1, "navbar-toggler"], [1, "navbar-toggler-icon"], ["id", "ScrumNavBar", 1, "collapse", "navbar-collapse"], [1, "navbar-nav", "mr-auto"], [1, "nav-item", 3, "routerLinkActive"], ["href", "#", 1, "nav-link", 3, "routerLink"], [1, "fa", "fa-clock-o"], [1, "fa", "fa-users"], [1, "fa", "fa-cog"], ["href", "#", "routerLink", "/help", 1, "nav-link"], [1, "fa", "fa-question-circle"], ["href", "#", 1, "nav-link", 3, "click"], [1, "fa", "fa-external-link-alt"]], template: function NavbarComponent_Template(rf, ctx) {
+    if (rf & 1) {
+      \u0275\u0275conditionalCreate(0, NavbarComponent_Conditional_0_Template, 24, 15, "nav", 0);
+    }
+    if (rf & 2) {
+      \u0275\u0275conditional(ctx.nav.visible ? 0 : -1);
+    }
+  }, dependencies: [RouterLink, RouterLinkActive], encapsulation: 2 });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NavbarComponent, [{
@@ -42191,9 +42164,11 @@ var NavbarComponent = class _NavbarComponent {
         <li class="nav-item" [routerLinkActive]="['active']">
           <a class="nav-link" href="#" routerLink="/help"><i class="fa fa-question-circle"></i> Help</a>
         </li>
-        <li class="nav-item" [routerLinkActive]="['active']" *ngIf="noOpener">
+        @if(noOpener){
+        <li class="nav-item" [routerLinkActive]="['active']">
           <a class="nav-link" href="#" (click)="openWindows()"><i class="fa fa-external-link-alt"></i>PopOut</a>
         </li>
+        }
       </ul>
     </div>
   </nav>
@@ -42206,24 +42181,18 @@ var NavbarComponent = class _NavbarComponent {
 
 // src/app/app.component.ts
 var AppComponent = class _AppComponent {
-  constructor() {
-    this.title = "ScrumTimer";
-  }
-  static {
-    this.\u0275fac = function AppComponent_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _AppComponent)();
-    };
-  }
-  static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _AppComponent, selectors: [["app-root"]], standalone: false, decls: 3, vars: 0, consts: [[1, "container"]], template: function AppComponent_Template(rf, ctx) {
-      if (rf & 1) {
-        \u0275\u0275element(0, "app-navbar");
-        \u0275\u0275elementStart(1, "div", 0);
-        \u0275\u0275element(2, "router-outlet");
-        \u0275\u0275elementEnd();
-      }
-    }, dependencies: [RouterOutlet, NavbarComponent], encapsulation: 2 });
-  }
+  title = "ScrumTimer";
+  static \u0275fac = function AppComponent_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _AppComponent)();
+  };
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _AppComponent, selectors: [["app-root"]], standalone: false, decls: 3, vars: 0, consts: [[1, "container"]], template: function AppComponent_Template(rf, ctx) {
+    if (rf & 1) {
+      \u0275\u0275element(0, "app-navbar");
+      \u0275\u0275elementStart(1, "div", 0);
+      \u0275\u0275element(2, "router-outlet");
+      \u0275\u0275elementEnd();
+    }
+  }, dependencies: [RouterOutlet, NavbarComponent], encapsulation: 2 });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(AppComponent, [{
@@ -42247,21 +42216,17 @@ var SecsPipe = class _SecsPipe {
     const seconds = totalseconds % 60;
     return prefix + ("00" + minutes).slice(-2) + ":" + ("00" + seconds).slice(-2);
   }
-  static {
-    this.\u0275fac = function SecsPipe_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _SecsPipe)();
-    };
-  }
-  static {
-    this.\u0275pipe = /* @__PURE__ */ \u0275\u0275definePipe({ name: "secs", type: _SecsPipe, pure: true, standalone: false });
-  }
+  static \u0275fac = function SecsPipe_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _SecsPipe)();
+  };
+  static \u0275pipe = /* @__PURE__ */ \u0275\u0275definePipe({ name: "secs", type: _SecsPipe, pure: true });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(SecsPipe, [{
     type: Pipe,
     args: [{
       name: "secs",
-      standalone: false,
+      standalone: true,
       pure: true
     }]
   }], null, null);
@@ -42601,26 +42566,33 @@ function TimerComponent_Conditional_1_Template(rf, ctx) {
   }
 }
 var TimerComponent = class _TimerComponent {
-  constructor() {
-    this.activatedRoute = inject2(ActivatedRoute);
-    this.nav = inject2(NavbarService);
-    this.participantService = inject2(ParticipantService);
-    this.settingsService = inject2(SettingsService);
-    this.cdr = inject2(ChangeDetectorRef);
-    this.absentParticipants = [];
-    this.doneParticipants = [];
-    this.totalMaxTime = this.settingsService.getGlobalMaxTime();
-    this.recommendedIndividualTime = 120;
-    this.totalPercent = 0;
-    this.totalTimePercent = 0;
-    this.totalElapsed = 0;
-    this.currentTotalElapsed = 0;
-    this.individualMaxTime = 120;
-    this.individualTime = this.individualMaxTime;
-    this.currentPercent = 0;
-    this.currentElapsed = 0;
-    this.timerActive = false;
-  }
+  activatedRoute = inject2(ActivatedRoute);
+  nav = inject2(NavbarService);
+  participantService = inject2(ParticipantService);
+  settingsService = inject2(SettingsService);
+  cdr = inject2(ChangeDetectorRef);
+  timerSubscription = null;
+  participantList = [];
+  absentParticipants = [];
+  doneParticipants = [];
+  // variables for session
+  totalMaxTime = this.settingsService.getGlobalMaxTime();
+  recommendedIndividualTime = 120;
+  totalPercent = 0;
+  totalTimePercent = 0;
+  totalElapsed = 0;
+  currentTotalElapsed = 0;
+  // variables for indiviual
+  individualMaxTime = 120;
+  individualTime = this.individualMaxTime;
+  currentPercent = 0;
+  currentParticipant = null;
+  future = null;
+  futureString = "";
+  diff = 0;
+  currentDiff = 0;
+  currentElapsed = 0;
+  timerActive = false;
   ngOnInit() {
     this.participantList = this.participantService.getParticipants();
     this.sortParticipants();
@@ -42629,24 +42601,32 @@ var TimerComponent = class _TimerComponent {
     } else {
       this.individualTime = this.individualMaxTime;
     }
-    if (this.activatedRoute["_routerState"].snapshot.url === "/popin") {
+    if (this.activatedRoute.snapshot.url[0]?.path === "popin") {
       this.nav.hide();
     } else {
       this.nav.show();
     }
   }
   stopTimer() {
-    this.currentParticipant.time = this.currentElapsed;
-    if (this.participantList.length > 0) {
-      this.doneParticipants.push(this.currentParticipant);
+    if (this.currentParticipant) {
+      this.currentParticipant.time = this.currentElapsed;
+      if (this.participantList.length > 0) {
+        this.doneParticipants.push(this.currentParticipant);
+      }
     }
     this.participantList.splice(0, 1);
     this.totalPercent = 100;
     this.timerActive = false;
-    this.timerSubscription.unsubscribe();
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
   }
   startTimer() {
     const source = timer(1e3, 2e3);
+    if (this.participantList.length === 0) {
+      console.warn("No participants to timer");
+      return;
+    }
     this.currentParticipant = this.participantList[0];
     this.future = /* @__PURE__ */ new Date();
     if (this.settingsService.getUseGlobalMaxTime()) {
@@ -42658,15 +42638,22 @@ var TimerComponent = class _TimerComponent {
     } else {
       this.individualTime = this.individualMaxTime;
     }
-    this.future.setSeconds(this.future.getSeconds() + this.individualTime);
-    this.timerSubscription = source.subscribe((tick) => {
-      this.currentDiff = Math.floor((this.future.getTime() - (/* @__PURE__ */ new Date()).getTime()) / 1e3);
-      this.currentElapsed = this.individualTime - this.currentDiff;
-      this.currentPercent = Math.round(this.currentElapsed / this.individualTime * 100);
-      this.currentTotalElapsed = this.totalElapsed + this.currentElapsed;
-      this.totalTimePercent = Math.round((this.totalElapsed + this.currentElapsed) / this.totalMaxTime * 100);
-      this.cdr.markForCheck();
-    });
+    if (this.future) {
+      this.future.setSeconds(this.future.getSeconds() + this.individualTime);
+    }
+    this.timerSubscription = source.subscribe(
+      /*tick => */
+      () => {
+        if (this.future) {
+          this.currentDiff = Math.floor((this.future.getTime() - (/* @__PURE__ */ new Date()).getTime()) / 1e3);
+          this.currentElapsed = this.individualTime - this.currentDiff;
+          this.currentPercent = Math.round(this.currentElapsed / this.individualTime * 100);
+          this.currentTotalElapsed = this.totalElapsed + this.currentElapsed;
+          this.totalTimePercent = Math.round((this.totalElapsed + this.currentElapsed) / this.totalMaxTime * 100);
+          this.cdr.markForCheck();
+        }
+      }
+    );
     this.timerActive = true;
   }
   nextParticipant() {
@@ -42688,7 +42675,9 @@ var TimerComponent = class _TimerComponent {
     this.currentDiff = 0;
     this.currentPercent = 0;
     this.timerActive = false;
-    this.timerSubscription.unsubscribe();
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
     this.startTimer();
   }
   resetTimer() {
@@ -42765,24 +42754,20 @@ var TimerComponent = class _TimerComponent {
     this.participantList.push(participant);
     this.absentParticipants.splice(idx, 1);
   }
-  static {
-    this.\u0275fac = function TimerComponent_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _TimerComponent)();
-    };
-  }
-  static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _TimerComponent, selectors: [["app-timer"]], standalone: false, decls: 2, vars: 2, consts: [[1, "container"], [1, "jumbotron"], [1, "progress"], ["role", "progressbar", "aria-valuenow", "40", "aria-valuemin", "0", "aria-valuemax", "100", 1, "progress-bar", "progress-bar-striped", "bg-success"], ["role", "progressbar", "aria-valuenow", "40", "aria-valuemin", "0", "aria-valuemax", "100", 1, "progress-bar", "progress-bar-striped", "bg-info", 3, "ngClass"], [1, "fa", "fa-exclamation-triangle", 3, "ngClass"], ["role", "progressbar", "aria-valuenow", "0", "aria-valuemin", "0", "aria-valuemax", "100", 1, "progress-bar", "progress-bar-striped", 3, "ngClass"], ["role", "toolbar", "aria-label", "Toolbar", 1, "btn-toolbar"], ["role", "group", 1, "btn-group", "mr-2"], ["title", "Stop Timer", 1, "btn", "btn-outline-danger", 3, "click", "disabled"], [1, "fa", "fa-hourglass-end"], ["title", "Reset", 1, "btn", "btn-outline-secondary", 3, "click"], [1, "fa", "fa-undo"], ["id", "btnGroupDrop1", "type", "button", "data-toggle", "dropdown", "aria-haspopup", "true", "aria-expanded", "false", 1, "btn", "btn-outline-secondary", "dropdown-toggle"], [1, "fa", "fa-ellipsis-v"], [1, "dropdown-menu"], ["href", "#", "data-toggle", "collapse", "data-target", "#Questions", "aria-expanded", "false", "aria-controls", "Questions", 1, "dropdown-item"], [1, "fa", "fa-question"], ["href", "#", "data-toggle", "collapse", "data-target", "#Debug", "aria-expanded", "false", "aria-controls", "Debug", 1, "dropdown-item"], [1, "fa", "fa-bug"], ["id", "Debug", 1, "collapse"], [1, "card", "card-body"], ["id", "Questions", 1, "collapse"], ["title", "Shuffle Participants", 1, "btn", "btn-sm", "btn-info", 3, "click", "disabled"], [1, "fa", "fa-random"], ["title", "Sort Participants", 1, "btn", "btn-sm", "btn-info", 3, "click", "disabled"], [1, "fa", "fa-sort-amount-asc"], [1, "participant-list", "list-group"], [1, "list-group-item", 3, "ngClass"], [1, "list-group-item", "list-group-item-secondary"], [1, "list-group-item", "list-group-item-danger"], ["title", "Start Timer", 1, "btn", "btn-outline-success", 3, "click", "disabled"], [1, "fa", "fa-hourglass-start"], ["title", "Next participant", 1, "btn", "btn-outline-primary", 3, "click", "disabled"], [1, "fa", "fa-step-forward"], ["title", "Mark as absent", 1, "btn", "btn-outline-secondary", "btn-sm", 3, "click", "disabled"], [1, "fa", "fa-minus-circle"], [3, "ngClass"], ["title", "Mark as present", 1, "btn", "btn-outline-secondary", "btn-sm", 3, "click"], [1, "fa", "fa-plus-circle"], ["href", "#", 3, "routerLink"]], template: function TimerComponent_Template(rf, ctx) {
-      if (rf & 1) {
-        \u0275\u0275conditionalCreate(0, TimerComponent_Conditional_0_Template, 102, 48, "div", 0);
-        \u0275\u0275conditionalCreate(1, TimerComponent_Conditional_1_Template, 10, 2, "div", 1);
-      }
-      if (rf & 2) {
-        \u0275\u0275conditional(ctx.participantList.length > 0 || ctx.doneParticipants.length > 0 ? 0 : -1);
-        \u0275\u0275advance();
-        \u0275\u0275conditional(ctx.participantList.length === 0 && ctx.doneParticipants.length === 0 ? 1 : -1);
-      }
-    }, dependencies: [NgClass, RouterLink, SecsPipe], styles: ["\n\n.progress[_ngcontent-%COMP%] {\n  position: relative;\n}\n.progress[_ngcontent-%COMP%] {\n  height: 40px;\n}\n.progress-bar[_ngcontent-%COMP%] {\n  height: 40px;\n}\n.progress[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  position: absolute;\n  display: block;\n  width: 100%;\n  top: 50%;\n  margin-top: -10px;\n  color: black;\n  font-weight: bold;\n}\n/*# sourceMappingURL=timer.component.css.map */"] });
-  }
+  static \u0275fac = function TimerComponent_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _TimerComponent)();
+  };
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _TimerComponent, selectors: [["app-timer"]], standalone: false, decls: 2, vars: 2, consts: [[1, "container"], [1, "jumbotron"], [1, "progress"], ["role", "progressbar", "aria-valuenow", "40", "aria-valuemin", "0", "aria-valuemax", "100", 1, "progress-bar", "progress-bar-striped", "bg-success"], ["role", "progressbar", "aria-valuenow", "40", "aria-valuemin", "0", "aria-valuemax", "100", 1, "progress-bar", "progress-bar-striped", "bg-info", 3, "ngClass"], [1, "fa", "fa-exclamation-triangle", 3, "ngClass"], ["role", "progressbar", "aria-valuenow", "0", "aria-valuemin", "0", "aria-valuemax", "100", 1, "progress-bar", "progress-bar-striped", 3, "ngClass"], ["role", "toolbar", "aria-label", "Toolbar", 1, "btn-toolbar"], ["role", "group", 1, "btn-group", "mr-2"], ["title", "Stop Timer", 1, "btn", "btn-outline-danger", 3, "click", "disabled"], [1, "fa", "fa-hourglass-end"], ["title", "Reset", 1, "btn", "btn-outline-secondary", 3, "click"], [1, "fa", "fa-undo"], ["id", "btnGroupDrop1", "type", "button", "data-toggle", "dropdown", "aria-haspopup", "true", "aria-expanded", "false", 1, "btn", "btn-outline-secondary", "dropdown-toggle"], [1, "fa", "fa-ellipsis-v"], [1, "dropdown-menu"], ["href", "#", "data-toggle", "collapse", "data-target", "#Questions", "aria-expanded", "false", "aria-controls", "Questions", 1, "dropdown-item"], [1, "fa", "fa-question"], ["href", "#", "data-toggle", "collapse", "data-target", "#Debug", "aria-expanded", "false", "aria-controls", "Debug", 1, "dropdown-item"], [1, "fa", "fa-bug"], ["id", "Debug", 1, "collapse"], [1, "card", "card-body"], ["id", "Questions", 1, "collapse"], ["title", "Shuffle Participants", 1, "btn", "btn-sm", "btn-info", 3, "click", "disabled"], [1, "fa", "fa-random"], ["title", "Sort Participants", 1, "btn", "btn-sm", "btn-info", 3, "click", "disabled"], [1, "fa", "fa-sort-amount-asc"], [1, "participant-list", "list-group"], [1, "list-group-item", 3, "ngClass"], [1, "list-group-item", "list-group-item-secondary"], [1, "list-group-item", "list-group-item-danger"], ["title", "Start Timer", 1, "btn", "btn-outline-success", 3, "click", "disabled"], [1, "fa", "fa-hourglass-start"], ["title", "Next participant", 1, "btn", "btn-outline-primary", 3, "click", "disabled"], [1, "fa", "fa-step-forward"], ["title", "Mark as absent", 1, "btn", "btn-outline-secondary", "btn-sm", 3, "click", "disabled"], [1, "fa", "fa-minus-circle"], [3, "ngClass"], ["title", "Mark as present", 1, "btn", "btn-outline-secondary", "btn-sm", 3, "click"], [1, "fa", "fa-plus-circle"], ["href", "#", 3, "routerLink"]], template: function TimerComponent_Template(rf, ctx) {
+    if (rf & 1) {
+      \u0275\u0275conditionalCreate(0, TimerComponent_Conditional_0_Template, 102, 48, "div", 0);
+      \u0275\u0275conditionalCreate(1, TimerComponent_Conditional_1_Template, 10, 2, "div", 1);
+    }
+    if (rf & 2) {
+      \u0275\u0275conditional(ctx.participantList.length > 0 || ctx.doneParticipants.length > 0 ? 0 : -1);
+      \u0275\u0275advance();
+      \u0275\u0275conditional(ctx.participantList.length === 0 && ctx.doneParticipants.length === 0 ? 1 : -1);
+    }
+  }, dependencies: [NgClass, RouterLink, SecsPipe], styles: ["\n\n.progress[_ngcontent-%COMP%] {\n  position: relative;\n}\n.progress[_ngcontent-%COMP%] {\n  height: 40px;\n}\n.progress-bar[_ngcontent-%COMP%] {\n  height: 40px;\n}\n.progress[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  position: absolute;\n  display: block;\n  width: 100%;\n  top: 50%;\n  margin-top: -10px;\n  color: black;\n  font-weight: bold;\n}\n/*# sourceMappingURL=timer.component.css.map */"] });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(TimerComponent, [{
@@ -42965,12 +42950,11 @@ function ParticipantListComponent_For_13_Template(rf, ctx) {
   }
 }
 var ParticipantListComponent = class _ParticipantListComponent {
-  constructor() {
-    this.init = "";
-    this.name = "";
-    this.jsonParticipants = "";
-    this.participantService = inject2(ParticipantService);
-  }
+  init = "";
+  name = "";
+  participantList = [];
+  jsonParticipants = "";
+  participantService = inject2(ParticipantService);
   ngOnInit() {
     this.participantList = this.participantService.getParticipants();
     if (this.participantService.settings.usesRemoteParticipantList()) {
@@ -43003,7 +42987,9 @@ var ParticipantListComponent = class _ParticipantListComponent {
       try {
         JSON.parse(str);
       } catch (e) {
-        console.log(e.message);
+        if (e instanceof Error) {
+          console.log(e.message);
+        }
         return false;
       }
       return true;
@@ -43011,95 +42997,91 @@ var ParticipantListComponent = class _ParticipantListComponent {
       return false;
     }
   }
-  static {
-    this.\u0275fac = function ParticipantListComponent_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _ParticipantListComponent)();
-    };
-  }
-  static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ParticipantListComponent, selectors: [["app-participant-list"]], standalone: false, decls: 36, vars: 8, consts: [[1, "row"], [1, "col-md-10", "offset-md-3"], [3, "submit"], [1, "table", "table-striped"], ["type", "text", "id", "init", "name", "init", 1, "form-control", 3, "ngModelChange", "ngModel"], ["type", "text", "id", "name", "name", "name", 1, "form-control", 3, "ngModelChange", "ngModel"], ["type", "submit", 1, "btn", "btn-sm", "btn-outline-primary", 3, "disabled"], [1, "fa", "fa-plus"], ["cols", "50", "rows", "5", "id", "jsonParticipants", "name", "jsonParticipants", 1, "form-control", 3, "ngModelChange", "ngModel"], [1, "container"], [1, "btn", "btn-sm", "btn-outline-dark", 3, "click", "disabled"], [1, "fa", "fa-upload"], [1, "btn", "btn-sm", "btn-outline-success", 3, "click", "disabled"], [1, "fa", "fa-download"], [1, "btn", "btn-sm", "btn-outline-danger", 3, "click", "disabled"], [1, "fa", "fa-eraser"], [1, "btn", "btn-outline-danger", "btn-sm", 3, "click"], [1, "fa", "fa-trash-o", "fa-lg"]], template: function ParticipantListComponent_Template(rf, ctx) {
-      if (rf & 1) {
-        \u0275\u0275elementStart(0, "div", 0)(1, "div", 1)(2, "form", 2);
-        \u0275\u0275listener("submit", function ParticipantListComponent_Template_form_submit_2_listener() {
-          return ctx.addParticipant();
-        });
-        \u0275\u0275elementStart(3, "table", 3)(4, "thead")(5, "tr")(6, "th");
-        \u0275\u0275text(7, "Initials");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(8, "th");
-        \u0275\u0275text(9, "Name");
-        \u0275\u0275elementEnd();
-        \u0275\u0275element(10, "th");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(11, "tbody");
-        \u0275\u0275repeaterCreate(12, ParticipantListComponent_For_13_Template, 8, 2, "tr", null, _forTrack02);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(14, "tfoot")(15, "tr")(16, "td")(17, "input", 4);
-        \u0275\u0275twoWayListener("ngModelChange", function ParticipantListComponent_Template_input_ngModelChange_17_listener($event) {
-          \u0275\u0275twoWayBindingSet(ctx.init, $event) || (ctx.init = $event);
-          return $event;
-        });
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(18, "td")(19, "input", 5);
-        \u0275\u0275twoWayListener("ngModelChange", function ParticipantListComponent_Template_input_ngModelChange_19_listener($event) {
-          \u0275\u0275twoWayBindingSet(ctx.name, $event) || (ctx.name = $event);
-          return $event;
-        });
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(20, "td")(21, "button", 6);
-        \u0275\u0275element(22, "i", 7);
-        \u0275\u0275text(23, " Add");
-        \u0275\u0275elementEnd()()()()()()()();
-        \u0275\u0275elementStart(24, "div", 0)(25, "textarea", 8);
-        \u0275\u0275twoWayListener("ngModelChange", function ParticipantListComponent_Template_textarea_ngModelChange_25_listener($event) {
-          \u0275\u0275twoWayBindingSet(ctx.jsonParticipants, $event) || (ctx.jsonParticipants = $event);
-          return $event;
-        });
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(26, "div", 9)(27, "button", 10);
-        \u0275\u0275listener("click", function ParticipantListComponent_Template_button_click_27_listener() {
-          return ctx.exportParticipants();
-        });
-        \u0275\u0275element(28, "i", 11);
-        \u0275\u0275text(29);
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(30, "button", 12);
-        \u0275\u0275listener("click", function ParticipantListComponent_Template_button_click_30_listener() {
-          return ctx.importParticipants();
-        });
-        \u0275\u0275element(31, "i", 13);
-        \u0275\u0275text(32, " Import List");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(33, "button", 14);
-        \u0275\u0275listener("click", function ParticipantListComponent_Template_button_click_33_listener() {
-          return ctx.jsonParticipants = "";
-        });
-        \u0275\u0275element(34, "i", 15);
-        \u0275\u0275text(35, " Clear");
-        \u0275\u0275elementEnd()();
-      }
-      if (rf & 2) {
-        \u0275\u0275advance(12);
-        \u0275\u0275repeater(ctx.participantList);
-        \u0275\u0275advance(5);
-        \u0275\u0275twoWayProperty("ngModel", ctx.init);
-        \u0275\u0275advance(2);
-        \u0275\u0275twoWayProperty("ngModel", ctx.name);
-        \u0275\u0275advance(2);
-        \u0275\u0275property("disabled", ctx.name === "" || ctx.init === "");
-        \u0275\u0275advance(4);
-        \u0275\u0275twoWayProperty("ngModel", ctx.jsonParticipants);
-        \u0275\u0275advance(2);
-        \u0275\u0275property("disabled", ctx.participantList.length === 0);
-        \u0275\u0275advance(2);
-        \u0275\u0275textInterpolate1(" Export list (", ctx.participantList.length, ")");
-        \u0275\u0275advance();
-        \u0275\u0275property("disabled", !ctx.isJsonString(ctx.jsonParticipants));
-        \u0275\u0275advance(3);
-        \u0275\u0275property("disabled", ctx.jsonParticipants.length === 0);
-      }
-    }, dependencies: [\u0275NgNoValidate, DefaultValueAccessor, NgControlStatus, NgControlStatusGroup, NgModel, NgForm], encapsulation: 2 });
-  }
+  static \u0275fac = function ParticipantListComponent_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _ParticipantListComponent)();
+  };
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _ParticipantListComponent, selectors: [["app-participant-list"]], standalone: false, decls: 36, vars: 8, consts: [[1, "row"], [1, "col-md-10", "offset-md-3"], [3, "submit"], [1, "table", "table-striped"], ["type", "text", "id", "init", "name", "init", 1, "form-control", 3, "ngModelChange", "ngModel"], ["type", "text", "id", "name", "name", "name", 1, "form-control", 3, "ngModelChange", "ngModel"], ["type", "submit", 1, "btn", "btn-sm", "btn-outline-primary", 3, "disabled"], [1, "fa", "fa-plus"], ["cols", "50", "rows", "5", "id", "jsonParticipants", "name", "jsonParticipants", 1, "form-control", 3, "ngModelChange", "ngModel"], [1, "container"], [1, "btn", "btn-sm", "btn-outline-dark", 3, "click", "disabled"], [1, "fa", "fa-upload"], [1, "btn", "btn-sm", "btn-outline-success", 3, "click", "disabled"], [1, "fa", "fa-download"], [1, "btn", "btn-sm", "btn-outline-danger", 3, "click", "disabled"], [1, "fa", "fa-eraser"], [1, "btn", "btn-outline-danger", "btn-sm", 3, "click"], [1, "fa", "fa-trash-o", "fa-lg"]], template: function ParticipantListComponent_Template(rf, ctx) {
+    if (rf & 1) {
+      \u0275\u0275elementStart(0, "div", 0)(1, "div", 1)(2, "form", 2);
+      \u0275\u0275listener("submit", function ParticipantListComponent_Template_form_submit_2_listener() {
+        return ctx.addParticipant();
+      });
+      \u0275\u0275elementStart(3, "table", 3)(4, "thead")(5, "tr")(6, "th");
+      \u0275\u0275text(7, "Initials");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(8, "th");
+      \u0275\u0275text(9, "Name");
+      \u0275\u0275elementEnd();
+      \u0275\u0275element(10, "th");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(11, "tbody");
+      \u0275\u0275repeaterCreate(12, ParticipantListComponent_For_13_Template, 8, 2, "tr", null, _forTrack02);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(14, "tfoot")(15, "tr")(16, "td")(17, "input", 4);
+      \u0275\u0275twoWayListener("ngModelChange", function ParticipantListComponent_Template_input_ngModelChange_17_listener($event) {
+        \u0275\u0275twoWayBindingSet(ctx.init, $event) || (ctx.init = $event);
+        return $event;
+      });
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(18, "td")(19, "input", 5);
+      \u0275\u0275twoWayListener("ngModelChange", function ParticipantListComponent_Template_input_ngModelChange_19_listener($event) {
+        \u0275\u0275twoWayBindingSet(ctx.name, $event) || (ctx.name = $event);
+        return $event;
+      });
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(20, "td")(21, "button", 6);
+      \u0275\u0275element(22, "i", 7);
+      \u0275\u0275text(23, " Add");
+      \u0275\u0275elementEnd()()()()()()()();
+      \u0275\u0275elementStart(24, "div", 0)(25, "textarea", 8);
+      \u0275\u0275twoWayListener("ngModelChange", function ParticipantListComponent_Template_textarea_ngModelChange_25_listener($event) {
+        \u0275\u0275twoWayBindingSet(ctx.jsonParticipants, $event) || (ctx.jsonParticipants = $event);
+        return $event;
+      });
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(26, "div", 9)(27, "button", 10);
+      \u0275\u0275listener("click", function ParticipantListComponent_Template_button_click_27_listener() {
+        return ctx.exportParticipants();
+      });
+      \u0275\u0275element(28, "i", 11);
+      \u0275\u0275text(29);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(30, "button", 12);
+      \u0275\u0275listener("click", function ParticipantListComponent_Template_button_click_30_listener() {
+        return ctx.importParticipants();
+      });
+      \u0275\u0275element(31, "i", 13);
+      \u0275\u0275text(32, " Import List");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(33, "button", 14);
+      \u0275\u0275listener("click", function ParticipantListComponent_Template_button_click_33_listener() {
+        return ctx.jsonParticipants = "";
+      });
+      \u0275\u0275element(34, "i", 15);
+      \u0275\u0275text(35, " Clear");
+      \u0275\u0275elementEnd()();
+    }
+    if (rf & 2) {
+      \u0275\u0275advance(12);
+      \u0275\u0275repeater(ctx.participantList);
+      \u0275\u0275advance(5);
+      \u0275\u0275twoWayProperty("ngModel", ctx.init);
+      \u0275\u0275advance(2);
+      \u0275\u0275twoWayProperty("ngModel", ctx.name);
+      \u0275\u0275advance(2);
+      \u0275\u0275property("disabled", ctx.name === "" || ctx.init === "");
+      \u0275\u0275advance(4);
+      \u0275\u0275twoWayProperty("ngModel", ctx.jsonParticipants);
+      \u0275\u0275advance(2);
+      \u0275\u0275property("disabled", ctx.participantList.length === 0);
+      \u0275\u0275advance(2);
+      \u0275\u0275textInterpolate1(" Export list (", ctx.participantList.length, ")");
+      \u0275\u0275advance();
+      \u0275\u0275property("disabled", !ctx.isJsonString(ctx.jsonParticipants));
+      \u0275\u0275advance(3);
+      \u0275\u0275property("disabled", ctx.jsonParticipants.length === 0);
+    }
+  }, dependencies: [\u0275NgNoValidate, DefaultValueAccessor, NgControlStatus, NgControlStatusGroup, NgModel, NgForm], encapsulation: 2 });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ParticipantListComponent, [{
@@ -43165,9 +43147,13 @@ var ParticipantListComponent = class _ParticipantListComponent {
 
 // src/app/components/settings/settings.component.ts
 var SettingsComponent = class _SettingsComponent {
-  constructor() {
-    this.settings = inject2(SettingsService);
-  }
+  useGlobalMaxTime = false;
+  globalMaxTime = 0;
+  useRemoteParticipantList = false;
+  remoteParticipantListURL = "";
+  jiraLinkURL = "";
+  useJiraLinkURL = false;
+  settings = inject2(SettingsService);
   ngOnInit() {
     this.useGlobalMaxTime = this.settings.getUseGlobalMaxTime();
     this.globalMaxTime = this.settings.getGlobalMaxTime();
@@ -43201,101 +43187,97 @@ var SettingsComponent = class _SettingsComponent {
   usejiraLinkChecked() {
     return !this.useJiraLinkURL;
   }
-  static {
-    this.\u0275fac = function SettingsComponent_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _SettingsComponent)();
-    };
-  }
-  static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _SettingsComponent, selectors: [["app-settings"]], standalone: false, decls: 36, vars: 8, consts: [["action", ""], [1, "input-group", "mb-3"], [1, "input-group-prepend"], [1, "input-group-text"], ["type", "checkbox", "name", "useGlobalMaxTime", "aria-label", "Use Global max Time", "size", "3", 3, "ngModelChange", "ngModel"], ["name", "globalMaxTime", "id", "globalMaxTime", "type", "number", 1, "form-control", 3, "ngModelChange", "ngModel"], ["id", "globalMaxTimeHelp", 1, "form-text", "text-muted"], [1, "input-group", "mb3"], ["type", "checkbox", "name", "useRemoteParticipantList", "aria-label", "Use Remote Participant List", 3, "ngModelChange", "ngModel"], ["name", "remoteParticipantListURL", "id", "remoteParticipantListURL", "type", "url", 1, "form-control", 3, "ngModelChange", "ngModel", "disabled"], ["id", "remoteParticipantListURLHelp", 1, "form-text", "text-muted"], ["type", "checkbox", "name", "useJiraLink", "aria-label", "Use Jira Link", 3, "ngModelChange", "ngModel"], ["name", "jiraLinkURL", "id", "jiraLinkURL", "type", "url", 1, "form-control", 3, "ngModelChange", "ngModel", "disabled"], ["id", "jiraURLHelp", 1, "form-text", "text-muted"], ["type", "submit", "value", "Save Settings", 1, "btn", "btn-primary", "form-control", 3, "click"]], template: function SettingsComponent_Template(rf, ctx) {
-      if (rf & 1) {
-        \u0275\u0275elementStart(0, "h3");
-        \u0275\u0275text(1, "Settings");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(2, "p");
-        \u0275\u0275text(3, " From here, you will be able to choose whether you want an overall time goal (e.g. 15 minutes), or a static time-per-person. ");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(4, "form", 0)(5, "div", 1)(6, "div", 2)(7, "span", 3);
-        \u0275\u0275text(8, "Total Max Time");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(9, "div", 3)(10, "input", 4);
-        \u0275\u0275twoWayListener("ngModelChange", function SettingsComponent_Template_input_ngModelChange_10_listener($event) {
-          \u0275\u0275twoWayBindingSet(ctx.useGlobalMaxTime, $event) || (ctx.useGlobalMaxTime = $event);
-          return $event;
-        });
-        \u0275\u0275elementEnd()()();
-        \u0275\u0275elementStart(11, "input", 5);
-        \u0275\u0275twoWayListener("ngModelChange", function SettingsComponent_Template_input_ngModelChange_11_listener($event) {
-          \u0275\u0275twoWayBindingSet(ctx.globalMaxTime, $event) || (ctx.globalMaxTime = $event);
-          return $event;
-        });
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(12, "small", 6);
-        \u0275\u0275text(13, "If the Total Max Time checkbox is selected, the time (in seconds) is used to define the max length of the Scrum meeting. The time for each participant is scaled to fit. If it is left unchecked, each participant is given the time shown in seconds.");
-        \u0275\u0275elementEnd();
-        \u0275\u0275element(14, "br");
-        \u0275\u0275elementStart(15, "div", 7)(16, "div", 2)(17, "span", 3);
-        \u0275\u0275text(18, "Remote Participant list");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(19, "div", 3)(20, "input", 8);
-        \u0275\u0275twoWayListener("ngModelChange", function SettingsComponent_Template_input_ngModelChange_20_listener($event) {
-          \u0275\u0275twoWayBindingSet(ctx.useRemoteParticipantList, $event) || (ctx.useRemoteParticipantList = $event);
-          return $event;
-        });
-        \u0275\u0275elementEnd()()();
-        \u0275\u0275elementStart(21, "input", 9);
-        \u0275\u0275twoWayListener("ngModelChange", function SettingsComponent_Template_input_ngModelChange_21_listener($event) {
-          \u0275\u0275twoWayBindingSet(ctx.remoteParticipantListURL, $event) || (ctx.remoteParticipantListURL = $event);
-          return $event;
-        });
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(22, "small", 10);
-        \u0275\u0275text(23, "If the Remote Participant List URL checkbox is selected, the tool will try to download a .json file from the URL and import the participants from that");
-        \u0275\u0275elementEnd();
-        \u0275\u0275element(24, "br");
-        \u0275\u0275elementStart(25, "div", 7)(26, "div", 2)(27, "span", 3);
-        \u0275\u0275text(28, "Jira URL");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(29, "div", 3)(30, "input", 11);
-        \u0275\u0275twoWayListener("ngModelChange", function SettingsComponent_Template_input_ngModelChange_30_listener($event) {
-          \u0275\u0275twoWayBindingSet(ctx.useJiraLinkURL, $event) || (ctx.useJiraLinkURL = $event);
-          return $event;
-        });
-        \u0275\u0275elementEnd()()();
-        \u0275\u0275elementStart(31, "input", 12);
-        \u0275\u0275twoWayListener("ngModelChange", function SettingsComponent_Template_input_ngModelChange_31_listener($event) {
-          \u0275\u0275twoWayBindingSet(ctx.jiraLinkURL, $event) || (ctx.jiraLinkURL = $event);
-          return $event;
-        });
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(32, "small", 13);
-        \u0275\u0275text(33, "If the checkbox is checked, and you have a url entered, this URL will be opened in a window when using the popout function");
-        \u0275\u0275elementEnd();
-        \u0275\u0275element(34, "br");
-        \u0275\u0275elementStart(35, "input", 14);
-        \u0275\u0275listener("click", function SettingsComponent_Template_input_click_35_listener() {
-          return ctx.saveSettings();
-        });
-        \u0275\u0275elementEnd()();
-      }
-      if (rf & 2) {
-        \u0275\u0275advance(10);
-        \u0275\u0275twoWayProperty("ngModel", ctx.useGlobalMaxTime);
-        \u0275\u0275advance();
-        \u0275\u0275twoWayProperty("ngModel", ctx.globalMaxTime);
-        \u0275\u0275advance(9);
-        \u0275\u0275twoWayProperty("ngModel", ctx.useRemoteParticipantList);
-        \u0275\u0275advance();
-        \u0275\u0275twoWayProperty("ngModel", ctx.remoteParticipantListURL);
-        \u0275\u0275property("disabled", ctx.useRemoteParticipantListChecked());
-        \u0275\u0275advance(9);
-        \u0275\u0275twoWayProperty("ngModel", ctx.useJiraLinkURL);
-        \u0275\u0275advance();
-        \u0275\u0275twoWayProperty("ngModel", ctx.jiraLinkURL);
-        \u0275\u0275property("disabled", ctx.usejiraLinkChecked());
-      }
-    }, dependencies: [\u0275NgNoValidate, DefaultValueAccessor, NumberValueAccessor, CheckboxControlValueAccessor, NgControlStatus, NgControlStatusGroup, NgModel, NgForm], encapsulation: 2 });
-  }
+  static \u0275fac = function SettingsComponent_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _SettingsComponent)();
+  };
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _SettingsComponent, selectors: [["app-settings"]], standalone: false, decls: 36, vars: 8, consts: [["action", ""], [1, "input-group", "mb-3"], [1, "input-group-prepend"], [1, "input-group-text"], ["type", "checkbox", "name", "useGlobalMaxTime", "aria-label", "Use Global max Time", "size", "3", 3, "ngModelChange", "ngModel"], ["name", "globalMaxTime", "id", "globalMaxTime", "type", "number", 1, "form-control", 3, "ngModelChange", "ngModel"], ["id", "globalMaxTimeHelp", 1, "form-text", "text-muted"], [1, "input-group", "mb3"], ["type", "checkbox", "name", "useRemoteParticipantList", "aria-label", "Use Remote Participant List", 3, "ngModelChange", "ngModel"], ["name", "remoteParticipantListURL", "id", "remoteParticipantListURL", "type", "url", 1, "form-control", 3, "ngModelChange", "ngModel", "disabled"], ["id", "remoteParticipantListURLHelp", 1, "form-text", "text-muted"], ["type", "checkbox", "name", "useJiraLink", "aria-label", "Use Jira Link", 3, "ngModelChange", "ngModel"], ["name", "jiraLinkURL", "id", "jiraLinkURL", "type", "url", 1, "form-control", 3, "ngModelChange", "ngModel", "disabled"], ["id", "jiraURLHelp", 1, "form-text", "text-muted"], ["type", "submit", "value", "Save Settings", 1, "btn", "btn-primary", "form-control", 3, "click"]], template: function SettingsComponent_Template(rf, ctx) {
+    if (rf & 1) {
+      \u0275\u0275elementStart(0, "h3");
+      \u0275\u0275text(1, "Settings");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(2, "p");
+      \u0275\u0275text(3, " From here, you will be able to choose whether you want an overall time goal (e.g. 15 minutes), or a static time-per-person. ");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(4, "form", 0)(5, "div", 1)(6, "div", 2)(7, "span", 3);
+      \u0275\u0275text(8, "Total Max Time");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(9, "div", 3)(10, "input", 4);
+      \u0275\u0275twoWayListener("ngModelChange", function SettingsComponent_Template_input_ngModelChange_10_listener($event) {
+        \u0275\u0275twoWayBindingSet(ctx.useGlobalMaxTime, $event) || (ctx.useGlobalMaxTime = $event);
+        return $event;
+      });
+      \u0275\u0275elementEnd()()();
+      \u0275\u0275elementStart(11, "input", 5);
+      \u0275\u0275twoWayListener("ngModelChange", function SettingsComponent_Template_input_ngModelChange_11_listener($event) {
+        \u0275\u0275twoWayBindingSet(ctx.globalMaxTime, $event) || (ctx.globalMaxTime = $event);
+        return $event;
+      });
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(12, "small", 6);
+      \u0275\u0275text(13, "If the Total Max Time checkbox is selected, the time (in seconds) is used to define the max length of the Scrum meeting. The time for each participant is scaled to fit. If it is left unchecked, each participant is given the time shown in seconds.");
+      \u0275\u0275elementEnd();
+      \u0275\u0275element(14, "br");
+      \u0275\u0275elementStart(15, "div", 7)(16, "div", 2)(17, "span", 3);
+      \u0275\u0275text(18, "Remote Participant list");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(19, "div", 3)(20, "input", 8);
+      \u0275\u0275twoWayListener("ngModelChange", function SettingsComponent_Template_input_ngModelChange_20_listener($event) {
+        \u0275\u0275twoWayBindingSet(ctx.useRemoteParticipantList, $event) || (ctx.useRemoteParticipantList = $event);
+        return $event;
+      });
+      \u0275\u0275elementEnd()()();
+      \u0275\u0275elementStart(21, "input", 9);
+      \u0275\u0275twoWayListener("ngModelChange", function SettingsComponent_Template_input_ngModelChange_21_listener($event) {
+        \u0275\u0275twoWayBindingSet(ctx.remoteParticipantListURL, $event) || (ctx.remoteParticipantListURL = $event);
+        return $event;
+      });
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(22, "small", 10);
+      \u0275\u0275text(23, "If the Remote Participant List URL checkbox is selected, the tool will try to download a .json file from the URL and import the participants from that");
+      \u0275\u0275elementEnd();
+      \u0275\u0275element(24, "br");
+      \u0275\u0275elementStart(25, "div", 7)(26, "div", 2)(27, "span", 3);
+      \u0275\u0275text(28, "Jira URL");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(29, "div", 3)(30, "input", 11);
+      \u0275\u0275twoWayListener("ngModelChange", function SettingsComponent_Template_input_ngModelChange_30_listener($event) {
+        \u0275\u0275twoWayBindingSet(ctx.useJiraLinkURL, $event) || (ctx.useJiraLinkURL = $event);
+        return $event;
+      });
+      \u0275\u0275elementEnd()()();
+      \u0275\u0275elementStart(31, "input", 12);
+      \u0275\u0275twoWayListener("ngModelChange", function SettingsComponent_Template_input_ngModelChange_31_listener($event) {
+        \u0275\u0275twoWayBindingSet(ctx.jiraLinkURL, $event) || (ctx.jiraLinkURL = $event);
+        return $event;
+      });
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(32, "small", 13);
+      \u0275\u0275text(33, "If the checkbox is checked, and you have a url entered, this URL will be opened in a window when using the popout function");
+      \u0275\u0275elementEnd();
+      \u0275\u0275element(34, "br");
+      \u0275\u0275elementStart(35, "input", 14);
+      \u0275\u0275listener("click", function SettingsComponent_Template_input_click_35_listener() {
+        return ctx.saveSettings();
+      });
+      \u0275\u0275elementEnd()();
+    }
+    if (rf & 2) {
+      \u0275\u0275advance(10);
+      \u0275\u0275twoWayProperty("ngModel", ctx.useGlobalMaxTime);
+      \u0275\u0275advance();
+      \u0275\u0275twoWayProperty("ngModel", ctx.globalMaxTime);
+      \u0275\u0275advance(9);
+      \u0275\u0275twoWayProperty("ngModel", ctx.useRemoteParticipantList);
+      \u0275\u0275advance();
+      \u0275\u0275twoWayProperty("ngModel", ctx.remoteParticipantListURL);
+      \u0275\u0275property("disabled", ctx.useRemoteParticipantListChecked());
+      \u0275\u0275advance(9);
+      \u0275\u0275twoWayProperty("ngModel", ctx.useJiraLinkURL);
+      \u0275\u0275advance();
+      \u0275\u0275twoWayProperty("ngModel", ctx.jiraLinkURL);
+      \u0275\u0275property("disabled", ctx.usejiraLinkChecked());
+    }
+  }, dependencies: [\u0275NgNoValidate, DefaultValueAccessor, NumberValueAccessor, CheckboxControlValueAccessor, NgControlStatus, NgControlStatusGroup, NgModel, NgForm], encapsulation: 2 });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(SettingsComponent, [{
@@ -43310,7 +43292,7 @@ var SettingsComponent = class _SettingsComponent {
 // package.json
 var package_default = {
   name: "scrum-timer",
-  version: "1.2.16",
+  version: "1.4.0",
   license: "MIT",
   scripts: {
     ng: "ng",
@@ -43326,52 +43308,47 @@ var package_default = {
   },
   private: true,
   dependencies: {
-    "@angular/animations": "^21.1.0",
-    "@angular/common": "^21.1.0",
-    "@angular/compiler": "^21.1.0",
-    "@angular/core": "^21.1.0",
-    "@angular/forms": "^21.1.0",
-    "@angular/platform-browser": "^21.1.0",
-    "@angular/platform-browser-dynamic": "^21.1.0",
-    bootstrap: "^5.3.8",
-    "core-js": "^3.47.0",
-    diff: "^8.0.2",
-    "font-awesome": "^4.7.0",
-    jquery: "^3.7.1",
-    npm: "^11.6.4",
+    "@angular/animations": "^21.1.4",
+    "@angular/common": "^21.1.4",
+    "@angular/compiler": "^21.1.4",
+    "@angular/core": "^21.1.4",
+    "@angular/forms": "^21.1.4",
+    "@angular/platform-browser": "^21.1.4",
+    "@angular/platform-browser-dynamic": "^21.1.4",
     "@popperjs/core": "^2.11.8",
+    bootstrap: "^5.3.8",
+    "core-js": "^3.48.0",
+    diff: "^8.0.3",
+    "font-awesome": "^4.7.0",
+    npm: "^11.10.0",
     rxjs: "^7.8.2",
-    "rxjs-compat": "^6.6.7",
-    tether: "^2.0.0",
     tslib: "^2.8.1",
     "zone.js": "~0.16.0"
   },
   devDependencies: {
-    "@angular-devkit/build-angular": "^21.1.0",
-    "@angular/cli": "^21.1.0",
-    "@angular/compiler-cli": "^21.1.0",
-    "@angular/language-service": "^21.1.0",
-    "@angular/router": "^21.1.0",
-    "@types/jasmine": "~5.1.15",
+    "@angular-devkit/build-angular": "^21.1.4",
+    "@angular/cli": "^21.1.4",
+    "@angular/compiler-cli": "^21.1.4",
+    "@angular/language-service": "^21.1.4",
+    "@angular/router": "^21.1.4",
+    "@types/jasmine": "~6.0.0",
     "@types/jasminewd2": "^2.0.13",
-    "@types/node": "^24.10.1",
-    "angular-cli-ghpages": "^2.0.3",
-    "angular-eslint": "21.0.1",
-    codelyzer: "^6.0.2",
+    "@types/node": "^25.2.3",
+    "angular-cli-ghpages": "^3.0.2",
+    "angular-eslint": "21.2.0",
     eslint: "^9.39.1",
-    "jasmine-core": "~5.12.1",
+    "jasmine-core": "~6.0.1",
     "jasmine-spec-reporter": "~7.0.0",
     karma: "~6.4.4",
     "karma-chrome-launcher": "~3.2.0",
     "karma-cli": "~2.0.0",
     "karma-coverage": "^2.2.1",
-    "karma-coverage-istanbul-reporter": "~3.0.3",
     "karma-firefox-launcher": "^2.1.3",
     "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "^2.1.0",
+    "karma-jasmine-html-reporter": "^2.2.0",
     "karma-junit-reporter": "^2.0.1",
     "ts-node": "~10.9.2",
-    "typescript-eslint": "8.53.1"
+    "typescript-eslint": "8.55.0"
   }
 };
 
@@ -43395,12 +43372,10 @@ function HelpComponent_Conditional_54_Template(rf, ctx) {
   }
 }
 var HelpComponent = class _HelpComponent {
-  constructor() {
-    this.currentVersion = package_default.version;
-    this.latestVersion = null;
-    this.isNewVersionAvailable = false;
-    this.versionCheckService = inject2(VersionCheckService);
-  }
+  currentVersion = package_default.version;
+  latestVersion = null;
+  isNewVersionAvailable = false;
+  versionCheckService = inject2(VersionCheckService);
   ngOnInit() {
     this.versionCheckService.getLatestReleaseVersion().subscribe((latest) => {
       this.latestVersion = latest;
@@ -43413,105 +43388,101 @@ var HelpComponent = class _HelpComponent {
     const [b1, b2, b3] = toNums(v2);
     return a1 - b1 || a2 - b2 || a3 - b3;
   }
-  static {
-    this.\u0275fac = function HelpComponent_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _HelpComponent)();
-    };
-  }
-  static {
-    this.\u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _HelpComponent, selectors: [["app-help"]], standalone: false, decls: 62, vars: 2, consts: [[1, "container"], ["href", "https://en.wikipedia.org/wiki/Scrum_(software_development)#Daily_scrum", "target", "_blank"], [1, "fa", "fa-users"], [1, "fa", "fa-clock-o"], [1, "btn", "btn-outline-success"], [1, "fa", "fa-hourglass-start"], ["href", "https://github.com/JoSSte/ScrumTimer/releases", "target", "_blank"], ["href", "https://github.com/JoSSte/ScrumTimer/issues", "target", "_blank"]], template: function HelpComponent_Template(rf, ctx) {
-      if (rf & 1) {
-        \u0275\u0275elementStart(0, "div", 0)(1, "h3");
-        \u0275\u0275text(2, "What is it?");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(3, "p");
-        \u0275\u0275text(4, " A Timer to keep ");
-        \u0275\u0275elementStart(5, "a", 1);
-        \u0275\u0275text(6, "Daily Scrum");
-        \u0275\u0275elementEnd();
-        \u0275\u0275text(7, " meetings short. ");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(8, "p");
-        \u0275\u0275text(9, ' A lot of developers do not like to spend too much time on Scrum "ceremonies". This tool is meant to help you get a viual indication of time spent to avoid it drawing out for online daily Scrum meetings. ');
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(10, "h3");
-        \u0275\u0275text(11, "How to use");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(12, "ol")(13, "li");
-        \u0275\u0275text(14, "Go to ");
-        \u0275\u0275elementStart(15, "strong");
-        \u0275\u0275element(16, "i", 2);
-        \u0275\u0275text(17, " Participants");
-        \u0275\u0275elementEnd();
-        \u0275\u0275text(18, " and make sure that everyone you want in the Scrum Timer ");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(19, "li");
-        \u0275\u0275text(20, " Go to the ");
-        \u0275\u0275elementStart(21, "strong");
-        \u0275\u0275element(22, "i", 3);
-        \u0275\u0275text(23, " Timer");
-        \u0275\u0275elementEnd();
-        \u0275\u0275text(24, " and mark anyone who is not present as absent. ");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(25, "li");
-        \u0275\u0275text(26, "click the ");
-        \u0275\u0275elementStart(27, "span", 4);
-        \u0275\u0275element(28, "i", 5);
-        \u0275\u0275elementEnd();
-        \u0275\u0275text(29, " start button to start the timer ");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(30, "li");
-        \u0275\u0275text(31, "Click the next button for each subsequent participant, and finally the stop button");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(32, "h3");
-        \u0275\u0275text(33, "Notes");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(34, "ul")(35, "li");
-        \u0275\u0275text(36, "If Max time is selected, the time left is distrubuted among the rest of the people in the meeting.");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(37, "li");
-        \u0275\u0275text(38, "If the version badge below this list is older than the version of the newest ");
-        \u0275\u0275elementStart(39, "a", 6);
-        \u0275\u0275text(40, "release");
-        \u0275\u0275elementEnd();
-        \u0275\u0275text(41, " press ");
-        \u0275\u0275elementStart(42, "kbd");
-        \u0275\u0275text(43, "CTRL");
-        \u0275\u0275elementEnd();
-        \u0275\u0275text(44, " + ");
-        \u0275\u0275elementStart(45, "kbd");
-        \u0275\u0275text(46, "F5");
-        \u0275\u0275elementEnd();
-        \u0275\u0275text(47, " to refresh the page.");
-        \u0275\u0275elementEnd()();
-        \u0275\u0275elementStart(48, "h3");
-        \u0275\u0275text(49, "Version");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(50, "p")(51, "b");
-        \u0275\u0275text(52, "Current version");
-        \u0275\u0275elementEnd();
-        \u0275\u0275text(53);
-        \u0275\u0275elementEnd();
-        \u0275\u0275conditionalCreate(54, HelpComponent_Conditional_54_Template, 7, 1, "p");
-        \u0275\u0275elementStart(55, "h3");
-        \u0275\u0275text(56, "Bugs / requests for features");
-        \u0275\u0275elementEnd();
-        \u0275\u0275elementStart(57, "p");
-        \u0275\u0275text(58, "If you find a bug/want a new feature, please report it on the ");
-        \u0275\u0275elementStart(59, "a", 7);
-        \u0275\u0275text(60, "issues");
-        \u0275\u0275elementEnd();
-        \u0275\u0275text(61, " page");
-        \u0275\u0275elementEnd()();
-      }
-      if (rf & 2) {
-        \u0275\u0275advance(53);
-        \u0275\u0275textInterpolate1(" ", ctx.currentVersion);
-        \u0275\u0275advance();
-        \u0275\u0275conditional(ctx.isNewVersionAvailable ? 54 : -1);
-      }
-    }, encapsulation: 2 });
-  }
+  static \u0275fac = function HelpComponent_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _HelpComponent)();
+  };
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _HelpComponent, selectors: [["app-help"]], standalone: false, decls: 62, vars: 2, consts: [[1, "container"], ["href", "https://en.wikipedia.org/wiki/Scrum_(software_development)#Daily_scrum", "target", "_blank"], [1, "fa", "fa-users"], [1, "fa", "fa-clock-o"], [1, "btn", "btn-outline-success"], [1, "fa", "fa-hourglass-start"], ["href", "https://github.com/JoSSte/ScrumTimer/releases", "target", "_blank"], ["href", "https://github.com/JoSSte/ScrumTimer/issues", "target", "_blank"]], template: function HelpComponent_Template(rf, ctx) {
+    if (rf & 1) {
+      \u0275\u0275elementStart(0, "div", 0)(1, "h3");
+      \u0275\u0275text(2, "What is it?");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(3, "p");
+      \u0275\u0275text(4, " A Timer to keep ");
+      \u0275\u0275elementStart(5, "a", 1);
+      \u0275\u0275text(6, "Daily Scrum");
+      \u0275\u0275elementEnd();
+      \u0275\u0275text(7, " meetings short. ");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(8, "p");
+      \u0275\u0275text(9, ' A lot of developers do not like to spend too much time on Scrum "ceremonies". This tool is meant to help you get a viual indication of time spent to avoid it drawing out for online daily Scrum meetings. ');
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(10, "h3");
+      \u0275\u0275text(11, "How to use");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(12, "ol")(13, "li");
+      \u0275\u0275text(14, "Go to ");
+      \u0275\u0275elementStart(15, "strong");
+      \u0275\u0275element(16, "i", 2);
+      \u0275\u0275text(17, " Participants");
+      \u0275\u0275elementEnd();
+      \u0275\u0275text(18, " and make sure that everyone you want in the Scrum Timer ");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(19, "li");
+      \u0275\u0275text(20, " Go to the ");
+      \u0275\u0275elementStart(21, "strong");
+      \u0275\u0275element(22, "i", 3);
+      \u0275\u0275text(23, " Timer");
+      \u0275\u0275elementEnd();
+      \u0275\u0275text(24, " and mark anyone who is not present as absent. ");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(25, "li");
+      \u0275\u0275text(26, "click the ");
+      \u0275\u0275elementStart(27, "span", 4);
+      \u0275\u0275element(28, "i", 5);
+      \u0275\u0275elementEnd();
+      \u0275\u0275text(29, " start button to start the timer ");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(30, "li");
+      \u0275\u0275text(31, "Click the next button for each subsequent participant, and finally the stop button");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(32, "h3");
+      \u0275\u0275text(33, "Notes");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(34, "ul")(35, "li");
+      \u0275\u0275text(36, "If Max time is selected, the time left is distrubuted among the rest of the people in the meeting.");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(37, "li");
+      \u0275\u0275text(38, "If the version badge below this list is older than the version of the newest ");
+      \u0275\u0275elementStart(39, "a", 6);
+      \u0275\u0275text(40, "release");
+      \u0275\u0275elementEnd();
+      \u0275\u0275text(41, " press ");
+      \u0275\u0275elementStart(42, "kbd");
+      \u0275\u0275text(43, "CTRL");
+      \u0275\u0275elementEnd();
+      \u0275\u0275text(44, " + ");
+      \u0275\u0275elementStart(45, "kbd");
+      \u0275\u0275text(46, "F5");
+      \u0275\u0275elementEnd();
+      \u0275\u0275text(47, " to refresh the page.");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(48, "h3");
+      \u0275\u0275text(49, "Version");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(50, "p")(51, "b");
+      \u0275\u0275text(52, "Current version");
+      \u0275\u0275elementEnd();
+      \u0275\u0275text(53);
+      \u0275\u0275elementEnd();
+      \u0275\u0275conditionalCreate(54, HelpComponent_Conditional_54_Template, 7, 1, "p");
+      \u0275\u0275elementStart(55, "h3");
+      \u0275\u0275text(56, "Bugs / requests for features");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(57, "p");
+      \u0275\u0275text(58, "If you find a bug/want a new feature, please report it on the ");
+      \u0275\u0275elementStart(59, "a", 7);
+      \u0275\u0275text(60, "issues");
+      \u0275\u0275elementEnd();
+      \u0275\u0275text(61, " page");
+      \u0275\u0275elementEnd()();
+    }
+    if (rf & 2) {
+      \u0275\u0275advance(53);
+      \u0275\u0275textInterpolate1(" ", ctx.currentVersion);
+      \u0275\u0275advance();
+      \u0275\u0275conditional(ctx.isNewVersionAvailable ? 54 : -1);
+    }
+  }, encapsulation: 2 });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(HelpComponent, [{
@@ -43534,29 +43505,23 @@ var appRoutes = [
   // { path: '', component: Component }
 ];
 var AppModule = class _AppModule {
-  static {
-    this.\u0275fac = function AppModule_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _AppModule)();
-    };
-  }
-  static {
-    this.\u0275mod = /* @__PURE__ */ \u0275\u0275defineNgModule({ type: _AppModule, bootstrap: [AppComponent] });
-  }
-  static {
-    this.\u0275inj = /* @__PURE__ */ \u0275\u0275defineInjector({ providers: [
-      ParticipantService,
-      SettingsService,
-      NavbarService,
-      VersionCheckService,
-      Location,
-      { provide: LocationStrategy, useClass: HashLocationStrategy },
-      provideHttpClient(withInterceptorsFromDi())
-    ], imports: [
-      BrowserModule,
-      FormsModule,
-      RouterModule.forRoot(appRoutes, {})
-    ] });
-  }
+  static \u0275fac = function AppModule_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _AppModule)();
+  };
+  static \u0275mod = /* @__PURE__ */ \u0275\u0275defineNgModule({ type: _AppModule, bootstrap: [AppComponent] });
+  static \u0275inj = /* @__PURE__ */ \u0275\u0275defineInjector({ providers: [
+    ParticipantService,
+    SettingsService,
+    NavbarService,
+    VersionCheckService,
+    Location,
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    provideHttpClient(withInterceptorsFromDi())
+  ], imports: [
+    BrowserModule,
+    FormsModule,
+    RouterModule.forRoot(appRoutes, {})
+  ] });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(AppModule, [{
@@ -43568,12 +43533,14 @@ var AppModule = class _AppModule {
         TimerComponent,
         ParticipantListComponent,
         SettingsComponent,
-        HelpComponent,
-        SecsPipe
+        HelpComponent
       ],
-      bootstrap: [AppComponent],
+      bootstrap: [
+        AppComponent
+      ],
       imports: [
         BrowserModule,
+        SecsPipe,
         FormsModule,
         RouterModule.forRoot(appRoutes, {})
       ],
@@ -43627,7 +43594,7 @@ platformBrowser().bootstrapModule(AppModule).catch((err) => console.error(err));
 @angular/router/fesm2022/_router_module-chunk.mjs:
 @angular/router/fesm2022/router.mjs:
   (**
-   * @license Angular v21.1.0
+   * @license Angular v21.1.4
    * (c) 2010-2026 Google LLC. https://angular.dev/
    * License: MIT
    *)
