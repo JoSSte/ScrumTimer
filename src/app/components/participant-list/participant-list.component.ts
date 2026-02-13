@@ -13,7 +13,7 @@ import { ParticipantService } from '../../services/participant/participant.servi
 export class ParticipantListComponent implements OnInit {
   init = '';
   name = '';
-  participantList: Participant[];
+  participantList: Participant[] = [];
   jsonParticipants = '';
 
   public participantService = inject(ParticipantService);
@@ -53,12 +53,14 @@ export class ParticipantListComponent implements OnInit {
   }
 
 
-  isJsonString(str) {
+  isJsonString(str: string): boolean {
     if (str.length > 2) {
       try {
         JSON.parse(str);
-      } catch (e) {
-        console.log(e.message);
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          console.log(e.message);
+        }
         return false;
       }
       return true;

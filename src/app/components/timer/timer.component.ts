@@ -20,8 +20,8 @@ export class TimerComponent implements OnInit {
   public settingsService = inject(SettingsService);
   private cdr = inject(ChangeDetectorRef);
 
-  timerSubscription: Subscription;
-  participantList: Participant[];
+  timerSubscription: Subscription | null = null;
+  participantList: Participant[] = [];
   absentParticipants: Participant[] = [];
   doneParticipants: Participant[] = [];
 
@@ -37,12 +37,12 @@ export class TimerComponent implements OnInit {
   individualMaxTime = 120;
   individualTime: number = this.individualMaxTime;
   currentPercent = 0;
-  currentParticipant: Participant;
+  currentParticipant: Participant | null = null;
 
-  future: Date;
-  futureString: string;
-  diff: number;
-  currentDiff: number;
+  future: Date | null = null;
+  futureString = '';
+  diff = 0;
+  currentDiff = 0;
   currentElapsed = 0;
   timerActive = false;
 
@@ -60,7 +60,7 @@ export class TimerComponent implements OnInit {
       this.individualTime = this.individualMaxTime;
     }
     //console.info('[Scrumtimer] Timer init');
-    if (this.activatedRoute['_routerState'].snapshot.url === '/popin') {
+    if (this.activatedRoute.snapshot.url[0]?.path === 'popin') {
       this.nav.hide();
     } else {
       this.nav.show();
@@ -69,11 +69,13 @@ export class TimerComponent implements OnInit {
 
   stopTimer() {
     // save time for participant
-    this.currentParticipant.time = this.currentElapsed;
-    // this.currentPercent = 0;
-    // move first Participant to done participants
-    if (this.participantList.length > 0) {
-      this.doneParticipants.push(this.currentParticipant);
+    if (this.currentParticipant) {
+      this.currentParticipant.time = this.currentElapsed;
+      // this.currentPercent = 0;
+      // move first Participant to done participants
+      if (this.participantList.length > 0) {
+        this.doneParticipants.push(this.currentParticipant);
+      }
     }
     // remove the top participant
     this.participantList.splice(0, 1);
@@ -81,11 +83,17 @@ export class TimerComponent implements OnInit {
     this.totalPercent = 100;
     this.timerActive = false;
     // stop timer
-    this.timerSubscription.unsubscribe();
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
   }
 
   startTimer() {
     const source = timer(1000, 2000);
+    if (this.participantList.length === 0) {
+      console.warn('No participants to timer');
+      return;
+    }
     this.currentParticipant = this.participantList[0];
     this.future = new Date();
     // set the timer to a time in the future, based on "individualTime" seconds
@@ -102,16 +110,20 @@ export class TimerComponent implements OnInit {
     } else {
       this.individualTime = this.individualMaxTime;
     }
-    this.future.setSeconds(this.future.getSeconds() + this.individualTime);
+    if (this.future) {
+      this.future.setSeconds(this.future.getSeconds() + this.individualTime);
+    }
 
     this.timerSubscription = source.subscribe(/*tick => */() => {
-      this.currentDiff = Math.floor((this.future.getTime() - new Date().getTime()) / 1000);
-      this.currentElapsed = this.individualTime - this.currentDiff;
-      this.currentPercent = Math.round((this.currentElapsed / this.individualTime) * 100);
-      this.currentTotalElapsed = this.totalElapsed + this.currentElapsed;
-      this.totalTimePercent = Math.round(((this.totalElapsed + this.currentElapsed) / this.totalMaxTime) * 100);
-      //console.log("timer: " + tick + " currentElapsed: " + this.currentElapsed + " currentPercent: " + this.currentPercent);
-      this.cdr.markForCheck();
+      if (this.future) {
+        this.currentDiff = Math.floor((this.future.getTime() - new Date().getTime()) / 1000);
+        this.currentElapsed = this.individualTime - this.currentDiff;
+        this.currentPercent = Math.round((this.currentElapsed / this.individualTime) * 100);
+        this.currentTotalElapsed = this.totalElapsed + this.currentElapsed;
+        this.totalTimePercent = Math.round(((this.totalElapsed + this.currentElapsed) / this.totalMaxTime) * 100);
+        //console.log("timer: " + tick + " currentElapsed: " + this.currentElapsed + " currentPercent: " + this.currentPercent);
+        this.cdr.markForCheck();
+      }
     });
 
     this.timerActive = true;
@@ -142,7 +154,9 @@ export class TimerComponent implements OnInit {
   this.currentPercent = 0;
   this.timerActive = false;
   // stop timer
-  this.timerSubscription.unsubscribe();
+  if (this.timerSubscription) {
+    this.timerSubscription.unsubscribe();
+  }
   this.startTimer();
 }
 

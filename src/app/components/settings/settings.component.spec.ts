@@ -40,7 +40,8 @@ describe('SettingsComponent', () => {
     const mTime = 500;
     component.globalMaxTime = mTime;
     component.saveSettings();
-    const lsMt = JSON.parse(localStorage.getItem('settings'))[1];
+    const settings = localStorage.getItem('settings');
+    const lsMt = settings ? JSON.parse(settings)[1] : null;
     expect(lsMt).toEqual(mTime);
   });
 
@@ -49,7 +50,8 @@ describe('SettingsComponent', () => {
     const bTime = false;
     component.useGlobalMaxTime = bTime;
     component.saveSettings();
-    const lsMt = JSON.parse(localStorage.getItem('settings'))[0];
+    const settings = localStorage.getItem('settings');
+    const lsMt = settings ? JSON.parse(settings)[0] : null;
     expect(lsMt).toEqual(bTime);
   });
 
@@ -58,7 +60,8 @@ describe('SettingsComponent', () => {
     const bTime = true;
     component.useGlobalMaxTime = bTime;
     component.saveSettings();
-    const lsMt = JSON.parse(localStorage.getItem('settings'))[0];
+    const settings = localStorage.getItem('settings');
+    const lsMt = settings ? JSON.parse(settings)[0] : null;
     expect(lsMt).toEqual(bTime);
   });
 
@@ -67,7 +70,8 @@ describe('SettingsComponent', () => {
     component.remoteParticipantListURL = url;
     component.useRemoteParticipantList = true;
     component.saveSettings();
-    const lsUrl = JSON.parse(localStorage.getItem('settings'))[2];
+    const settings = localStorage.getItem('settings');
+    const lsUrl = settings ? JSON.parse(settings)[2] : null;
     expect(lsUrl).toEqual(url);
   });
 
