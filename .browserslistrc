@@ -6,12 +6,7 @@
 #   npx browserslist
 
 > 0.5%
-last 1 Chrome versions
-last 1 Firefox version
-last 2 Edge major versions
-last 2 Safari major versions
-last 2 iOS major versions
-Firefox ESR
+last 2 versions
 not dead
 not op_mini all
 not IE 9-11
@@ -19,8 +14,7 @@ not kaios 2.0-3.1
 not and_qq 14.9
 not and_uc 15.5
 not op_mob 80
-not opera 116-124
+not opera 116-125
 not samsung 27-29
 not android 99-145
 not chrome 109
-not chrome 110-120

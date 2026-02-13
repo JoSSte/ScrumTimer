@@ -22,13 +22,6 @@ module.exports = function (config) {
       }
     },
     reporters: ['progress', 'kjhtml', 'junit', 'coverage'],
-    preprocessors: {
-      // source files, that you wanna generate coverage for
-      // do not include tests or libraries
-      // (these files will be instrumented by Istanbul)
-      'src/**/*.js': ['coverage'],
-      'src/**/*.ts': ['coverage'],
-    },
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
