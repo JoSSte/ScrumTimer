@@ -104,7 +104,7 @@ export class TimerComponent implements OnInit {
     }
     this.future.setSeconds(this.future.getSeconds() + this.individualTime);
 
-    this.timerSubscription = source.subscribe(tick => {
+    this.timerSubscription = source.subscribe(/*tick => */() => {
       this.currentDiff = Math.floor((this.future.getTime() - new Date().getTime()) / 1000);
       this.currentElapsed = this.individualTime - this.currentDiff;
       this.currentPercent = Math.round((this.currentElapsed / this.individualTime) * 100);
