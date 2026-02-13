@@ -2,6 +2,7 @@ import { SecsPipe } from './secs.pipe';
 
 describe('SecsPipe', () => {
   const pipe = new SecsPipe();
+
   it('create an instance', () => {
     expect(pipe).toBeTruthy();
   });

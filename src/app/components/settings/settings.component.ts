@@ -9,12 +9,12 @@ import { SettingsService } from '../../services/settings/settings.service';
     standalone: false
 })
 export class SettingsComponent implements OnInit {
-  useGlobalMaxTime: boolean;
-  globalMaxTime: number;
-  useRemoteParticipantList: boolean;
-  remoteParticipantListURL: string;
-  jiraLinkURL: string;
-  useJiraLinkURL: boolean;
+  useGlobalMaxTime = false;
+  globalMaxTime = 0;
+  useRemoteParticipantList = false;
+  remoteParticipantListURL = '';
+  jiraLinkURL = '';
+  useJiraLinkURL = false;
 
   public settings = inject(SettingsService);
 

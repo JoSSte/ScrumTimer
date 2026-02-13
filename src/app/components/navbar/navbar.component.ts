@@ -10,8 +10,8 @@ import { NavbarService } from '../../services/navbar/navbar.service';
 })
 export class NavbarComponent implements OnInit {
   noOpener = true;
-  scrumTimerWindow = null;
-  jiraTimerWindow = null;
+  scrumTimerWindow: Window | null = null;
+  jiraTimerWindow: Window | null = null;
   private windowProps = 'resizable=no,scrollbars,status,top=0,right=0,width=';
   private popupWidth = 360;
   public nav = inject(NavbarService);

@@ -19,9 +19,11 @@
         <li class="nav-item" [routerLinkActive]="['active']">
           <a class="nav-link" href="#" routerLink="/help"><i class="fa fa-question-circle"></i> Help</a>
         </li>
-        <li class="nav-item" [routerLinkActive]="['active']" *ngIf="noOpener">
+        @if(noOpener){
+        <li class="nav-item" [routerLinkActive]="['active']">
           <a class="nav-link" href="#" (click)="openWindows()"><i class="fa fa-external-link-alt"></i>PopOut</a>
         </li>
+        }
       </ul>
     </div>
   </nav>

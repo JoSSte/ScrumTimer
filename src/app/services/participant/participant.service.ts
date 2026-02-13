@@ -32,11 +32,12 @@ export class ParticipantService {
 
   getParticipants() {
 
-    if (localStorage.getItem('participants') === null) {
+    const stored = localStorage.getItem('participants');
+    if (stored === null) {
       this.participants = [];
     } else {
       // TODO: check if the localstorage Entry is valid JSON before returning
-      this.participants = JSON.parse(localStorage.getItem('participants'));
+      this.participants = JSON.parse(stored);
     }
     return this.participants;
   }
@@ -90,17 +91,15 @@ export class ParticipantService {
         const url = this.settings.getRemoteParticipantListURL();
         // console.debug('Seconds since last sync: ' + durationSinceLastSync + ' syncing from ' + url + ' . . .');
         return this.http
-        .get(url)
+        .get<string[]>(url)
         .pipe(map((data: string[]) => data.map((item) => this.adapter.adapt(item))));
 
       } else {
         console.error(new Error('not syncing'));
+        return new Observable<Participant[]>(observer => observer.next([]));
       }
     }
-    /* else { // TODO: throw exception ?
-      // console.info('using local participant list');
-      throw new Error('not syncing');
-    } */
+    return new Observable<Participant[]>(observer => observer.next([]));
   }
 
   updateRemoteParticipants(){

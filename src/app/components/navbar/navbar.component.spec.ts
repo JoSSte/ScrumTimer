@@ -54,7 +54,7 @@ describe('NavbarComponent', () => {
     });
     afterEach(() => {
       // reset the opener property to undefined so it's not set for other tests
-      window.opener = undefined as object;
+      window.opener = null;
     });
     it('should hide the navbar when opened by a link',() => {
       component.ngOnInit();
