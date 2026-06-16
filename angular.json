@@ -11,10 +11,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": {
-              "base": "dist"
-            },
+            "outputPath": "dist/browser",
             "index": "src/index.html",
+            "browser": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": [
               "src/polyfills.ts"
@@ -29,14 +28,11 @@
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/bootstrap/dist/css/bootstrap.css"
             ],
-            "scripts": [
-              
-            ],
+            "scripts": [],
             "extractLicenses": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true,
-            "browser": "src/main.ts"
+            "namedChunks": true
           },
           "configurations": {
             "production": {
