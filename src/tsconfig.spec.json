@@ -2,14 +2,14 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
-    "baseUrl": "./",
     "types": [
       "jasmine",
       "node"
     ]
   },
   "files": [
-    "test.ts",    "polyfills.ts"
+    "test.ts",
+    "polyfills.ts"
 
   ],
   "include": [
@@ -23,6 +23,6 @@
         "optionalChainNotNullable": "suppress"
       }
     },
-    "strictTemplates": false
+    "strictTemplates": true
   }
 }

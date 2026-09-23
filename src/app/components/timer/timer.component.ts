@@ -38,9 +38,9 @@ export class TimerComponent implements OnInit {
   individualMaxTime = 120;
   individualTime: number = this.individualMaxTime;
   currentPercent = 0;
-  currentParticipant: Participant | null = null;
+  currentParticipant: Participant = new Participant('', '');
 
-  future: Date | null = null;
+  future: Date = new Date();
   futureString = '';
   diff = 0;
   currentDiff = 0;
