@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 import { ParticipantListComponent } from './participant-list.component';
@@ -24,7 +24,7 @@ describe('ParticipantListComponent', () => {
     providers: [
         ParticipantService,
         SettingsService,
-        provideHttpClient(withInterceptorsFromDi())
+        provideHttpClient(withXhr(), withInterceptorsFromDi())
     ]
 })
       .compileComponents();

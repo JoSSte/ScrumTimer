@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Participant } from '../../models/Participant';
 import { ParticipantService } from '../../services/participant/participant.service';
 
@@ -8,6 +8,7 @@ import { ParticipantService } from '../../services/participant/participant.servi
   templateUrl: './participant-list.component.html',
   styleUrls: ['./participant-list.component.css'],
   // eslint-disable-next-line @angular-eslint/prefer-standalone
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ParticipantListComponent implements OnInit {

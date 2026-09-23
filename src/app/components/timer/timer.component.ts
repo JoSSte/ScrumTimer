@@ -1,5 +1,5 @@
 import { SettingsService } from '../../services/settings/settings.service';
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { Participant } from '../../models/Participant';
 import { ParticipantService } from '../../services/participant/participant.service';
 import { NavbarService } from '../../services/navbar/navbar.service';
@@ -11,6 +11,7 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './timer.component.html',
   styleUrls: ['./timer.component.css'],
   // eslint-disable-next-line @angular-eslint/prefer-standalone
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class TimerComponent implements OnInit {

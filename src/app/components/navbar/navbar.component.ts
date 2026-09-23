@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, isDevMode } from '@angular/core';
+import { Component, OnInit, inject, isDevMode, ChangeDetectionStrategy } from '@angular/core';
 import { NavbarService } from '../../services/navbar/navbar.service';
 
 @Component({
@@ -6,6 +6,7 @@ import { NavbarService } from '../../services/navbar/navbar.service';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
   // eslint-disable-next-line @angular-eslint/prefer-standalone
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class NavbarComponent implements OnInit {

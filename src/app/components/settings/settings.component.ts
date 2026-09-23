@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { SettingsService } from '../../services/settings/settings.service';
 
 @Component({
@@ -6,6 +6,7 @@ import { SettingsService } from '../../services/settings/settings.service';
     templateUrl: './settings.component.html',
     styleUrls: ['./settings.component.css'],
     // eslint-disable-next-line @angular-eslint/prefer-standalone
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SettingsComponent implements OnInit {
