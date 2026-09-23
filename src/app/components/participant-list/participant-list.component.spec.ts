@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -14,7 +14,7 @@ describe('ParticipantListComponent', () => {
   //let settingService: SettingsService;
   let fixture: ComponentFixture<ParticipantListComponent>;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
     declarations: [
         ParticipantListComponent
@@ -30,7 +30,7 @@ describe('ParticipantListComponent', () => {
       .compileComponents();
     //partService = TestBed.inject(ParticipantService);
     //settingService = TestBed.inject(SettingsService);
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ParticipantListComponent);

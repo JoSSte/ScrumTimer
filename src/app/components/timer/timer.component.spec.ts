@@ -1,4 +1,5 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CommonModule } from '@angular/common';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule } from '@angular/forms';
 import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
@@ -8,19 +9,17 @@ import { ParticipantService } from '../../services/participant/participant.servi
 import { SettingsService } from '../../services/settings/settings.service';
 import { TimerComponent } from './timer.component';
 import { SecsPipe } from '../../pipes/secs.pipe';
+import { AppModule } from '../../app.module';
 
 describe('TimerComponent', () => {
   let component: TimerComponent;
   let fixture: ComponentFixture<TimerComponent>;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
-    declarations: [
-        TimerComponent
-    ],
-    imports: [RouterTestingModule.withRoutes([]),
-        FormsModule,
-        SecsPipe],
+    imports: [AppModule, CommonModule, RouterTestingModule.withRoutes([]),
+      FormsModule,
+      SecsPipe],
     providers: [
         ParticipantService,
         SettingsService,
@@ -28,7 +27,7 @@ describe('TimerComponent', () => {
     ]
 })
       .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TimerComponent);

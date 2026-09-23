@@ -1,5 +1,7 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CommonModule } from '@angular/common';
 import { RouterTestingModule } from '@angular/router/testing';
+import { vi } from 'vitest';
 
 import { NavbarComponent } from './navbar.component';
 import { NavbarService } from '../../services/navbar/navbar.service';
@@ -21,25 +23,27 @@ describe('NavbarComponent', () => {
     }
   } as unknown as Window;
 */
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       declarations: [NavbarComponent],
       imports: [
+        CommonModule,
         RouterTestingModule.withRoutes([])
       ],
       providers: [
-        { provide: NavbarService, useValue: { hide: jasmine.createSpy('hide'), visible: true } }
+        { provide: NavbarService, useValue: { hide: vi.fn(), visible: true } }
       ]
     })
       .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
+    vi.spyOn(window, 'open').mockReturnValue({} as Window);
     fixture = TestBed.createComponent(NavbarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    spyOn(NavbarComponent.prototype, 'openScrumTimer').and.callThrough();
-    spyOn(NavbarComponent.prototype, 'openJira').and.callThrough();
+    vi.spyOn(NavbarComponent.prototype, 'openScrumTimer');
+    vi.spyOn(NavbarComponent.prototype, 'openJira');
   });
   // TODO: improve tests https://angular.io/guide/testing-components-basics
   it('should create', () => {
