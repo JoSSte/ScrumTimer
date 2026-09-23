@@ -128,4 +128,3 @@ In Localstorage (Press <kbd>F12</kbd> -  select application/storage - localstora
 #### Localstorage in Chrome
 ![Chrome](src/assets/images/localstorage_chrome_0.3.0.png)
 
-
