@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { VersionCheckService } from '../../services/versioncheck/version-check.service';
 import { HelpComponent } from './help.component';
@@ -7,8 +7,8 @@ describe('HelpComponent', () => {
   let component: HelpComponent;
   let fixture: ComponentFixture<HelpComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       declarations: [HelpComponent],
       providers: [
         provideHttpClient(withXhr(), withInterceptorsFromDi()),
@@ -17,7 +17,7 @@ describe('HelpComponent', () => {
 
     })
       .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HelpComponent);
