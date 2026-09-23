@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { VersionCheckService } from '../../services/versioncheck/version-check.service';
 import packageInfo from '../../../../package.json';
 
@@ -7,6 +7,7 @@ import packageInfo from '../../../../package.json';
   templateUrl: './help.component.html',
   styleUrls: ['./help.component.css'],
   // eslint-disable-next-line @angular-eslint/prefer-standalone
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class HelpComponent implements OnInit {

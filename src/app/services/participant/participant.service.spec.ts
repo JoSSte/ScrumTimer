@@ -4,7 +4,7 @@ import { ParticipantService } from './participant.service';
 import { SettingsService } from '../settings/settings.service';
 //import { Subscription } from 'rxjs';
 //import { Participant } from '../../models/Participant';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('ParticipantService', () => {
   //let service: ParticipantService;
@@ -12,7 +12,7 @@ describe('ParticipantService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
     imports: [],
-    providers: [ParticipantService, SettingsService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+    providers: [ParticipantService, SettingsService, provideHttpClient(withXhr(), withInterceptorsFromDi()), provideHttpClientTesting()]
 });
   });
 

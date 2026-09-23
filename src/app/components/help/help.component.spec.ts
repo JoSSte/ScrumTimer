@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { VersionCheckService } from '../../services/versioncheck/version-check.service';
 import { HelpComponent } from './help.component';
 
@@ -11,7 +11,7 @@ describe('HelpComponent', () => {
     TestBed.configureTestingModule({
       declarations: [HelpComponent],
       providers: [
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         VersionCheckService
       ]
 
