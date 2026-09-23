@@ -5,7 +5,11 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  try {
+    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  } catch (e) {
+    throw mod = 0, e;
+  }
 };
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
@@ -75,10 +79,10 @@ var require_shared_store = __commonJS({
     var SHARED = "__core-js_shared__";
     var store = module.exports = globalThis2[SHARED] || defineGlobalProperty(SHARED, {});
     (store.versions || (store.versions = [])).push({
-      version: "3.48.0",
+      version: "3.50.0",
       mode: IS_PURE ? "pure" : "global",
       copyright: "\xA9 2013\u20132025 Denis Pushkarev (zloirock.ru), 2025\u20132026 CoreJS Company (core-js.io). All rights reserved.",
-      license: "https://github.com/zloirock/core-js/blob/v3.48.0/LICENSE",
+      license: "https://github.com/zloirock/core-js/blob/v3.50.0/LICENSE",
       source: "https://github.com/zloirock/core-js"
     });
   }
@@ -89,8 +93,9 @@ var require_shared = __commonJS({
   "node_modules/core-js/internals/shared.js"(exports, module) {
     "use strict";
     var store = require_shared_store();
+    var create = Object.create || Object;
     module.exports = function(key, value) {
-      return store[key] || (store[key] = value || {});
+      return store[key] || (store[key] = value || create(null));
     };
   }
 });
@@ -115,8 +120,8 @@ var require_function_bind_native = __commonJS({
     "use strict";
     var fails = require_fails();
     module.exports = !fails(function() {
-      var test = (function() {
-      }).bind();
+      var test = function() {
+      }.bind();
       return typeof test != "function" || test.hasOwnProperty("prototype");
     });
   }
@@ -605,8 +610,8 @@ var require_function_name = __commonJS({
     var FunctionPrototype = Function.prototype;
     var getDescriptor = DESCRIPTORS && Object.getOwnPropertyDescriptor;
     var EXISTS = hasOwn(FunctionPrototype, "name");
-    var PROPER = EXISTS && (function something() {
-    }).name === "something";
+    var PROPER = EXISTS && function something() {
+    }.name === "something";
     var CONFIGURABLE = EXISTS && (!DESCRIPTORS || DESCRIPTORS && getDescriptor(FunctionPrototype, "name").configurable);
     module.exports = {
       EXISTS,
@@ -1540,8 +1545,8 @@ var require_es_reflect_construct = __commonJS({
     $({ target: "Reflect", stat: true, forced: FORCED, sham: FORCED }, {
       construct: function construct(Target, args) {
         aConstructor(Target);
-        anObject(args);
         var newTarget = arguments.length < 3 ? Target : aConstructor(arguments[2]);
+        anObject(args);
         if (ARGS_BUG && !NEW_TARGET_BUG) return nativeConstruct(Target, args, newTarget);
         if (Target === newTarget) {
           switch (args.length) {
@@ -1578,7 +1583,9 @@ var require_es_reflect_define_property = __commonJS({
     var anObject = require_an_object();
     var toPropertyKey = require_to_property_key();
     var definePropertyModule = require_object_define_property();
+    var isCallable = require_is_callable();
     var fails = require_fails();
+    var $TypeError = TypeError;
     var ERROR_INSTEAD_OF_FALSE = fails(function() {
       Reflect.defineProperty(definePropertyModule.f({}, 1, { value: 1 }), 1, { value: 2 });
     });
@@ -1586,7 +1593,9 @@ var require_es_reflect_define_property = __commonJS({
       defineProperty: function defineProperty(target, propertyKey, attributes) {
         anObject(target);
         var key = toPropertyKey(propertyKey);
+        var get, set;
         anObject(attributes);
+        if (("get" in attributes || "set" in attributes) && ("get" in attributes && !isCallable(get = attributes.get) && get !== void 0 || "set" in attributes && !isCallable(set = attributes.set) && set !== void 0 || ("value" in attributes || "writable" in attributes))) throw new $TypeError("Invalid property descriptor");
         try {
           definePropertyModule.f(target, key, attributes);
           return true;
@@ -1605,10 +1614,13 @@ var require_es_reflect_delete_property = __commonJS({
     var $ = require_export();
     var anObject = require_an_object();
     var getOwnPropertyDescriptor = require_object_get_own_property_descriptor().f;
+    var toPropertyKey = require_to_property_key();
     $({ target: "Reflect", stat: true }, {
       deleteProperty: function deleteProperty(target, propertyKey) {
-        var descriptor = getOwnPropertyDescriptor(anObject(target), propertyKey);
-        return descriptor && !descriptor.configurable ? false : delete target[propertyKey];
+        anObject(target);
+        var key = toPropertyKey(propertyKey);
+        var descriptor = getOwnPropertyDescriptor(target, key);
+        return descriptor && !descriptor.configurable ? false : delete target[key];
       }
     });
   }
@@ -1674,16 +1686,18 @@ var require_es_reflect_get = __commonJS({
     var isDataDescriptor = require_is_data_descriptor();
     var getOwnPropertyDescriptorModule = require_object_get_own_property_descriptor();
     var getPrototypeOf = require_object_get_prototype_of();
-    function get(target, propertyKey) {
-      var receiver = arguments.length < 3 ? target : arguments[2];
-      var descriptor, prototype;
+    var toPropertyKey = require_to_property_key();
+    var $get = function(target, propertyKey, receiver) {
       if (anObject(target) === receiver) return target[propertyKey];
-      descriptor = getOwnPropertyDescriptorModule.f(target, propertyKey);
+      var descriptor = getOwnPropertyDescriptorModule.f(target, propertyKey);
       if (descriptor) return isDataDescriptor(descriptor) ? descriptor.value : descriptor.get === void 0 ? void 0 : call(descriptor.get, receiver);
-      if (isObject(prototype = getPrototypeOf(target))) return get(prototype, propertyKey, receiver);
-    }
+      var prototype = getPrototypeOf(target);
+      if (isObject(prototype)) return $get(prototype, propertyKey, receiver);
+    };
     $({ target: "Reflect", stat: true }, {
-      get
+      get: function get(target, propertyKey) {
+        return $get(anObject(target), toPropertyKey(propertyKey), arguments.length < 3 ? target : arguments[2]);
+      }
     });
   }
 });
@@ -1843,30 +1857,33 @@ var require_es_reflect_set = __commonJS({
     var getOwnPropertyDescriptorModule = require_object_get_own_property_descriptor();
     var getPrototypeOf = require_object_get_prototype_of();
     var createPropertyDescriptor = require_create_property_descriptor();
-    function set(target, propertyKey, V) {
-      var receiver = arguments.length < 4 ? target : arguments[3];
+    var toPropertyKey = require_to_property_key();
+    var $set = function(target, propertyKey, V, receiver) {
       var ownDescriptor = getOwnPropertyDescriptorModule.f(anObject(target), propertyKey);
       var existingDescriptor, prototype, setter;
       if (!ownDescriptor) {
         if (isObject(prototype = getPrototypeOf(target))) {
-          return set(prototype, propertyKey, V, receiver);
+          return $set(prototype, propertyKey, V, receiver);
         }
         ownDescriptor = createPropertyDescriptor(0);
       }
       if (isDataDescriptor(ownDescriptor)) {
         if (ownDescriptor.writable === false || !isObject(receiver)) return false;
         if (existingDescriptor = getOwnPropertyDescriptorModule.f(receiver, propertyKey)) {
-          if (existingDescriptor.get || existingDescriptor.set || existingDescriptor.writable === false) return false;
-          existingDescriptor.value = V;
-          definePropertyModule.f(receiver, propertyKey, existingDescriptor);
-        } else definePropertyModule.f(receiver, propertyKey, createPropertyDescriptor(0, V));
+          if (!isDataDescriptor(existingDescriptor) || existingDescriptor.writable === false) return false;
+          definePropertyModule.f(receiver, propertyKey, { value: V });
+        } else try {
+          definePropertyModule.f(receiver, propertyKey, createPropertyDescriptor(0, V));
+        } catch (error) {
+          return false;
+        }
       } else {
         setter = ownDescriptor.set;
         if (setter === void 0) return false;
         call(setter, receiver, V);
       }
       return true;
-    }
+    };
     var MS_EDGE_BUG = fails(function() {
       var Constructor = function() {
       };
@@ -1874,7 +1891,9 @@ var require_es_reflect_set = __commonJS({
       return Reflect.set(Constructor.prototype, "a", 1, object) !== false;
     });
     $({ target: "Reflect", stat: true, forced: MS_EDGE_BUG }, {
-      set
+      set: function set(target, propertyKey, V) {
+        return $set(anObject(target), toPropertyKey(propertyKey), V, arguments.length < 4 ? target : arguments[3]);
+      }
     });
   }
 });
@@ -2034,13 +2053,13 @@ var require_reflect = __commonJS({
   }
 });
 
-// src/polyfills.ts
-var import_reflect = __toESM(require_reflect());
-
 // node_modules/zone.js/fesm2015/zone.js
+/**
+ * @license Angular
+ * (c) 2010-2026 Google LLC. https://angular.dev/
+ * License: MIT
+ */
 var __defProp2 = Object.defineProperty;
-var __defProps = Object.defineProperties;
-var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
 var __hasOwnProp2 = Object.prototype.hasOwnProperty;
 var __propIsEnum = Object.prototype.propertyIsEnumerable;
@@ -2056,14 +2075,14 @@ var __spreadValues = (a, b) => {
     }
   return a;
 };
-var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
 var global2 = globalThis;
 function __symbol__(name) {
-  const symbolPrefix = global2["__Zone_symbol_prefix"] || "__zone_symbol__";
+  const rawPrefix = global2["__Zone_symbol_prefix"];
+  const symbolPrefix = typeof rawPrefix === "string" ? rawPrefix : "__zone_symbol__";
   return symbolPrefix + name;
 }
 function initZone() {
@@ -2105,7 +2124,7 @@ function initZone() {
       return _currentTask;
     }
     static __load_patch(name, fn, ignoreDuplicate = false) {
-      if (patches.hasOwnProperty(name)) {
+      if (Object.hasOwn(patches, name)) {
         const checkDuplicate = global2[__symbol__("forceDuplicateZoneCheck")] === true;
         if (!ignoreDuplicate && checkDuplicate) {
           throw Error("Already loaded patch: " + name);
@@ -2131,7 +2150,7 @@ function initZone() {
     getZoneWith(key) {
       let current = this;
       while (current) {
-        if (current._properties.hasOwnProperty(key)) {
+        if (Object.hasOwn(current._properties, key)) {
           return current;
         }
         current = current._parent;
@@ -2302,7 +2321,6 @@ function initZone() {
         "macroTask": 0,
         "eventTask": 0
       });
-      __publicField(this, "_parentDelegate");
       __publicField(this, "_forkDlgt");
       __publicField(this, "_forkZS");
       __publicField(this, "_forkCurrZone");
@@ -2329,7 +2347,6 @@ function initZone() {
       __publicField(this, "_hasTaskZS");
       __publicField(this, "_hasTaskCurrZone");
       this._zone = zone;
-      this._parentDelegate = parentDelegate;
       this._forkZS = zoneSpec && (zoneSpec && zoneSpec.onFork ? zoneSpec : parentDelegate._forkZS);
       this._forkDlgt = zoneSpec && (zoneSpec.onFork ? parentDelegate : parentDelegate._forkDlgt);
       this._forkCurrZone = zoneSpec && (zoneSpec.onFork ? this._zone : parentDelegate._forkCurrZone);
@@ -2494,10 +2511,13 @@ function initZone() {
         task.runCount++;
         return task.zone.runTask(task, target, args);
       } finally {
-        if (_numberOfNestedTaskFrames == 1) {
-          drainMicroTaskQueue();
+        try {
+          if (_numberOfNestedTaskFrames === 1 && !global2[enableNativeMicrotaskDraining]) {
+            drainMicroTaskQueueSynchronously();
+          }
+        } finally {
+          _numberOfNestedTaskFrames--;
         }
-        _numberOfNestedTaskFrames--;
       }
     }
     get zone() {
@@ -2541,39 +2561,43 @@ function initZone() {
   const symbolSetTimeout = __symbol__("setTimeout");
   const symbolPromise = __symbol__("Promise");
   const symbolThen = __symbol__("then");
+  const enableNativeMicrotaskDraining = __symbol__("enable_native_microtask_draining");
   let _microTaskQueue = [];
   let _isDrainingMicrotaskQueue = false;
   let nativeMicroTaskQueuePromise;
   function nativeScheduleMicroTask(func) {
-    if (!nativeMicroTaskQueuePromise) {
-      if (global2[symbolPromise]) {
-        nativeMicroTaskQueuePromise = global2[symbolPromise].resolve(0);
-      }
+    var _a;
+    if (!nativeMicroTaskQueuePromise && global2[symbolPromise]) {
+      nativeMicroTaskQueuePromise = global2[symbolPromise].resolve(0);
     }
     if (nativeMicroTaskQueuePromise) {
-      let nativeThen = nativeMicroTaskQueuePromise[symbolThen];
-      if (!nativeThen) {
-        nativeThen = nativeMicroTaskQueuePromise["then"];
-      }
-      nativeThen.call(nativeMicroTaskQueuePromise, func);
+      const thenFn = (_a = nativeMicroTaskQueuePromise[symbolThen]) != null ? _a : nativeMicroTaskQueuePromise["then"];
+      thenFn.call(nativeMicroTaskQueuePromise, func);
     } else {
       global2[symbolSetTimeout](func, 0);
     }
   }
   function scheduleMicroTask(task) {
-    if (_numberOfNestedTaskFrames === 0 && _microTaskQueue.length === 0) {
-      nativeScheduleMicroTask(drainMicroTaskQueue);
+    const isNativeDrainingEnabled = global2[enableNativeMicrotaskDraining];
+    const shouldDrainWithNative = isNativeDrainingEnabled && _microTaskQueue.length === 0 && !_isDrainingMicrotaskQueue;
+    const shouldDrainWithoutNative = !isNativeDrainingEnabled && _numberOfNestedTaskFrames === 0 && _microTaskQueue.length === 0;
+    if (shouldDrainWithNative || shouldDrainWithoutNative) {
+      nativeScheduleMicroTask(drainMicroTaskQueueSynchronously);
     }
-    task && _microTaskQueue.push(task);
+    if (task) {
+      _microTaskQueue.push(task);
+    }
   }
-  function drainMicroTaskQueue() {
-    if (!_isDrainingMicrotaskQueue) {
-      _isDrainingMicrotaskQueue = true;
+  function drainMicroTaskQueueSynchronously() {
+    if (_isDrainingMicrotaskQueue) {
+      return;
+    }
+    _isDrainingMicrotaskQueue = true;
+    try {
       while (_microTaskQueue.length) {
         const queue = _microTaskQueue;
         _microTaskQueue = [];
-        for (let i = 0; i < queue.length; i++) {
-          const task = queue[i];
+        for (const task of queue) {
           try {
             task.zone.runTask(task, null, null);
           } catch (error) {
@@ -2581,14 +2605,23 @@ function initZone() {
           }
         }
       }
-      _api.microtaskDrainDone();
-      _isDrainingMicrotaskQueue = false;
+    } finally {
+      if (global2[enableNativeMicrotaskDraining]) {
+        _isDrainingMicrotaskQueue = false;
+        _api.microtaskDrainDone();
+      } else {
+        try {
+          _api.microtaskDrainDone();
+        } finally {
+          _isDrainingMicrotaskQueue = false;
+        }
+      }
     }
   }
   const NO_ZONE = { name: "NO ZONE" };
   const notScheduled = "notScheduled", scheduling = "scheduling", scheduled = "scheduled", running = "running", canceling = "canceling", unknown = "unknown";
   const microTask = "microTask", macroTask = "macroTask", eventTask = "eventTask";
-  const patches = {};
+  const patches = /* @__PURE__ */ Object.create(null);
   const _api = {
     symbol: __symbol__,
     currentZoneFrame: () => _currentZoneFrame,
@@ -2626,13 +2659,13 @@ function initZone() {
 }
 function loadZone() {
   var _a;
-  const global22 = globalThis;
-  const checkDuplicate = global22[__symbol__("forceDuplicateZoneCheck")] === true;
-  if (global22["Zone"] && (checkDuplicate || typeof global22["Zone"].__symbol__ !== "function")) {
+  const global23 = globalThis;
+  const checkDuplicate = global23[__symbol__("forceDuplicateZoneCheck")] === true;
+  if (global23["Zone"] && (checkDuplicate || typeof global23["Zone"].__symbol__ !== "function")) {
     throw new Error("Zone already loaded.");
   }
-  (_a = global22["Zone"]) != null ? _a : global22["Zone"] = initZone();
-  return global22["Zone"];
+  (_a = global23["Zone"]) != null ? _a : global23["Zone"] = initZone();
+  return global23["Zone"];
 }
 var ObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 var ObjectDefineProperty = Object.defineProperty;
@@ -2698,7 +2731,7 @@ var isWebWorker = typeof WorkerGlobalScope !== "undefined" && self instanceof Wo
 var isNode = !("nw" in _global) && typeof _global.process !== "undefined" && _global.process.toString() === "[object process]";
 var isBrowser = !isNode && !isWebWorker && !!(isWindowExists && internalWindow["HTMLElement"]);
 var isMix = typeof _global.process !== "undefined" && _global.process.toString() === "[object process]" && !isWebWorker && !!(isWindowExists && internalWindow["HTMLElement"]);
-var zoneSymbolEventNames = {};
+var zoneSymbolEventNames = /* @__PURE__ */ Object.create(null);
 var enableBeforeunloadSymbol = zoneSymbol("enable_beforeunload");
 var wrapFn = function(event) {
   event = event || _global.event;
@@ -2754,7 +2787,7 @@ function patchProperty(obj, prop, prototype) {
     return;
   }
   const onPropPatchedSymbol = zoneSymbol("on" + prop + "patched");
-  if (obj.hasOwnProperty(onPropPatchedSymbol) && obj[onPropPatchedSymbol]) {
+  if (Object.hasOwn(obj, onPropPatchedSymbol) && obj[onPropPatchedSymbol]) {
     return;
   }
   delete desc.writable;
@@ -2885,7 +2918,7 @@ function patchClass(className) {
     })(prop);
   }
   for (prop in OriginalClass) {
-    if (prop !== "prototype" && OriginalClass.hasOwnProperty(prop)) {
+    if (prop !== "prototype" && Object.hasOwn(OriginalClass, prop)) {
       _global[className][prop] = OriginalClass[prop];
     }
   }
@@ -2915,7 +2948,7 @@ function copySymbolProperties(src, dest) {
 var shouldCopySymbolProperties = false;
 function patchMethod(target, name, patchFn) {
   let proto = target;
-  while (proto && !proto.hasOwnProperty(name)) {
+  while (proto && !Object.hasOwn(proto, name)) {
     proto = ObjectGetPrototypeOf(proto);
   }
   if (!proto && target[name]) {
@@ -2923,7 +2956,7 @@ function patchMethod(target, name, patchFn) {
   }
   const delegateName = zoneSymbol(name);
   let delegate = null;
-  if (proto && (!(delegate = proto[delegateName]) || !proto.hasOwnProperty(delegateName))) {
+  if (proto && (!(delegate = proto[delegateName]) || !Object.hasOwn(proto, delegateName))) {
     delegate = proto[delegateName] = proto[name];
     const desc = proto && ObjectGetOwnPropertyDescriptor(proto, name);
     if (isPropertyWritable(desc)) {
@@ -2970,18 +3003,20 @@ function isNumber(value) {
 var OPTIMIZED_ZONE_EVENT_TASK_DATA = {
   useG: true
 };
-var zoneSymbolEventNames2 = {};
+var zoneSymbolEventNames2 = /* @__PURE__ */ Object.create(null);
 var globalSources = {};
 var EVENT_NAME_SYMBOL_REGX = new RegExp("^" + ZONE_SYMBOL_PREFIX + "(\\w+)(true|false)$");
 var IMMEDIATE_PROPAGATION_SYMBOL = zoneSymbol("propagationStopped");
+var KNOWN_EVENT_LISTENER_OPTIONS = ["capture", "once", "passive", "signal"];
 function prepareEventNames(eventName, eventNameToString) {
   const falseEventName = (eventNameToString ? eventNameToString(eventName) : eventName) + FALSE_STR;
   const trueEventName = (eventNameToString ? eventNameToString(eventName) : eventName) + TRUE_STR;
   const symbol = ZONE_SYMBOL_PREFIX + falseEventName;
   const symbolCapture = ZONE_SYMBOL_PREFIX + trueEventName;
-  zoneSymbolEventNames2[eventName] = {};
-  zoneSymbolEventNames2[eventName][FALSE_STR] = symbol;
-  zoneSymbolEventNames2[eventName][TRUE_STR] = symbolCapture;
+  zoneSymbolEventNames2[eventName] = {
+    [FALSE_STR]: symbol,
+    [TRUE_STR]: symbolCapture
+  };
 }
 function patchEventTarget(_global2, api, apis, patchOptions) {
   const ADD_EVENT_LISTENER = patchOptions && patchOptions.add || ADD_EVENT_LISTENER_STR;
@@ -3072,7 +3107,7 @@ function patchEventTarget(_global2, api, apis, patchOptions) {
       returnTarget = patchOptions2.rt;
     }
     let proto = obj;
-    while (proto && !proto.hasOwnProperty(ADD_EVENT_LISTENER)) {
+    while (proto && !Object.hasOwn(proto, ADD_EVENT_LISTENER)) {
       proto = ObjectGetPrototypeOf(proto);
     }
     if (!proto && obj[ADD_EVENT_LISTENER]) {
@@ -3105,7 +3140,8 @@ function patchEventTarget(_global2, api, apis, patchOptions) {
         return { passive: true };
       }
       if (typeof options === "object" && options.passive !== false) {
-        return __spreadProps(__spreadValues({}, options), { passive: true });
+        options.passive = true;
+        return options;
       }
       return options;
     }
@@ -3166,14 +3202,16 @@ function patchEventTarget(_global2, api, apis, patchOptions) {
     const unpatchedEvents = Zone[zoneSymbol("UNPATCHED_EVENTS")];
     const passiveEvents = _global2[zoneSymbol("PASSIVE_EVENTS")];
     function copyEventListenerOptions(options) {
-      if (typeof options === "object" && options !== null) {
-        const newOptions = __spreadValues({}, options);
-        if (options.signal) {
-          newOptions.signal = options.signal;
-        }
-        return newOptions;
+      if (typeof options !== "object" || options === null) {
+        return options;
       }
-      return options;
+      const newOptions = __spreadValues({}, options);
+      for (const key of KNOWN_EVENT_LISTENER_OPTIONS) {
+        if (!Object.hasOwn(newOptions, key) && key in options) {
+          newOptions[key] = options[key];
+        }
+      }
+      return newOptions;
     }
     const makeAddListener = function(nativeListener, addSource, customScheduleFn, customCancelFn, returnTarget2 = false, prepend = false) {
       return function() {
@@ -3200,7 +3238,7 @@ function patchEventTarget(_global2, api, apis, patchOptions) {
           return;
         }
         const passive = !!passiveEvents && passiveEvents.indexOf(eventName) !== -1;
-        const options = copyEventListenerOptions(buildEventListenerOptions(arguments[2], passive));
+        const options = buildEventListenerOptions(copyEventListenerOptions(arguments[2]), passive);
         const signal = options == null ? void 0 : options.signal;
         if (signal == null ? void 0 : signal.aborted) {
           return;
@@ -3452,8 +3490,8 @@ function findEventTasks(target, eventName) {
     return captureTrueTasks ? captureFalseTasks.concat(captureTrueTasks) : captureFalseTasks.slice();
   }
 }
-function patchEventPrototype(global22, api) {
-  const Event = global22["Event"];
+function patchEventPrototype(global23, api) {
+  const Event = global23["Event"];
   if (Event && Event.prototype) {
     api.patchMethod(Event.prototype, "stopImmediatePropagation", (delegate) => function(self2, args) {
       self2[IMMEDIATE_PROPAGATION_SYMBOL] = true;
@@ -3461,8 +3499,8 @@ function patchEventPrototype(global22, api) {
     });
   }
 }
-function patchQueueMicrotask(global22, api) {
-  api.patchMethod(global22, "queueMicrotask", (delegate) => {
+function patchQueueMicrotask(global23, api) {
+  api.patchMethod(global23, "queueMicrotask", (delegate) => {
     return function(self2, args) {
       Zone.current.scheduleMicroTask("queueMicrotask", args[0]);
     };
@@ -3485,7 +3523,7 @@ function patchTimer(window2, setName, cancelName, nameSuffix) {
       data.handleId = handleOrId;
     } else {
       data.handle = handleOrId;
-      data.isRefreshable = isFunction(handleOrId.refresh);
+      data.isRefreshable = isFunction(handleOrId == null ? void 0 : handleOrId.refresh);
     }
     return task;
   }
@@ -3607,8 +3645,8 @@ function eventTargetPatch(_global2, api) {
   api.patchEventTarget(_global2, api, [EVENT_TARGET && EVENT_TARGET.prototype]);
   return true;
 }
-function patchEvent(global22, api) {
-  api.patchEventPrototype(global22, api);
+function patchEvent(global23, api) {
+  api.patchEventPrototype(global23, api);
 }
 function filterProperties(target, onProperties, ignoreProperties) {
   if (!ignoreProperties || ignoreProperties.length === 0) {
@@ -3674,55 +3712,55 @@ function propertyDescriptorPatch(api, _global2) {
   }
 }
 function patchBrowser(Zone3) {
-  Zone3.__load_patch("timers", (global22) => {
+  Zone3.__load_patch("timers", (global23) => {
     const set = "set";
     const clear = "clear";
-    patchTimer(global22, set, clear, "Timeout");
-    patchTimer(global22, set, clear, "Interval");
-    patchTimer(global22, set, clear, "Immediate");
+    patchTimer(global23, set, clear, "Timeout");
+    patchTimer(global23, set, clear, "Interval");
+    patchTimer(global23, set, clear, "Immediate");
   });
-  Zone3.__load_patch("requestAnimationFrame", (global22) => {
-    patchTimer(global22, "request", "cancel", "AnimationFrame");
-    patchTimer(global22, "mozRequest", "mozCancel", "AnimationFrame");
-    patchTimer(global22, "webkitRequest", "webkitCancel", "AnimationFrame");
+  Zone3.__load_patch("requestAnimationFrame", (global23) => {
+    patchTimer(global23, "request", "cancel", "AnimationFrame");
+    patchTimer(global23, "mozRequest", "mozCancel", "AnimationFrame");
+    patchTimer(global23, "webkitRequest", "webkitCancel", "AnimationFrame");
   });
-  Zone3.__load_patch("blocking", (global22, Zone4) => {
+  Zone3.__load_patch("blocking", (global23, Zone4) => {
     const blockingMethods = ["alert", "prompt", "confirm"];
     for (let i = 0; i < blockingMethods.length; i++) {
       const name = blockingMethods[i];
-      patchMethod(global22, name, (delegate, symbol, name2) => {
+      patchMethod(global23, name, (delegate, symbol, name2) => {
         return function(s, args) {
-          return Zone4.current.run(delegate, global22, args, name2);
+          return Zone4.current.run(delegate, global23, args, name2);
         };
       });
     }
   });
-  Zone3.__load_patch("EventTarget", (global22, Zone4, api) => {
-    patchEvent(global22, api);
-    eventTargetPatch(global22, api);
-    const XMLHttpRequestEventTarget = global22["XMLHttpRequestEventTarget"];
+  Zone3.__load_patch("EventTarget", (global23, Zone4, api) => {
+    patchEvent(global23, api);
+    eventTargetPatch(global23, api);
+    const XMLHttpRequestEventTarget = global23["XMLHttpRequestEventTarget"];
     if (XMLHttpRequestEventTarget && XMLHttpRequestEventTarget.prototype) {
-      api.patchEventTarget(global22, api, [XMLHttpRequestEventTarget.prototype]);
+      api.patchEventTarget(global23, api, [XMLHttpRequestEventTarget.prototype]);
     }
   });
-  Zone3.__load_patch("MutationObserver", (global22, Zone4, api) => {
+  Zone3.__load_patch("MutationObserver", (global23, Zone4, api) => {
     patchClass("MutationObserver");
     patchClass("WebKitMutationObserver");
   });
-  Zone3.__load_patch("IntersectionObserver", (global22, Zone4, api) => {
+  Zone3.__load_patch("IntersectionObserver", (global23, Zone4, api) => {
     patchClass("IntersectionObserver");
   });
-  Zone3.__load_patch("FileReader", (global22, Zone4, api) => {
+  Zone3.__load_patch("FileReader", (global23, Zone4, api) => {
     patchClass("FileReader");
   });
-  Zone3.__load_patch("on_property", (global22, Zone4, api) => {
-    propertyDescriptorPatch(api, global22);
+  Zone3.__load_patch("on_property", (global23, Zone4, api) => {
+    propertyDescriptorPatch(api, global23);
   });
-  Zone3.__load_patch("customElements", (global22, Zone4, api) => {
-    patchCustomElements(global22, api);
+  Zone3.__load_patch("customElements", (global23, Zone4, api) => {
+    patchCustomElements(global23, api);
   });
-  Zone3.__load_patch("XHR", (global22, Zone4) => {
-    patchXHR(global22);
+  Zone3.__load_patch("XHR", (global23, Zone4) => {
+    patchXHR(global23);
     const XHR_TASK = zoneSymbol("xhrTask");
     const XHR_SYNC = zoneSymbol("xhrSync");
     const XHR_LISTENER = zoneSymbol("xhrListener");
@@ -3846,17 +3884,17 @@ function patchBrowser(Zone3) {
       });
     }
   });
-  Zone3.__load_patch("geolocation", (global22) => {
-    if (global22["navigator"] && global22["navigator"].geolocation) {
-      patchPrototype(global22["navigator"].geolocation, ["getCurrentPosition", "watchPosition"]);
+  Zone3.__load_patch("geolocation", (global23) => {
+    if (global23["navigator"] && global23["navigator"].geolocation) {
+      patchPrototype(global23["navigator"].geolocation, ["getCurrentPosition", "watchPosition"]);
     }
   });
-  Zone3.__load_patch("PromiseRejectionEvent", (global22, Zone4) => {
+  Zone3.__load_patch("PromiseRejectionEvent", (global23, Zone4) => {
     function findPromiseRejectionHandler(evtName) {
       return function(e) {
-        const eventTasks = findEventTasks(global22, evtName);
+        const eventTasks = findEventTasks(global23, evtName);
         eventTasks.forEach((eventTask) => {
-          const PromiseRejectionEvent = global22["PromiseRejectionEvent"];
+          const PromiseRejectionEvent = global23["PromiseRejectionEvent"];
           if (PromiseRejectionEvent) {
             const evt = new PromiseRejectionEvent(evtName, {
               promise: e.promise,
@@ -3867,17 +3905,17 @@ function patchBrowser(Zone3) {
         });
       };
     }
-    if (global22["PromiseRejectionEvent"]) {
+    if (global23["PromiseRejectionEvent"]) {
       Zone4[zoneSymbol("unhandledPromiseRejectionHandler")] = findPromiseRejectionHandler("unhandledrejection");
       Zone4[zoneSymbol("rejectionHandledHandler")] = findPromiseRejectionHandler("rejectionhandled");
     }
   });
-  Zone3.__load_patch("queueMicrotask", (global22, Zone4, api) => {
-    patchQueueMicrotask(global22, api);
+  Zone3.__load_patch("queueMicrotask", (global23, Zone4, api) => {
+    patchQueueMicrotask(global23, api);
   });
 }
 function patchPromise(Zone3) {
-  Zone3.__load_patch("ZoneAwarePromise", (global22, Zone4, api) => {
+  Zone3.__load_patch("ZoneAwarePromise", (global23, Zone4, api) => {
     const ObjectGetOwnPropertyDescriptor2 = Object.getOwnPropertyDescriptor;
     const ObjectDefineProperty2 = Object.defineProperty;
     function readableObjectToString(obj) {
@@ -3887,16 +3925,16 @@ function patchPromise(Zone3) {
       }
       return obj ? obj.toString() : Object.prototype.toString.call(obj);
     }
-    const __symbol__2 = api.symbol;
+    const __symbol__22 = api.symbol;
     const _uncaughtPromiseErrors = [];
-    const isDisableWrappingUncaughtPromiseRejection = global22[__symbol__2("DISABLE_WRAPPING_UNCAUGHT_PROMISE_REJECTION")] !== false;
-    const symbolPromise = __symbol__2("Promise");
-    const symbolThen = __symbol__2("then");
+    const isDisableWrappingUncaughtPromiseRejection = global23[__symbol__22("DISABLE_WRAPPING_UNCAUGHT_PROMISE_REJECTION")] !== false;
+    const symbolPromise = __symbol__22("Promise");
+    const symbolThen = __symbol__22("then");
     const creationTrace = "__creationTrace__";
     api.onUnhandledError = (e) => {
       if (api.showUncaughtError()) {
         const rejection = e && e.rejection;
-        if (rejection) {
+        if (rejection && e.zone && e.task) {
           console.error("Unhandled Promise rejection:", rejection instanceof Error ? rejection.message : rejection, "; Zone:", e.zone.name, "; Task:", e.task && e.task.source, "; Value:", rejection, rejection instanceof Error ? rejection.stack : void 0);
         } else {
           console.error(e);
@@ -3918,7 +3956,7 @@ function patchPromise(Zone3) {
         }
       }
     };
-    const UNHANDLED_PROMISE_REJECTION_HANDLER_SYMBOL = __symbol__2("unhandledPromiseRejectionHandler");
+    const UNHANDLED_PROMISE_REJECTION_HANDLER_SYMBOL = __symbol__22("unhandledPromiseRejectionHandler");
     function handleUnhandledRejection(e) {
       api.onUnhandledError(e);
       try {
@@ -3938,11 +3976,11 @@ function patchPromise(Zone3) {
     function forwardRejection(rejection) {
       return ZoneAwarePromise.reject(rejection);
     }
-    const symbolState = __symbol__2("state");
-    const symbolValue = __symbol__2("value");
-    const symbolFinally = __symbol__2("finally");
-    const symbolParentPromiseValue = __symbol__2("parentPromiseValue");
-    const symbolParentPromiseState = __symbol__2("parentPromiseState");
+    const symbolState = __symbol__22("state");
+    const symbolValue = __symbol__22("value");
+    const symbolFinally = __symbol__22("finally");
+    const symbolParentPromiseValue = __symbol__22("parentPromiseValue");
+    const symbolParentPromiseState = __symbol__22("parentPromiseState");
     const source = "Promise.then";
     const UNRESOLVED = null;
     const RESOLVED = true;
@@ -3970,7 +4008,7 @@ function patchPromise(Zone3) {
       };
     };
     const TYPE_ERROR = "Promise resolved with itself";
-    const CURRENT_TASK_TRACE_SYMBOL = __symbol__2("currentTaskTrace");
+    const CURRENT_TASK_TRACE_SYMBOL = __symbol__22("currentTaskTrace");
     function resolvePromise(promise, state, value) {
       const onceWrapper = once();
       if (promise === value) {
@@ -3988,7 +4026,7 @@ function patchPromise(Zone3) {
           })();
           return promise;
         }
-        if (state !== REJECTED && value instanceof ZoneAwarePromise && value.hasOwnProperty(symbolState) && value.hasOwnProperty(symbolValue) && value[symbolState] !== UNRESOLVED) {
+        if (state !== REJECTED && value instanceof ZoneAwarePromise && Object.hasOwn(value, symbolState) && Object.hasOwn(value, symbolValue) && value[symbolState] !== UNRESOLVED) {
           clearRejectedNoCatch(value);
           resolvePromise(promise, value[symbolState], value[symbolValue]);
         } else if (state !== REJECTED && typeof then === "function") {
@@ -4045,7 +4083,7 @@ function patchPromise(Zone3) {
       }
       return promise;
     }
-    const REJECTION_HANDLED_HANDLER = __symbol__2("rejectionHandledHandler");
+    const REJECTION_HANDLED_HANDLER = __symbol__22("rejectionHandledHandler");
     function clearRejectedNoCatch(promise) {
       if (promise[symbolState] === REJECTED_NO_CATCH) {
         try {
@@ -4085,7 +4123,7 @@ function patchPromise(Zone3) {
     const ZONE_AWARE_PROMISE_TO_STRING = "function ZoneAwarePromise() { [native code] }";
     const noop = function() {
     };
-    const AggregateError = global22.AggregateError;
+    const AggregateError = global23.AggregateError;
     class ZoneAwarePromise {
       static toString() {
         return ZONE_AWARE_PROMISE_TO_STRING;
@@ -4280,9 +4318,9 @@ function patchPromise(Zone3) {
     ZoneAwarePromise["reject"] = ZoneAwarePromise.reject;
     ZoneAwarePromise["race"] = ZoneAwarePromise.race;
     ZoneAwarePromise["all"] = ZoneAwarePromise.all;
-    const NativePromise = global22[symbolPromise] = global22["Promise"];
-    global22["Promise"] = ZoneAwarePromise;
-    const symbolThenPatched = __symbol__2("thenPatched");
+    const NativePromise = global23[symbolPromise] = global23["Promise"];
+    global23["Promise"] = ZoneAwarePromise;
+    const symbolThenPatched = __symbol__22("thenPatched");
     function patchThen(Ctor) {
       const proto = Ctor.prototype;
       const prop = ObjectGetOwnPropertyDescriptor2(proto, "then");
@@ -4315,14 +4353,18 @@ function patchPromise(Zone3) {
     }
     if (NativePromise) {
       patchThen(NativePromise);
-      patchMethod(global22, "fetch", (delegate) => zoneify(delegate));
+      const nativeTry = NativePromise["try"];
+      if (nativeTry && typeof nativeTry === "function") {
+        ZoneAwarePromise["try"] = nativeTry;
+      }
+      patchMethod(global23, "fetch", (delegate) => zoneify(delegate));
     }
     Promise[Zone4.__symbol__("uncaughtPromiseErrors")] = _uncaughtPromiseErrors;
     return ZoneAwarePromise;
   });
 }
 function patchToString(Zone3) {
-  Zone3.__load_patch("toString", (global22) => {
+  Zone3.__load_patch("toString", (global23) => {
     const originalFunctionToString = Function.prototype.toString;
     const ORIGINAL_DELEGATE_SYMBOL = zoneSymbol("OriginalDelegate");
     const PROMISE_SYMBOL = zoneSymbol("Promise");
@@ -4338,13 +4380,13 @@ function patchToString(Zone3) {
           }
         }
         if (this === Promise) {
-          const nativePromise = global22[PROMISE_SYMBOL];
+          const nativePromise = global23[PROMISE_SYMBOL];
           if (nativePromise) {
             return originalFunctionToString.call(nativePromise);
           }
         }
         if (this === Error) {
-          const nativeError = global22[ERROR_SYMBOL];
+          const nativeError = global23[ERROR_SYMBOL];
           if (nativeError) {
             return originalFunctionToString.call(nativeError);
           }
@@ -4376,7 +4418,7 @@ function patchCallbacks(api, target, targetName, method, callbacks) {
         const source = `${targetName}.${method}::` + callback;
         const prototype = opts.prototype;
         try {
-          if (prototype.hasOwnProperty(callback)) {
+          if (Object.hasOwn(prototype, callback)) {
             const descriptor = api.ObjectGetOwnPropertyDescriptor(prototype, callback);
             if (descriptor && descriptor.value) {
               descriptor.value = api.wrapWithCurrentZone(descriptor.value, source);
@@ -4396,19 +4438,19 @@ function patchCallbacks(api, target, targetName, method, callbacks) {
   api.attachOriginToPatched(target[method], nativeDelegate);
 }
 function patchUtil(Zone3) {
-  Zone3.__load_patch("util", (global22, Zone4, api) => {
-    const eventNames = getOnEventNames(global22);
+  Zone3.__load_patch("util", (global23, Zone4, api) => {
+    const eventNames = getOnEventNames(global23);
     api.patchOnProperties = patchOnProperties;
     api.patchMethod = patchMethod;
     api.bindArguments = bindArguments;
     api.patchMacroTask = patchMacroTask;
     const SYMBOL_BLACK_LISTED_EVENTS = Zone4.__symbol__("BLACK_LISTED_EVENTS");
     const SYMBOL_UNPATCHED_EVENTS = Zone4.__symbol__("UNPATCHED_EVENTS");
-    if (global22[SYMBOL_UNPATCHED_EVENTS]) {
-      global22[SYMBOL_BLACK_LISTED_EVENTS] = global22[SYMBOL_UNPATCHED_EVENTS];
+    if (global23[SYMBOL_UNPATCHED_EVENTS]) {
+      global23[SYMBOL_BLACK_LISTED_EVENTS] = global23[SYMBOL_UNPATCHED_EVENTS];
     }
-    if (global22[SYMBOL_BLACK_LISTED_EVENTS]) {
-      Zone4[SYMBOL_BLACK_LISTED_EVENTS] = Zone4[SYMBOL_UNPATCHED_EVENTS] = global22[SYMBOL_BLACK_LISTED_EVENTS];
+    if (global23[SYMBOL_BLACK_LISTED_EVENTS]) {
+      Zone4[SYMBOL_BLACK_LISTED_EVENTS] = Zone4[SYMBOL_UNPATCHED_EVENTS] = global23[SYMBOL_BLACK_LISTED_EVENTS];
     }
     api.patchEventPrototype = patchEventPrototype;
     api.patchEventTarget = patchEventTarget;
@@ -4445,13 +4487,1966 @@ function patchCommon(Zone3) {
 var Zone2 = loadZone();
 patchCommon(Zone2);
 patchBrowser(Zone2);
-/*! Bundled license information:
 
-zone.js/fesm2015/zone.js:
-  (**
-   * @license Angular
-   * (c) 2010-2025 Google LLC. https://angular.dev/
-   * License: MIT
-   *)
-*/
+// node_modules/zone.js/fesm2015/zone-testing.js
+/**
+ * @license Angular
+ * (c) 2010-2026 Google LLC. https://angular.dev/
+ * License: MIT
+ */
+var __defProp3 = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols2 = Object.getOwnPropertySymbols;
+var __hasOwnProp3 = Object.prototype.hasOwnProperty;
+var __propIsEnum2 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp2 = (obj, key, value) => key in obj ? __defProp3(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues2 = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp3.call(b, prop))
+      __defNormalProp2(a, prop, b[prop]);
+  if (__getOwnPropSymbols2)
+    for (var prop of __getOwnPropSymbols2(b)) {
+      if (__propIsEnum2.call(b, prop))
+        __defNormalProp2(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __publicField2 = (obj, key, value) => {
+  __defNormalProp2(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+function patchJasmine(Zone22) {
+  Zone22.__load_patch("jasmine", (global32, Zone3, api) => {
+    var _a;
+    const __extends = function(d, b) {
+      for (const p in b)
+        if (Object.hasOwn(b, p))
+          d[p] = b[p];
+      function __() {
+        this.constructor = d;
+      }
+      d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+    if (!Zone3)
+      throw new Error("Missing: zone.js");
+    if (typeof jest !== "undefined") {
+      return;
+    }
+    if (typeof jasmine == "undefined" || jasmine["__zone_patch__"]) {
+      return;
+    }
+    jasmine["__zone_patch__"] = true;
+    const SyncTestZoneSpec = Zone3["SyncTestZoneSpec"];
+    const ProxyZoneSpec2 = Zone3["ProxyZoneSpec"];
+    if (!SyncTestZoneSpec)
+      throw new Error("Missing: SyncTestZoneSpec");
+    if (!ProxyZoneSpec2)
+      throw new Error("Missing: ProxyZoneSpec");
+    const ambientZone = Zone3.current;
+    const symbol = Zone3.__symbol__;
+    const disablePatchingJasmineClock = global32[symbol("fakeAsyncDisablePatchingClock")] === true;
+    const enableAutoFakeAsyncWhenClockPatched = !disablePatchingJasmineClock && (global32[symbol("fakeAsyncPatchLock")] === true || global32[symbol("fakeAsyncAutoFakeAsyncWhenClockPatched")] === true);
+    const jasmineEnv = jasmine.getEnv();
+    ["describe", "xdescribe", "fdescribe"].forEach((methodName) => {
+      let originalJasmineFn = jasmineEnv[methodName];
+      jasmineEnv[methodName] = function(description, specDefinitions) {
+        return originalJasmineFn.call(this, description, wrapDescribeInZone(description, specDefinitions));
+      };
+    });
+    ["it", "xit", "fit"].forEach((methodName) => {
+      let originalJasmineFn = jasmineEnv[methodName];
+      jasmineEnv[symbol(methodName)] = originalJasmineFn;
+      jasmineEnv[methodName] = function(description, specDefinitions, timeout) {
+        arguments[1] = wrapTestInZone(specDefinitions);
+        return originalJasmineFn.apply(this, arguments);
+      };
+    });
+    ["beforeEach", "afterEach", "beforeAll", "afterAll"].forEach((methodName) => {
+      let originalJasmineFn = jasmineEnv[methodName];
+      jasmineEnv[symbol(methodName)] = originalJasmineFn;
+      jasmineEnv[methodName] = function(specDefinitions, timeout) {
+        arguments[0] = wrapTestInZone(specDefinitions);
+        return originalJasmineFn.apply(this, arguments);
+      };
+    });
+    if (!disablePatchingJasmineClock) {
+      const originalClockFn = jasmine[symbol("clock")] = jasmine["clock"];
+      jasmine["clock"] = function() {
+        const clock = originalClockFn.apply(this, arguments);
+        if (!clock[symbol("patched")]) {
+          clock[symbol("patched")] = symbol("patched");
+          const originalTick = clock[symbol("tick")] = clock.tick;
+          clock.tick = function() {
+            const fakeAsyncZoneSpec = Zone3.current.get("FakeAsyncTestZoneSpec");
+            if (fakeAsyncZoneSpec) {
+              return fakeAsyncZoneSpec.tick.apply(fakeAsyncZoneSpec, arguments);
+            }
+            return originalTick.apply(this, arguments);
+          };
+          const originalMockDate = clock[symbol("mockDate")] = clock.mockDate;
+          clock.mockDate = function() {
+            const fakeAsyncZoneSpec = Zone3.current.get("FakeAsyncTestZoneSpec");
+            if (fakeAsyncZoneSpec) {
+              const dateTime = arguments.length > 0 ? arguments[0] : /* @__PURE__ */ new Date();
+              return fakeAsyncZoneSpec.setFakeBaseSystemTime.apply(fakeAsyncZoneSpec, dateTime && typeof dateTime.getTime === "function" ? [dateTime.getTime()] : arguments);
+            }
+            return originalMockDate.apply(this, arguments);
+          };
+          if (enableAutoFakeAsyncWhenClockPatched) {
+            ["install", "uninstall"].forEach((methodName) => {
+              const originalClockFn2 = clock[symbol(methodName)] = clock[methodName];
+              clock[methodName] = function() {
+                const FakeAsyncTestZoneSpec2 = Zone3["FakeAsyncTestZoneSpec"];
+                if (FakeAsyncTestZoneSpec2) {
+                  jasmine[symbol("clockInstalled")] = "install" === methodName;
+                  return;
+                }
+                return originalClockFn2.apply(this, arguments);
+              };
+            });
+          }
+        }
+        return clock;
+      };
+    }
+    if (!jasmine[Zone3.__symbol__("createSpyObj")]) {
+      const originalCreateSpyObj = jasmine.createSpyObj;
+      jasmine[Zone3.__symbol__("createSpyObj")] = originalCreateSpyObj;
+      jasmine.createSpyObj = function() {
+        const args = Array.prototype.slice.call(arguments);
+        const propertyNames = args.length >= 3 ? args[2] : null;
+        let spyObj;
+        if (propertyNames) {
+          const defineProperty = Object.defineProperty;
+          Object.defineProperty = function(obj, p, attributes) {
+            return defineProperty.call(this, obj, p, __spreadProps(__spreadValues2({}, attributes), {
+              configurable: true,
+              enumerable: true
+            }));
+          };
+          try {
+            spyObj = originalCreateSpyObj.apply(this, args);
+          } finally {
+            Object.defineProperty = defineProperty;
+          }
+        } else {
+          spyObj = originalCreateSpyObj.apply(this, args);
+        }
+        return spyObj;
+      };
+    }
+    function wrapDescribeInZone(description, describeBody) {
+      return function() {
+        const syncZone = ambientZone.fork(new SyncTestZoneSpec(`jasmine.describe#${description}`));
+        return syncZone.run(describeBody, this, arguments);
+      };
+    }
+    function runInTestZone(testBody, applyThis, queueRunner, done) {
+      const isClockInstalled = !!jasmine[symbol("clockInstalled")];
+      const testProxyZoneSpec = queueRunner.testProxyZoneSpec;
+      const testProxyZone = queueRunner.testProxyZone;
+      let lastDelegate;
+      if (isClockInstalled && enableAutoFakeAsyncWhenClockPatched) {
+        const fakeAsyncModule = Zone3[Zone3.__symbol__("fakeAsyncTest")];
+        if (fakeAsyncModule && typeof fakeAsyncModule.fakeAsync === "function") {
+          testBody = fakeAsyncModule.fakeAsync(testBody);
+        }
+      }
+      if (done) {
+        return testProxyZone.run(testBody, applyThis, [done]);
+      } else {
+        return testProxyZone.run(testBody, applyThis);
+      }
+    }
+    function wrapTestInZone(testBody) {
+      return testBody && (testBody.length ? function(done) {
+        return runInTestZone(testBody, this, this.queueRunner, done);
+      } : function() {
+        return runInTestZone(testBody, this, this.queueRunner);
+      });
+    }
+    const j$ = jasmine;
+    const privateApis = ((_a = j$ == null ? void 0 : j$.private) == null ? void 0 : _a.QueueRunner) ? j$ == null ? void 0 : j$.private : j$;
+    const QueueRunner = privateApis.QueueRunner;
+    privateApis.QueueRunner = (function(_super) {
+      __extends(ZoneQueueRunner, _super);
+      function ZoneQueueRunner(attrs) {
+        if (attrs.onComplete) {
+          attrs.onComplete = /* @__PURE__ */ ((fn) => () => {
+            this.testProxyZone = null;
+            this.testProxyZoneSpec = null;
+            ambientZone.scheduleMicroTask("jasmine.onComplete", fn);
+          })(attrs.onComplete);
+        }
+        const nativeSetTimeout = global32[Zone3.__symbol__("setTimeout")];
+        const nativeClearTimeout = global32[Zone3.__symbol__("clearTimeout")];
+        if (nativeSetTimeout) {
+          attrs.timeout = {
+            setTimeout: nativeSetTimeout ? nativeSetTimeout : global32.setTimeout,
+            clearTimeout: nativeClearTimeout ? nativeClearTimeout : global32.clearTimeout
+          };
+        }
+        if (privateApis.UserContext) {
+          if (!attrs.userContext) {
+            attrs.userContext = new privateApis.UserContext();
+          }
+          attrs.userContext.queueRunner = this;
+        } else {
+          if (!attrs.userContext) {
+            attrs.userContext = {};
+          }
+          attrs.userContext.queueRunner = this;
+        }
+        const onException = attrs.onException;
+        attrs.onException = function(error) {
+          if (error && error.message === "Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.") {
+            const proxyZoneSpec = this && this.testProxyZoneSpec;
+            if (proxyZoneSpec) {
+              const pendingTasksInfo = proxyZoneSpec.getAndClearPendingTasksInfo();
+              try {
+                error.message += pendingTasksInfo;
+              } catch (err) {
+              }
+            }
+          }
+          if (onException) {
+            onException.call(this, error);
+          }
+        };
+        _super.call(this, attrs);
+      }
+      ZoneQueueRunner.prototype.execute = function() {
+        let zone = Zone3.current;
+        let isChildOfAmbientZone = false;
+        while (zone) {
+          if (zone === ambientZone) {
+            isChildOfAmbientZone = true;
+            break;
+          }
+          zone = zone.parent;
+        }
+        if (!isChildOfAmbientZone)
+          throw new Error("Unexpected Zone: " + Zone3.current.name);
+        this.testProxyZoneSpec = new ProxyZoneSpec2();
+        this.testProxyZone = ambientZone.fork(this.testProxyZoneSpec);
+        if (!Zone3.currentTask) {
+          Zone3.current.scheduleMicroTask("jasmine.execute().forceTask", () => QueueRunner.prototype.execute.call(this));
+        } else {
+          _super.prototype.execute.call(this);
+        }
+      };
+      return ZoneQueueRunner;
+    })(QueueRunner);
+  });
+}
+function patchJest(Zone22) {
+  Zone22.__load_patch("jest", (context, Zone3, api) => {
+    if (typeof jest === "undefined" || jest["__zone_patch__"]) {
+      return;
+    }
+    Zone3[api.symbol("ignoreConsoleErrorUncaughtError")] = true;
+    jest["__zone_patch__"] = true;
+    const ProxyZoneSpec2 = Zone3["ProxyZoneSpec"];
+    const SyncTestZoneSpec = Zone3["SyncTestZoneSpec"];
+    if (!ProxyZoneSpec2) {
+      throw new Error("Missing ProxyZoneSpec");
+    }
+    const rootZone = Zone3.current;
+    const syncZone = rootZone.fork(new SyncTestZoneSpec("jest.describe"));
+    const proxyZoneSpec = new ProxyZoneSpec2();
+    const proxyZone = rootZone.fork(proxyZoneSpec);
+    function wrapDescribeFactoryInZone(originalJestFn) {
+      return function(...tableArgs) {
+        const originalDescribeFn = originalJestFn.apply(this, tableArgs);
+        return function(...args) {
+          args[1] = wrapDescribeInZone(args[1]);
+          return originalDescribeFn.apply(this, args);
+        };
+      };
+    }
+    function wrapTestFactoryInZone(originalJestFn) {
+      return function(...tableArgs) {
+        return function(...args) {
+          args[1] = wrapTestInZone(args[1]);
+          return originalJestFn.apply(this, tableArgs).apply(this, args);
+        };
+      };
+    }
+    function wrapDescribeInZone(describeBody) {
+      return function(...args) {
+        return syncZone.run(describeBody, this, args);
+      };
+    }
+    function wrapTestInZone(testBody, isTestFunc = false) {
+      if (typeof testBody !== "function") {
+        return testBody;
+      }
+      const wrappedFunc = function() {
+        if (Zone3[api.symbol("useFakeTimersCalled")] === true && testBody && !testBody.isFakeAsync) {
+          const fakeAsyncModule = Zone3[Zone3.__symbol__("fakeAsyncTest")];
+          if (fakeAsyncModule && typeof fakeAsyncModule.fakeAsync === "function") {
+            testBody = fakeAsyncModule.fakeAsync(testBody);
+          }
+        }
+        proxyZoneSpec.isTestFunc = isTestFunc;
+        return proxyZone.run(testBody, null, arguments);
+      };
+      Object.defineProperty(wrappedFunc, "length", {
+        configurable: true,
+        writable: true,
+        enumerable: false
+      });
+      wrappedFunc.length = testBody.length;
+      return wrappedFunc;
+    }
+    ["describe", "xdescribe", "fdescribe"].forEach((methodName) => {
+      let originalJestFn = context[methodName];
+      if (context[Zone3.__symbol__(methodName)]) {
+        return;
+      }
+      context[Zone3.__symbol__(methodName)] = originalJestFn;
+      context[methodName] = function(...args) {
+        args[1] = wrapDescribeInZone(args[1]);
+        return originalJestFn.apply(this, args);
+      };
+      context[methodName].each = wrapDescribeFactoryInZone(originalJestFn.each);
+    });
+    context.describe.only = context.fdescribe;
+    context.describe.skip = context.xdescribe;
+    ["it", "xit", "fit", "test", "xtest"].forEach((methodName) => {
+      let originalJestFn = context[methodName];
+      if (context[Zone3.__symbol__(methodName)]) {
+        return;
+      }
+      context[Zone3.__symbol__(methodName)] = originalJestFn;
+      context[methodName] = function(...args) {
+        args[1] = wrapTestInZone(args[1], true);
+        return originalJestFn.apply(this, args);
+      };
+      context[methodName].each = wrapTestFactoryInZone(originalJestFn.each);
+      context[methodName].todo = originalJestFn.todo;
+      context[methodName].failing = originalJestFn.failing;
+    });
+    context.it.only = context.fit;
+    context.it.skip = context.xit;
+    context.test.only = context.fit;
+    context.test.skip = context.xit;
+    ["beforeEach", "afterEach", "beforeAll", "afterAll"].forEach((methodName) => {
+      let originalJestFn = context[methodName];
+      if (context[Zone3.__symbol__(methodName)]) {
+        return;
+      }
+      context[Zone3.__symbol__(methodName)] = originalJestFn;
+      context[methodName] = function(...args) {
+        args[0] = wrapTestInZone(args[0]);
+        return originalJestFn.apply(this, args);
+      };
+    });
+    Zone3.patchJestObject = function patchJestObject(Timer, isModern = false) {
+      function isPatchingFakeTimer() {
+        const fakeAsyncZoneSpec = Zone3.current.get("FakeAsyncTestZoneSpec");
+        return !!fakeAsyncZoneSpec;
+      }
+      function isInTestFunc() {
+        const proxyZoneSpec2 = Zone3.current.get("ProxyZoneSpec");
+        return proxyZoneSpec2 && proxyZoneSpec2.isTestFunc;
+      }
+      if (Timer[api.symbol("fakeTimers")]) {
+        return;
+      }
+      Timer[api.symbol("fakeTimers")] = true;
+      api.patchMethod(Timer, "_checkFakeTimers", (delegate) => {
+        return function(self2, args) {
+          if (isPatchingFakeTimer()) {
+            return true;
+          } else {
+            return delegate.apply(self2, args);
+          }
+        };
+      });
+      api.patchMethod(Timer, "useFakeTimers", (delegate) => {
+        return function(self2, args) {
+          Zone3[api.symbol("useFakeTimersCalled")] = true;
+          if (isModern || isInTestFunc()) {
+            return delegate.apply(self2, args);
+          }
+          return self2;
+        };
+      });
+      api.patchMethod(Timer, "useRealTimers", (delegate) => {
+        return function(self2, args) {
+          Zone3[api.symbol("useFakeTimersCalled")] = false;
+          if (isModern || isInTestFunc()) {
+            return delegate.apply(self2, args);
+          }
+          return self2;
+        };
+      });
+      api.patchMethod(Timer, "setSystemTime", (delegate) => {
+        return function(self2, args) {
+          const fakeAsyncZoneSpec = Zone3.current.get("FakeAsyncTestZoneSpec");
+          if (fakeAsyncZoneSpec && isPatchingFakeTimer()) {
+            fakeAsyncZoneSpec.setFakeBaseSystemTime(args[0]);
+          } else {
+            return delegate.apply(self2, args);
+          }
+        };
+      });
+      api.patchMethod(Timer, "getRealSystemTime", (delegate) => {
+        return function(self2, args) {
+          const fakeAsyncZoneSpec = Zone3.current.get("FakeAsyncTestZoneSpec");
+          if (fakeAsyncZoneSpec && isPatchingFakeTimer()) {
+            return fakeAsyncZoneSpec.getRealSystemTime();
+          } else {
+            return delegate.apply(self2, args);
+          }
+        };
+      });
+      api.patchMethod(Timer, "runAllTicks", (delegate) => {
+        return function(self2, args) {
+          const fakeAsyncZoneSpec = Zone3.current.get("FakeAsyncTestZoneSpec");
+          if (fakeAsyncZoneSpec) {
+            fakeAsyncZoneSpec.flushMicrotasks();
+          } else {
+            return delegate.apply(self2, args);
+          }
+        };
+      });
+      api.patchMethod(Timer, "runAllTimers", (delegate) => {
+        return function(self2, args) {
+          const fakeAsyncZoneSpec = Zone3.current.get("FakeAsyncTestZoneSpec");
+          if (fakeAsyncZoneSpec) {
+            fakeAsyncZoneSpec.flush(100, true);
+          } else {
+            return delegate.apply(self2, args);
+          }
+        };
+      });
+      api.patchMethod(Timer, "advanceTimersByTime", (delegate) => {
+        return function(self2, args) {
+          const fakeAsyncZoneSpec = Zone3.current.get("FakeAsyncTestZoneSpec");
+          if (fakeAsyncZoneSpec) {
+            fakeAsyncZoneSpec.tick(args[0]);
+          } else {
+            return delegate.apply(self2, args);
+          }
+        };
+      });
+      api.patchMethod(Timer, "runOnlyPendingTimers", (delegate) => {
+        return function(self2, args) {
+          const fakeAsyncZoneSpec = Zone3.current.get("FakeAsyncTestZoneSpec");
+          if (fakeAsyncZoneSpec) {
+            fakeAsyncZoneSpec.flushOnlyPendingTimers();
+          } else {
+            return delegate.apply(self2, args);
+          }
+        };
+      });
+      api.patchMethod(Timer, "advanceTimersToNextTimer", (delegate) => {
+        return function(self2, args) {
+          const fakeAsyncZoneSpec = Zone3.current.get("FakeAsyncTestZoneSpec");
+          if (fakeAsyncZoneSpec) {
+            fakeAsyncZoneSpec.tickToNext(args[0]);
+          } else {
+            return delegate.apply(self2, args);
+          }
+        };
+      });
+      api.patchMethod(Timer, "clearAllTimers", (delegate) => {
+        return function(self2, args) {
+          const fakeAsyncZoneSpec = Zone3.current.get("FakeAsyncTestZoneSpec");
+          if (fakeAsyncZoneSpec) {
+            fakeAsyncZoneSpec.removeAllTimers();
+          } else {
+            return delegate.apply(self2, args);
+          }
+        };
+      });
+      api.patchMethod(Timer, "getTimerCount", (delegate) => {
+        return function(self2, args) {
+          const fakeAsyncZoneSpec = Zone3.current.get("FakeAsyncTestZoneSpec");
+          if (fakeAsyncZoneSpec) {
+            return fakeAsyncZoneSpec.getTimerCount();
+          } else {
+            return delegate.apply(self2, args);
+          }
+        };
+      });
+    };
+  });
+}
+function patchMocha(Zone22) {
+  Zone22.__load_patch("mocha", (global32, Zone3) => {
+    const Mocha = global32.Mocha;
+    if (typeof Mocha === "undefined") {
+      return;
+    }
+    if (typeof Zone3 === "undefined") {
+      throw new Error("Missing Zone.js");
+    }
+    const ProxyZoneSpec2 = Zone3["ProxyZoneSpec"];
+    const SyncTestZoneSpec = Zone3["SyncTestZoneSpec"];
+    if (!ProxyZoneSpec2) {
+      throw new Error("Missing ProxyZoneSpec");
+    }
+    if (Mocha["__zone_patch__"]) {
+      throw new Error('"Mocha" has already been patched with "Zone".');
+    }
+    Mocha["__zone_patch__"] = true;
+    const rootZone = Zone3.current;
+    const syncZone = rootZone.fork(new SyncTestZoneSpec("Mocha.describe"));
+    let testZone = null;
+    const suiteZone = rootZone.fork(new ProxyZoneSpec2());
+    const mochaOriginal = {
+      after: global32.after,
+      afterEach: global32.afterEach,
+      before: global32.before,
+      beforeEach: global32.beforeEach,
+      describe: global32.describe,
+      it: global32.it
+    };
+    function modifyArguments(args, syncTest, asyncTest) {
+      for (let i = 0; i < args.length; i++) {
+        let arg = args[i];
+        if (typeof arg === "function") {
+          args[i] = arg.length === 0 ? syncTest(arg) : asyncTest(arg);
+          args[i].toString = function() {
+            return arg.toString();
+          };
+        }
+      }
+      return args;
+    }
+    function wrapDescribeInZone(args) {
+      const syncTest = function(fn) {
+        return function() {
+          return syncZone.run(fn, this, arguments);
+        };
+      };
+      return modifyArguments(args, syncTest);
+    }
+    function wrapTestInZone(args) {
+      const asyncTest = function(fn) {
+        return function(done) {
+          return testZone.run(fn, this, [done]);
+        };
+      };
+      const syncTest = function(fn) {
+        return function() {
+          return testZone.run(fn, this);
+        };
+      };
+      return modifyArguments(args, syncTest, asyncTest);
+    }
+    function wrapSuiteInZone(args) {
+      const asyncTest = function(fn) {
+        return function(done) {
+          return suiteZone.run(fn, this, [done]);
+        };
+      };
+      const syncTest = function(fn) {
+        return function() {
+          return suiteZone.run(fn, this);
+        };
+      };
+      return modifyArguments(args, syncTest, asyncTest);
+    }
+    global32.describe = global32.suite = function() {
+      return mochaOriginal.describe.apply(this, wrapDescribeInZone(arguments));
+    };
+    global32.xdescribe = global32.suite.skip = global32.describe.skip = function() {
+      return mochaOriginal.describe.skip.apply(this, wrapDescribeInZone(arguments));
+    };
+    global32.describe.only = global32.suite.only = function() {
+      return mochaOriginal.describe.only.apply(this, wrapDescribeInZone(arguments));
+    };
+    global32.it = global32.specify = global32.test = function() {
+      return mochaOriginal.it.apply(this, wrapTestInZone(arguments));
+    };
+    global32.xit = global32.xspecify = global32.it.skip = function() {
+      return mochaOriginal.it.skip.apply(this, wrapTestInZone(arguments));
+    };
+    global32.it.only = global32.test.only = function() {
+      return mochaOriginal.it.only.apply(this, wrapTestInZone(arguments));
+    };
+    global32.after = global32.suiteTeardown = function() {
+      return mochaOriginal.after.apply(this, wrapSuiteInZone(arguments));
+    };
+    global32.afterEach = global32.teardown = function() {
+      return mochaOriginal.afterEach.apply(this, wrapTestInZone(arguments));
+    };
+    global32.before = global32.suiteSetup = function() {
+      return mochaOriginal.before.apply(this, wrapSuiteInZone(arguments));
+    };
+    global32.beforeEach = global32.setup = function() {
+      return mochaOriginal.beforeEach.apply(this, wrapTestInZone(arguments));
+    };
+    ((originalRunTest, originalRun) => {
+      Mocha.Runner.prototype.runTest = function(fn) {
+        Zone3.current.scheduleMicroTask("mocha.forceTask", () => {
+          originalRunTest.call(this, fn);
+        });
+      };
+      Mocha.Runner.prototype.run = function(fn) {
+        this.on("test", (e) => {
+          testZone = rootZone.fork(new ProxyZoneSpec2());
+        });
+        this.on("fail", (test, err) => {
+          const proxyZoneSpec = testZone && testZone.get("ProxyZoneSpec");
+          if (proxyZoneSpec && err) {
+            try {
+              err.message += proxyZoneSpec.getAndClearPendingTasksInfo();
+            } catch (error) {
+            }
+          }
+        });
+        return originalRun.call(this, fn);
+      };
+    })(Mocha.Runner.prototype.runTest, Mocha.Runner.prototype.run);
+  });
+}
+var global3 = globalThis;
+function __symbol__2(name) {
+  const rawPrefix = global3["__Zone_symbol_prefix"];
+  const symbolPrefix = typeof rawPrefix === "string" ? rawPrefix : "__zone_symbol__";
+  return symbolPrefix + name;
+}
+var __global = globalThis;
+var AsyncTestZoneSpec = class _AsyncTestZoneSpec {
+  constructor(finishCallback, failCallback, namePrefix) {
+    __publicField2(this, "finishCallback");
+    __publicField2(this, "failCallback");
+    __publicField2(this, "_pendingMicroTasks", false);
+    __publicField2(this, "_pendingMacroTasks", false);
+    __publicField2(this, "_alreadyErrored", false);
+    __publicField2(this, "_isSync", false);
+    __publicField2(this, "_existingFinishTimer", null);
+    __publicField2(this, "entryFunction", null);
+    __publicField2(this, "runZone", Zone.current);
+    __publicField2(this, "unresolvedChainedPromiseCount", 0);
+    __publicField2(this, "supportWaitUnresolvedChainedPromise", false);
+    __publicField2(this, "name");
+    __publicField2(this, "properties");
+    this.finishCallback = finishCallback;
+    this.failCallback = failCallback;
+    this.name = "asyncTestZone for " + namePrefix;
+    this.properties = { "AsyncTestZoneSpec": this };
+    this.supportWaitUnresolvedChainedPromise = __global[__symbol__2("supportWaitUnResolvedChainedPromise")] === true;
+  }
+  // Needs to be a getter and not a plain property in order run this just-in-time. Otherwise
+  // `__symbol__` would be evaluated during top-level execution prior to the Zone prefix being
+  // changed for tests.
+  static get symbolParentUnresolved() {
+    return __symbol__2("parentUnresolved");
+  }
+  isUnresolvedChainedPromisePending() {
+    return this.unresolvedChainedPromiseCount > 0;
+  }
+  _finishCallbackIfDone() {
+    if (this._existingFinishTimer !== null) {
+      clearTimeout(this._existingFinishTimer);
+      this._existingFinishTimer = null;
+    }
+    if (!(this._pendingMicroTasks || this._pendingMacroTasks || this.supportWaitUnresolvedChainedPromise && this.isUnresolvedChainedPromisePending())) {
+      this.runZone.run(() => {
+        this._existingFinishTimer = setTimeout(() => {
+          if (!this._alreadyErrored && !(this._pendingMicroTasks || this._pendingMacroTasks)) {
+            this.finishCallback();
+          }
+        }, 0);
+      });
+    }
+  }
+  patchPromiseForTest() {
+    if (!this.supportWaitUnresolvedChainedPromise) {
+      return;
+    }
+    const patchPromiseForTest = Promise[Zone.__symbol__("patchPromiseForTest")];
+    if (patchPromiseForTest) {
+      patchPromiseForTest();
+    }
+  }
+  unPatchPromiseForTest() {
+    if (!this.supportWaitUnresolvedChainedPromise) {
+      return;
+    }
+    const unPatchPromiseForTest = Promise[Zone.__symbol__("unPatchPromiseForTest")];
+    if (unPatchPromiseForTest) {
+      unPatchPromiseForTest();
+    }
+  }
+  onScheduleTask(delegate, current, target, task) {
+    if (task.type !== "eventTask") {
+      this._isSync = false;
+    }
+    if (task.type === "microTask" && task.data && task.data instanceof Promise) {
+      if (task.data[_AsyncTestZoneSpec.symbolParentUnresolved] === true) {
+        this.unresolvedChainedPromiseCount--;
+      }
+    }
+    return delegate.scheduleTask(target, task);
+  }
+  onInvokeTask(delegate, current, target, task, applyThis, applyArgs) {
+    if (task.type !== "eventTask") {
+      this._isSync = false;
+    }
+    return delegate.invokeTask(target, task, applyThis, applyArgs);
+  }
+  onCancelTask(delegate, current, target, task) {
+    if (task.type !== "eventTask") {
+      this._isSync = false;
+    }
+    return delegate.cancelTask(target, task);
+  }
+  // Note - we need to use onInvoke at the moment to call finish when a test is
+  // fully synchronous. TODO(juliemr): remove this when the logic for
+  // onHasTask changes and it calls whenever the task queues are dirty.
+  // updated by(JiaLiPassion), only call finish callback when no task
+  // was scheduled/invoked/canceled.
+  onInvoke(parentZoneDelegate, currentZone, targetZone, delegate, applyThis, applyArgs, source) {
+    if (!this.entryFunction) {
+      this.entryFunction = delegate;
+    }
+    try {
+      this._isSync = true;
+      return parentZoneDelegate.invoke(targetZone, delegate, applyThis, applyArgs, source);
+    } finally {
+      if (this._isSync && this.entryFunction === delegate) {
+        this._finishCallbackIfDone();
+      }
+    }
+  }
+  onHandleError(parentZoneDelegate, currentZone, targetZone, error) {
+    const result = parentZoneDelegate.handleError(targetZone, error);
+    if (result) {
+      this.failCallback(error);
+      this._alreadyErrored = true;
+    }
+    return false;
+  }
+  onHasTask(delegate, current, target, hasTaskState) {
+    delegate.hasTask(target, hasTaskState);
+    if (current !== target) {
+      return;
+    }
+    if (hasTaskState.change == "microTask") {
+      this._pendingMicroTasks = hasTaskState.microTask;
+      this._finishCallbackIfDone();
+    } else if (hasTaskState.change == "macroTask") {
+      this._pendingMacroTasks = hasTaskState.macroTask;
+      this._finishCallbackIfDone();
+    }
+  }
+};
+function patchAsyncTest(Zone22) {
+  Zone22["AsyncTestZoneSpec"] = AsyncTestZoneSpec;
+  Zone22.__load_patch("asynctest", (global32, Zone3, api) => {
+    Zone3[api.symbol("asyncTest")] = function asyncTest(fn) {
+      if (global32.jasmine) {
+        return function(done) {
+          if (!done) {
+            done = function() {
+            };
+            done.fail = function(e) {
+              throw e;
+            };
+          }
+          runInTestZone(fn, this, void 0, done, (err) => {
+            if (typeof err === "string") {
+              return done.fail(new Error(err));
+            } else {
+              done.fail(err);
+            }
+          });
+        };
+      }
+      return function(...args) {
+        return new Promise((finishCallback, failCallback) => {
+          runInTestZone(fn, this, args, finishCallback, failCallback);
+        });
+      };
+    };
+    function runInTestZone(fn, context, applyArgs, finishCallback, failCallback) {
+      const currentZone = Zone3.current;
+      const AsyncTestZoneSpec2 = Zone3["AsyncTestZoneSpec"];
+      if (AsyncTestZoneSpec2 === void 0) {
+        throw new Error("AsyncTestZoneSpec is needed for the async() test helper but could not be found. Please make sure that your environment includes zone.js/plugins/async-test");
+      }
+      const ProxyZoneSpec2 = Zone3["ProxyZoneSpec"];
+      if (!ProxyZoneSpec2) {
+        throw new Error("ProxyZoneSpec is needed for the async() test helper but could not be found. Please make sure that your environment includes zone.js/plugins/proxy");
+      }
+      const proxyZoneSpec = ProxyZoneSpec2.get();
+      ProxyZoneSpec2.assertPresent();
+      const proxyZone = Zone3.current.getZoneWith("ProxyZoneSpec");
+      const previousDelegate = proxyZoneSpec.getDelegate();
+      proxyZone.parent.run(() => {
+        const testZoneSpec = new AsyncTestZoneSpec2(() => {
+          if (proxyZoneSpec.getDelegate() == testZoneSpec) {
+            proxyZoneSpec.setDelegate(previousDelegate);
+          }
+          testZoneSpec.unPatchPromiseForTest();
+          currentZone.run(() => {
+            finishCallback();
+          });
+        }, (error) => {
+          if (proxyZoneSpec.getDelegate() == testZoneSpec) {
+            proxyZoneSpec.setDelegate(previousDelegate);
+          }
+          testZoneSpec.unPatchPromiseForTest();
+          currentZone.run(() => {
+            failCallback(error);
+          });
+        }, "test");
+        proxyZoneSpec.setDelegate(testZoneSpec);
+        testZoneSpec.patchPromiseForTest();
+      });
+      return Zone3.current.runGuarded(fn, context, applyArgs);
+    }
+  });
+}
+function throwProxyZoneError() {
+  const jestPatched = typeof jest !== "undefined" && jest["__zone_patch__"];
+  if (jestPatched) {
+    throw new Error("Only globals are patched with zone-testing. If you import `it`, `describe`, etc. directly, you cannot use `fakeAsync` or `waitForAsync`.");
+  } else {
+    throw new Error("ProxyZoneSpec is needed for the fakeAsync and waitForAsync test helpers but could not be found. Make sure that your environment includes zone-testing.js");
+  }
+}
+var ProxyZoneSpec = class _ProxyZoneSpec {
+  constructor(defaultSpecDelegate = null) {
+    __publicField2(this, "defaultSpecDelegate");
+    __publicField2(this, "name", "ProxyZone");
+    __publicField2(this, "_delegateSpec", null);
+    __publicField2(this, "properties", { "ProxyZoneSpec": this });
+    __publicField2(this, "propertyKeys", null);
+    __publicField2(this, "lastTaskState", null);
+    __publicField2(this, "isNeedToTriggerHasTask", false);
+    __publicField2(this, "tasks", []);
+    this.defaultSpecDelegate = defaultSpecDelegate;
+    this.setDelegate(defaultSpecDelegate);
+  }
+  static get() {
+    return Zone.current.get("ProxyZoneSpec");
+  }
+  static isLoaded() {
+    return _ProxyZoneSpec.get() instanceof _ProxyZoneSpec;
+  }
+  static assertPresent() {
+    const spec = _ProxyZoneSpec.get();
+    if (spec === void 0) {
+      throw new Error(`Expected to be running in 'ProxyZone', but it was not found.`);
+    }
+    return spec;
+  }
+  setDelegate(delegateSpec) {
+    const isNewDelegate = this._delegateSpec !== delegateSpec;
+    this._delegateSpec = delegateSpec;
+    this.propertyKeys && this.propertyKeys.forEach((key) => delete this.properties[key]);
+    this.propertyKeys = null;
+    if (delegateSpec && delegateSpec.properties) {
+      this.propertyKeys = Object.keys(delegateSpec.properties);
+      this.propertyKeys.forEach((k) => this.properties[k] = delegateSpec.properties[k]);
+    }
+    if (isNewDelegate && this.lastTaskState && (this.lastTaskState.macroTask || this.lastTaskState.microTask)) {
+      this.isNeedToTriggerHasTask = true;
+    }
+  }
+  getDelegate() {
+    return this._delegateSpec;
+  }
+  resetDelegate() {
+    const delegateSpec = this.getDelegate();
+    this.setDelegate(this.defaultSpecDelegate);
+  }
+  tryTriggerHasTask(parentZoneDelegate, currentZone, targetZone) {
+    if (this.isNeedToTriggerHasTask && this.lastTaskState) {
+      this.isNeedToTriggerHasTask = false;
+      this.onHasTask(parentZoneDelegate, currentZone, targetZone, this.lastTaskState);
+    }
+  }
+  removeFromTasks(task) {
+    if (!this.tasks) {
+      return;
+    }
+    for (let i = 0; i < this.tasks.length; i++) {
+      if (this.tasks[i] === task) {
+        this.tasks.splice(i, 1);
+        return;
+      }
+    }
+  }
+  getAndClearPendingTasksInfo() {
+    if (this.tasks.length === 0) {
+      return "";
+    }
+    const taskInfo = this.tasks.map((task) => {
+      const dataInfo = task.data && Object.keys(task.data).map((key) => {
+        return key + ":" + task.data[key];
+      }).join(",");
+      return `type: ${task.type}, source: ${task.source}, args: {${dataInfo}}`;
+    });
+    const pendingTasksInfo = "--Pending async tasks are: [" + taskInfo + "]";
+    this.tasks = [];
+    return pendingTasksInfo;
+  }
+  onFork(parentZoneDelegate, currentZone, targetZone, zoneSpec) {
+    if (this._delegateSpec && this._delegateSpec.onFork) {
+      return this._delegateSpec.onFork(parentZoneDelegate, currentZone, targetZone, zoneSpec);
+    } else {
+      return parentZoneDelegate.fork(targetZone, zoneSpec);
+    }
+  }
+  onIntercept(parentZoneDelegate, currentZone, targetZone, delegate, source) {
+    if (this._delegateSpec && this._delegateSpec.onIntercept) {
+      return this._delegateSpec.onIntercept(parentZoneDelegate, currentZone, targetZone, delegate, source);
+    } else {
+      return parentZoneDelegate.intercept(targetZone, delegate, source);
+    }
+  }
+  onInvoke(parentZoneDelegate, currentZone, targetZone, delegate, applyThis, applyArgs, source) {
+    this.tryTriggerHasTask(parentZoneDelegate, currentZone, targetZone);
+    if (this._delegateSpec && this._delegateSpec.onInvoke) {
+      return this._delegateSpec.onInvoke(parentZoneDelegate, currentZone, targetZone, delegate, applyThis, applyArgs, source);
+    } else {
+      return parentZoneDelegate.invoke(targetZone, delegate, applyThis, applyArgs, source);
+    }
+  }
+  onHandleError(parentZoneDelegate, currentZone, targetZone, error) {
+    if (this._delegateSpec && this._delegateSpec.onHandleError) {
+      return this._delegateSpec.onHandleError(parentZoneDelegate, currentZone, targetZone, error);
+    } else {
+      return parentZoneDelegate.handleError(targetZone, error);
+    }
+  }
+  onScheduleTask(parentZoneDelegate, currentZone, targetZone, task) {
+    if (task.type !== "eventTask") {
+      this.tasks.push(task);
+    }
+    if (this._delegateSpec && this._delegateSpec.onScheduleTask) {
+      return this._delegateSpec.onScheduleTask(parentZoneDelegate, currentZone, targetZone, task);
+    } else {
+      return parentZoneDelegate.scheduleTask(targetZone, task);
+    }
+  }
+  onInvokeTask(parentZoneDelegate, currentZone, targetZone, task, applyThis, applyArgs) {
+    if (task.type !== "eventTask") {
+      this.removeFromTasks(task);
+    }
+    this.tryTriggerHasTask(parentZoneDelegate, currentZone, targetZone);
+    if (this._delegateSpec && this._delegateSpec.onInvokeTask) {
+      return this._delegateSpec.onInvokeTask(parentZoneDelegate, currentZone, targetZone, task, applyThis, applyArgs);
+    } else {
+      return parentZoneDelegate.invokeTask(targetZone, task, applyThis, applyArgs);
+    }
+  }
+  onCancelTask(parentZoneDelegate, currentZone, targetZone, task) {
+    if (task.type !== "eventTask") {
+      this.removeFromTasks(task);
+    }
+    this.tryTriggerHasTask(parentZoneDelegate, currentZone, targetZone);
+    if (this._delegateSpec && this._delegateSpec.onCancelTask) {
+      return this._delegateSpec.onCancelTask(parentZoneDelegate, currentZone, targetZone, task);
+    } else {
+      return parentZoneDelegate.cancelTask(targetZone, task);
+    }
+  }
+  onHasTask(delegate, current, target, hasTaskState) {
+    this.lastTaskState = hasTaskState;
+    if (this._delegateSpec && this._delegateSpec.onHasTask) {
+      this._delegateSpec.onHasTask(delegate, current, target, hasTaskState);
+    } else {
+      delegate.hasTask(target, hasTaskState);
+    }
+  }
+};
+function patchProxyZoneSpec(Zone22) {
+  Zone22["ProxyZoneSpec"] = ProxyZoneSpec;
+}
+var global22 = typeof window === "object" && window || typeof self === "object" && self || globalThis.global;
+var originalSetImmediate = global22.setImmediate;
+var originalTimeout = global22.setTimeout;
+var OriginalDate = global22.Date;
+function FakeDate() {
+  if (arguments.length === 0) {
+    const d = new OriginalDate();
+    d.setTime(FakeDate.now());
+    return d;
+  } else {
+    const args = Array.prototype.slice.call(arguments);
+    return new OriginalDate(...args);
+  }
+}
+FakeDate.now = function() {
+  const fakeAsyncTestZoneSpec = Zone.current.get("FakeAsyncTestZoneSpec");
+  if (fakeAsyncTestZoneSpec) {
+    return fakeAsyncTestZoneSpec.getFakeSystemTime();
+  }
+  return OriginalDate.now.apply(this, arguments);
+};
+FakeDate.UTC = OriginalDate.UTC;
+FakeDate.parse = OriginalDate.parse;
+var patchedTimers;
+var timeoutCallback = function() {
+};
+var _Scheduler = class _Scheduler2 {
+  constructor() {
+    __publicField2(this, "_schedulerQueue", []);
+    __publicField2(this, "_currentTickTime", 0);
+    __publicField2(this, "_currentFakeBaseSystemTime", OriginalDate.now());
+    __publicField2(this, "_currentTickRequeuePeriodicEntries", []);
+  }
+  static getNextId() {
+    const id = patchedTimers.nativeSetTimeout.call(global22, timeoutCallback, 0);
+    patchedTimers.nativeClearTimeout.call(global22, id);
+    if (typeof id === "number") {
+      return id;
+    }
+    return _Scheduler2.nextNodeJSId++;
+  }
+  getCurrentTickTime() {
+    return this._currentTickTime;
+  }
+  getFakeSystemTime() {
+    return this._currentFakeBaseSystemTime + this._currentTickTime;
+  }
+  setFakeBaseSystemTime(fakeBaseSystemTime) {
+    this._currentFakeBaseSystemTime = fakeBaseSystemTime;
+  }
+  getRealSystemTime() {
+    return OriginalDate.now();
+  }
+  scheduleFunction(cb, delay, options) {
+    options = __spreadValues2(__spreadValues2({}, {
+      args: [],
+      isPeriodic: false,
+      isRequestAnimationFrame: false,
+      id: -1,
+      isRequeuePeriodic: false
+    }), options);
+    let currentId = options.id < 0 ? _Scheduler2.nextId : options.id;
+    _Scheduler2.nextId = _Scheduler2.getNextId();
+    let endTime = this._currentTickTime + delay;
+    let newEntry = {
+      endTime,
+      id: currentId,
+      func: cb,
+      args: options.args,
+      delay,
+      isPeriodic: options.isPeriodic,
+      isRequestAnimationFrame: options.isRequestAnimationFrame
+    };
+    if (options.isRequeuePeriodic) {
+      this._currentTickRequeuePeriodicEntries.push(newEntry);
+    }
+    let i = 0;
+    for (; i < this._schedulerQueue.length; i++) {
+      let currentEntry = this._schedulerQueue[i];
+      if (newEntry.endTime < currentEntry.endTime) {
+        break;
+      }
+    }
+    this._schedulerQueue.splice(i, 0, newEntry);
+    return currentId;
+  }
+  removeScheduledFunctionWithId(id) {
+    for (let i = 0; i < this._schedulerQueue.length; i++) {
+      if (this._schedulerQueue[i].id == id) {
+        this._schedulerQueue.splice(i, 1);
+        break;
+      }
+    }
+  }
+  removeAll() {
+    this._schedulerQueue = [];
+  }
+  getTimerCount() {
+    return this._schedulerQueue.length;
+  }
+  tickToNext(step = 1, doTick, tickOptions) {
+    if (this._schedulerQueue.length < step) {
+      return;
+    }
+    const startTime = this._currentTickTime;
+    const targetTask = this._schedulerQueue[step - 1];
+    this.tick(targetTask.endTime - startTime, doTick, tickOptions);
+  }
+  tick(millis = 0, doTick, tickOptions) {
+    let finalTime = this._currentTickTime + millis;
+    let lastCurrentTime = 0;
+    tickOptions = Object.assign({ processNewMacroTasksSynchronously: true }, tickOptions);
+    const schedulerQueue = tickOptions.processNewMacroTasksSynchronously ? this._schedulerQueue : this._schedulerQueue.slice();
+    if (schedulerQueue.length === 0 && doTick) {
+      doTick(millis);
+      return;
+    }
+    while (schedulerQueue.length > 0) {
+      this._currentTickRequeuePeriodicEntries = [];
+      let current = schedulerQueue[0];
+      if (finalTime < current.endTime) {
+        break;
+      } else {
+        let current2 = schedulerQueue.shift();
+        if (!tickOptions.processNewMacroTasksSynchronously) {
+          const idx = this._schedulerQueue.indexOf(current2);
+          if (idx >= 0) {
+            this._schedulerQueue.splice(idx, 1);
+          }
+        }
+        lastCurrentTime = this._currentTickTime;
+        this._currentTickTime = current2.endTime;
+        if (doTick) {
+          doTick(this._currentTickTime - lastCurrentTime);
+        }
+        let retval = current2.func.apply(global22, current2.isRequestAnimationFrame ? [this._currentTickTime] : current2.args);
+        if (!retval) {
+          break;
+        }
+        if (!tickOptions.processNewMacroTasksSynchronously) {
+          this._currentTickRequeuePeriodicEntries.forEach((newEntry) => {
+            let i = 0;
+            for (; i < schedulerQueue.length; i++) {
+              const currentEntry = schedulerQueue[i];
+              if (newEntry.endTime < currentEntry.endTime) {
+                break;
+              }
+            }
+            schedulerQueue.splice(i, 0, newEntry);
+          });
+        }
+      }
+    }
+    lastCurrentTime = this._currentTickTime;
+    this._currentTickTime = finalTime;
+    if (doTick) {
+      doTick(this._currentTickTime - lastCurrentTime);
+    }
+  }
+  executeNextTask(doTick) {
+    const current = this._schedulerQueue.shift();
+    if (current === void 0) {
+      return;
+    }
+    doTick == null ? void 0 : doTick(current.endTime - this._currentTickTime);
+    this._currentTickTime = current.endTime;
+    current.func.apply(global22, current.isRequestAnimationFrame ? [this._currentTickTime] : current.args);
+  }
+  flushOnlyPendingTimers(doTick) {
+    if (this._schedulerQueue.length === 0) {
+      return 0;
+    }
+    const startTime = this._currentTickTime;
+    const lastTask = this._schedulerQueue[this._schedulerQueue.length - 1];
+    this.tick(lastTask.endTime - startTime, doTick, { processNewMacroTasksSynchronously: false });
+    return this._currentTickTime - startTime;
+  }
+  flush(limit = 20, flushPeriodic = false, doTick) {
+    if (flushPeriodic) {
+      return this.flushPeriodic(doTick);
+    } else {
+      return this.flushNonPeriodic(limit, doTick);
+    }
+  }
+  flushPeriodic(doTick) {
+    if (this._schedulerQueue.length === 0) {
+      return 0;
+    }
+    const startTime = this._currentTickTime;
+    const lastTask = this._schedulerQueue[this._schedulerQueue.length - 1];
+    this.tick(lastTask.endTime - startTime, doTick);
+    return this._currentTickTime - startTime;
+  }
+  flushNonPeriodic(limit, doTick) {
+    const startTime = this._currentTickTime;
+    let lastCurrentTime = 0;
+    let count = 0;
+    while (this._schedulerQueue.length > 0) {
+      count++;
+      if (count > limit) {
+        throw new Error("flush failed after reaching the limit of " + limit + " tasks. Does your code use a polling timeout?");
+      }
+      if (this._schedulerQueue.filter((task) => !task.isPeriodic && !task.isRequestAnimationFrame).length === 0) {
+        break;
+      }
+      const current = this._schedulerQueue.shift();
+      lastCurrentTime = this._currentTickTime;
+      this._currentTickTime = current.endTime;
+      if (doTick) {
+        doTick(this._currentTickTime - lastCurrentTime);
+      }
+      const retval = current.func.apply(global22, current.args);
+      if (!retval) {
+        break;
+      }
+    }
+    return this._currentTickTime - startTime;
+  }
+};
+__publicField2(_Scheduler, "nextNodeJSId", 1);
+__publicField2(_Scheduler, "nextId", -1);
+var Scheduler = _Scheduler;
+var FakeAsyncTestZoneSpec = class _FakeAsyncTestZoneSpec {
+  constructor(namePrefix, trackPendingRequestAnimationFrame = false, macroTaskOptions) {
+    __publicField2(this, "trackPendingRequestAnimationFrame");
+    __publicField2(this, "macroTaskOptions");
+    __publicField2(this, "_scheduler", new Scheduler());
+    __publicField2(this, "_microtasks", []);
+    __publicField2(this, "_lastError", null);
+    __publicField2(this, "_uncaughtPromiseErrors", Promise[Zone.__symbol__("uncaughtPromiseErrors")]);
+    __publicField2(this, "pendingPeriodicTimers", []);
+    __publicField2(this, "pendingTimers", []);
+    __publicField2(this, "patchDateLocked", false);
+    __publicField2(this, "tickMode", {
+      counter: 0,
+      mode: "manual"
+    });
+    __publicField2(this, "name");
+    __publicField2(this, "properties", { "FakeAsyncTestZoneSpec": this });
+    this.trackPendingRequestAnimationFrame = trackPendingRequestAnimationFrame;
+    this.macroTaskOptions = macroTaskOptions;
+    this.name = "fakeAsyncTestZone for " + namePrefix;
+    if (!this.macroTaskOptions) {
+      this.macroTaskOptions = global22[Zone.__symbol__("FakeAsyncTestMacroTask")];
+    }
+  }
+  static assertInZone() {
+    if (Zone.current.get("FakeAsyncTestZoneSpec") == null) {
+      throw new Error("The code should be running in the fakeAsync zone to call this function");
+    }
+  }
+  _fnAndFlush(fn, completers) {
+    return (...args) => {
+      fn.apply(global22, args);
+      if (this._lastError === null) {
+        if (completers.onSuccess != null) {
+          completers.onSuccess.apply(global22);
+        }
+        this.flushMicrotasks();
+      } else {
+        if (completers.onError != null) {
+          completers.onError.apply(global22);
+        }
+      }
+      return this._lastError === null;
+    };
+  }
+  static _removeTimer(timers, id) {
+    let index = timers.indexOf(id);
+    if (index > -1) {
+      timers.splice(index, 1);
+    }
+  }
+  _dequeueTimer(id) {
+    return () => {
+      _FakeAsyncTestZoneSpec._removeTimer(this.pendingTimers, id);
+    };
+  }
+  _requeuePeriodicTimer(fn, interval, args, id) {
+    return () => {
+      if (this.pendingPeriodicTimers.indexOf(id) !== -1) {
+        this._scheduler.scheduleFunction(fn, interval, {
+          args,
+          isPeriodic: true,
+          id,
+          isRequeuePeriodic: true
+        });
+      }
+    };
+  }
+  _dequeuePeriodicTimer(id) {
+    return () => {
+      _FakeAsyncTestZoneSpec._removeTimer(this.pendingPeriodicTimers, id);
+    };
+  }
+  _setTimeout(fn, delay, args, isTimer = true) {
+    let removeTimerFn = this._dequeueTimer(Scheduler.nextId);
+    let cb = this._fnAndFlush(fn, { onSuccess: removeTimerFn, onError: removeTimerFn });
+    let id = this._scheduler.scheduleFunction(cb, delay, { args, isRequestAnimationFrame: !isTimer });
+    if (isTimer) {
+      this.pendingTimers.push(id);
+    }
+    return id;
+  }
+  _clearTimeout(id) {
+    _FakeAsyncTestZoneSpec._removeTimer(this.pendingTimers, id);
+    this._scheduler.removeScheduledFunctionWithId(id);
+  }
+  _setInterval(fn, interval, args) {
+    let id = Scheduler.nextId;
+    let completers = { onSuccess: null, onError: this._dequeuePeriodicTimer(id) };
+    let cb = this._fnAndFlush(fn, completers);
+    completers.onSuccess = this._requeuePeriodicTimer(cb, interval, args, id);
+    this._scheduler.scheduleFunction(cb, interval, { args, isPeriodic: true });
+    this.pendingPeriodicTimers.push(id);
+    return id;
+  }
+  _clearInterval(id) {
+    _FakeAsyncTestZoneSpec._removeTimer(this.pendingPeriodicTimers, id);
+    this._scheduler.removeScheduledFunctionWithId(id);
+  }
+  _resetLastErrorAndThrow() {
+    let error = this._lastError || this._uncaughtPromiseErrors[0];
+    this._uncaughtPromiseErrors.length = 0;
+    this._lastError = null;
+    throw error;
+  }
+  getCurrentTickTime() {
+    return this._scheduler.getCurrentTickTime();
+  }
+  getFakeSystemTime() {
+    return this._scheduler.getFakeSystemTime();
+  }
+  setFakeBaseSystemTime(realTime) {
+    this._scheduler.setFakeBaseSystemTime(realTime);
+  }
+  getRealSystemTime() {
+    return this._scheduler.getRealSystemTime();
+  }
+  static patchDate() {
+    if (!!global22[Zone.__symbol__("disableDatePatching")]) {
+      return;
+    }
+    if (global22["Date"] === FakeDate) {
+      return;
+    }
+    global22["Date"] = FakeDate;
+    FakeDate.prototype = OriginalDate.prototype;
+    _FakeAsyncTestZoneSpec.checkTimerPatch();
+  }
+  static resetDate() {
+    if (global22["Date"] === FakeDate) {
+      global22["Date"] = OriginalDate;
+    }
+  }
+  static checkTimerPatch() {
+    if (!patchedTimers) {
+      throw new Error("Expected timers to have been patched.");
+    }
+    if (global22.setTimeout !== patchedTimers.setTimeout) {
+      global22.setTimeout = patchedTimers.setTimeout;
+      global22.clearTimeout = patchedTimers.clearTimeout;
+    }
+    if (global22.setInterval !== patchedTimers.setInterval) {
+      global22.setInterval = patchedTimers.setInterval;
+      global22.clearInterval = patchedTimers.clearInterval;
+    }
+  }
+  lockDatePatch() {
+    this.patchDateLocked = true;
+    _FakeAsyncTestZoneSpec.patchDate();
+  }
+  unlockDatePatch() {
+    this.patchDateLocked = false;
+    _FakeAsyncTestZoneSpec.resetDate();
+  }
+  /** @experimental */
+  setTickMode(mode, doTick) {
+    if (mode === this.tickMode.mode) {
+      return;
+    }
+    this.tickMode.counter++;
+    this.tickMode.mode = mode;
+    if (mode === "automatic") {
+      this.advanceUntilModeChanges(doTick);
+    }
+  }
+  advanceUntilModeChanges(doTick) {
+    _FakeAsyncTestZoneSpec.assertInZone();
+    const specZone = Zone.current;
+    const { counter } = this.tickMode;
+    Zone.root.run(() => __async(this, null, function* () {
+      yield safeAsync(() => __async(this, null, function* () {
+        yield void 0;
+        specZone.run(() => {
+          this.flushMicrotasks();
+        });
+      }));
+      if (this.tickMode.counter !== counter) {
+        return;
+      }
+      while (true) {
+        yield safeAsync(() => this.newMacrotask(specZone));
+        if (this.tickMode.counter !== counter) {
+          return;
+        }
+        yield safeAsync(() => specZone.run(() => {
+          this._scheduler.executeNextTask(doTick);
+        }));
+      }
+    }));
+  }
+  // Waits until a new macro task.
+  //
+  // Used with autoTick(), which is meant to act when the test is waiting, we
+  // need to insert ourselves in the macro task queue.
+  //
+  // @return {!Promise<undefined>}
+  newMacrotask(specZone) {
+    return __async(this, null, function* () {
+      if (originalSetImmediate) {
+        yield new Promise((resolve) => {
+          originalSetImmediate(resolve);
+        });
+      } else {
+        const channel = new MessageChannel();
+        yield new Promise((resolve) => {
+          channel.port1.onmessage = resolve;
+          channel.port2.postMessage(void 0);
+        });
+        channel.port1.close();
+        channel.port2.close();
+        yield new Promise((resolve) => {
+          originalTimeout(resolve);
+        });
+      }
+      specZone.run(() => {
+        this.flushMicrotasks();
+      });
+    });
+  }
+  tickToNext(steps = 1, doTick, tickOptions = { processNewMacroTasksSynchronously: true }) {
+    if (steps <= 0) {
+      return;
+    }
+    _FakeAsyncTestZoneSpec.assertInZone();
+    this.flushMicrotasks();
+    this._scheduler.tickToNext(steps, doTick, tickOptions);
+    if (this._lastError !== null) {
+      this._resetLastErrorAndThrow();
+    }
+  }
+  tick(millis = 0, doTick, tickOptions = { processNewMacroTasksSynchronously: true }) {
+    _FakeAsyncTestZoneSpec.assertInZone();
+    this.flushMicrotasks();
+    this._scheduler.tick(millis, doTick, tickOptions);
+    if (this._lastError !== null) {
+      this._resetLastErrorAndThrow();
+    }
+  }
+  flushMicrotasks() {
+    _FakeAsyncTestZoneSpec.assertInZone();
+    const flushErrors = () => {
+      if (this._lastError !== null || this._uncaughtPromiseErrors.length) {
+        this._resetLastErrorAndThrow();
+      }
+    };
+    while (this._microtasks.length > 0) {
+      let microtask = this._microtasks.shift();
+      microtask.func.apply(microtask.target, microtask.args);
+    }
+    flushErrors();
+  }
+  flush(limit, flushPeriodic, doTick) {
+    _FakeAsyncTestZoneSpec.assertInZone();
+    this.flushMicrotasks();
+    const elapsed = this._scheduler.flush(limit, flushPeriodic, doTick);
+    if (this._lastError !== null) {
+      this._resetLastErrorAndThrow();
+    }
+    return elapsed;
+  }
+  flushOnlyPendingTimers(doTick) {
+    _FakeAsyncTestZoneSpec.assertInZone();
+    this.flushMicrotasks();
+    const elapsed = this._scheduler.flushOnlyPendingTimers(doTick);
+    if (this._lastError !== null) {
+      this._resetLastErrorAndThrow();
+    }
+    return elapsed;
+  }
+  removeAllTimers() {
+    _FakeAsyncTestZoneSpec.assertInZone();
+    this._scheduler.removeAll();
+    this.pendingPeriodicTimers = [];
+    this.pendingTimers = [];
+  }
+  getTimerCount() {
+    return this._scheduler.getTimerCount() + this._microtasks.length;
+  }
+  onScheduleTask(delegate, current, target, task) {
+    switch (task.type) {
+      case "microTask":
+        let args = task.data && task.data.args;
+        let additionalArgs;
+        if (args) {
+          let callbackIndex = task.data.cbIdx;
+          if (typeof args.length === "number" && args.length > callbackIndex + 1) {
+            additionalArgs = Array.prototype.slice.call(args, callbackIndex + 1);
+          }
+        }
+        this._microtasks.push({
+          func: task.invoke,
+          args: additionalArgs,
+          target: task.data && task.data.target
+        });
+        break;
+      case "macroTask":
+        switch (task.source) {
+          case "setTimeout":
+            task.data["handleId"] = this._setTimeout(task.invoke, task.data["delay"], Array.prototype.slice.call(task.data["args"], 2));
+            break;
+          case "setImmediate":
+            task.data["handleId"] = this._setTimeout(task.invoke, 0, Array.prototype.slice.call(task.data["args"], 1));
+            break;
+          case "setInterval":
+            task.data["handleId"] = this._setInterval(task.invoke, task.data["delay"], Array.prototype.slice.call(task.data["args"], 2));
+            break;
+          case "XMLHttpRequest.send":
+            if (this.tickMode.mode === "manual") {
+              throw new Error("Cannot make XHRs from within a fake async test. Request URL: " + task.data["url"]);
+            }
+            task = delegate.scheduleTask(target, task);
+            break;
+          case "requestAnimationFrame":
+          case "webkitRequestAnimationFrame":
+          case "mozRequestAnimationFrame":
+            task.data["handleId"] = this._setTimeout(task.invoke, 16, task.data["args"], this.trackPendingRequestAnimationFrame);
+            break;
+          default:
+            const macroTaskOption = this.findMacroTaskOption(task);
+            if (macroTaskOption) {
+              const args2 = task.data && task.data["args"];
+              const delay = args2 && args2.length > 1 ? args2[1] : 0;
+              let callbackArgs = macroTaskOption.callbackArgs ? macroTaskOption.callbackArgs : args2;
+              if (!!macroTaskOption.isPeriodic) {
+                task.data["handleId"] = this._setInterval(task.invoke, delay, callbackArgs);
+                task.data.isPeriodic = true;
+              } else {
+                task.data["handleId"] = this._setTimeout(task.invoke, delay, callbackArgs);
+              }
+              break;
+            }
+            throw new Error("Unknown macroTask scheduled in fake async test: " + task.source);
+        }
+        break;
+      case "eventTask":
+        task = delegate.scheduleTask(target, task);
+        break;
+    }
+    return task;
+  }
+  onCancelTask(delegate, current, target, task) {
+    switch (task.source) {
+      case "setTimeout":
+      case "requestAnimationFrame":
+      case "webkitRequestAnimationFrame":
+      case "mozRequestAnimationFrame":
+        return this._clearTimeout(task.data["handleId"]);
+      case "setInterval":
+        return this._clearInterval(task.data["handleId"]);
+      default:
+        const macroTaskOption = this.findMacroTaskOption(task);
+        if (macroTaskOption) {
+          const handleId = task.data["handleId"];
+          return macroTaskOption.isPeriodic ? this._clearInterval(handleId) : this._clearTimeout(handleId);
+        }
+        return delegate.cancelTask(target, task);
+    }
+  }
+  onInvoke(delegate, current, target, callback, applyThis, applyArgs, source) {
+    try {
+      _FakeAsyncTestZoneSpec.patchDate();
+      return delegate.invoke(target, callback, applyThis, applyArgs, source);
+    } finally {
+      if (!this.patchDateLocked) {
+        _FakeAsyncTestZoneSpec.resetDate();
+      }
+    }
+  }
+  findMacroTaskOption(task) {
+    if (!this.macroTaskOptions) {
+      return null;
+    }
+    for (let i = 0; i < this.macroTaskOptions.length; i++) {
+      const macroTaskOption = this.macroTaskOptions[i];
+      if (macroTaskOption.source === task.source) {
+        return macroTaskOption;
+      }
+    }
+    return null;
+  }
+  onHandleError(parentZoneDelegate, currentZone, targetZone, error) {
+    this._lastError = error;
+    return false;
+  }
+};
+var _fakeAsyncTestZoneSpec = null;
+function getProxyZoneSpec() {
+  return Zone && Zone["ProxyZoneSpec"];
+}
+var _sharedProxyZoneSpec = null;
+var _sharedProxyZone = null;
+function resetFakeAsyncZone() {
+  var _a, _b;
+  if (_fakeAsyncTestZoneSpec) {
+    _fakeAsyncTestZoneSpec.unlockDatePatch();
+  }
+  _fakeAsyncTestZoneSpec = null;
+  (_b = (_a = getProxyZoneSpec()) == null ? void 0 : _a.get()) == null ? void 0 : _b.resetDelegate();
+  _sharedProxyZoneSpec == null ? void 0 : _sharedProxyZoneSpec.resetDelegate();
+}
+function fakeAsync(fn, options = {}) {
+  const { flush: flush2 = true } = options;
+  const fakeAsyncFn = function(...args) {
+    const ProxyZoneSpec2 = getProxyZoneSpec();
+    if (!ProxyZoneSpec2) {
+      throwProxyZoneError();
+    }
+    const proxyZoneSpec = ProxyZoneSpec2.assertPresent();
+    if (Zone.current.get("FakeAsyncTestZoneSpec")) {
+      throw new Error("fakeAsync() calls can not be nested");
+    }
+    try {
+      if (!_fakeAsyncTestZoneSpec) {
+        const FakeAsyncTestZoneSpec2 = Zone && Zone["FakeAsyncTestZoneSpec"];
+        if (proxyZoneSpec.getDelegate() instanceof FakeAsyncTestZoneSpec2) {
+          throw new Error("fakeAsync() calls can not be nested");
+        }
+        _fakeAsyncTestZoneSpec = new FakeAsyncTestZoneSpec2();
+      }
+      let res;
+      const lastProxyZoneSpec = proxyZoneSpec.getDelegate();
+      proxyZoneSpec.setDelegate(_fakeAsyncTestZoneSpec);
+      _fakeAsyncTestZoneSpec.lockDatePatch();
+      try {
+        res = fn.apply(this, args);
+        if (flush2) {
+          _fakeAsyncTestZoneSpec.flush(20, true);
+        } else {
+          flushMicrotasks();
+        }
+      } finally {
+        proxyZoneSpec.setDelegate(lastProxyZoneSpec);
+      }
+      if (!flush2) {
+        if (_fakeAsyncTestZoneSpec.pendingPeriodicTimers.length > 0) {
+          throw new Error(`${_fakeAsyncTestZoneSpec.pendingPeriodicTimers.length} periodic timer(s) still in the queue.`);
+        }
+        if (_fakeAsyncTestZoneSpec.pendingTimers.length > 0) {
+          throw new Error(`${_fakeAsyncTestZoneSpec.pendingTimers.length} timer(s) still in the queue.`);
+        }
+      }
+      return res;
+    } finally {
+      resetFakeAsyncZone();
+    }
+  };
+  fakeAsyncFn.isFakeAsync = true;
+  return fakeAsyncFn;
+}
+function _getFakeAsyncZoneSpec() {
+  if (_fakeAsyncTestZoneSpec == null) {
+    _fakeAsyncTestZoneSpec = Zone.current.get("FakeAsyncTestZoneSpec");
+    if (_fakeAsyncTestZoneSpec == null) {
+      throw new Error("The code should be running in the fakeAsync zone to call this function");
+    }
+  }
+  return _fakeAsyncTestZoneSpec;
+}
+function tick(millis = 0, ignoreNestedTimeout = false) {
+  _getFakeAsyncZoneSpec().tick(millis, null, ignoreNestedTimeout);
+}
+function flush(maxTurns) {
+  return _getFakeAsyncZoneSpec().flush(maxTurns);
+}
+function discardPeriodicTasks() {
+  const zoneSpec = _getFakeAsyncZoneSpec();
+  const pendingTimers = zoneSpec.pendingPeriodicTimers;
+  zoneSpec.pendingPeriodicTimers.length = 0;
+}
+function withProxyZone(fn) {
+  const autoProxyFn = function(...args) {
+    const proxyZoneSpec = getProxyZoneSpec();
+    if (proxyZoneSpec === void 0) {
+      throw new Error("ProxyZoneSpec is needed for the withProxyZone() test helper but could not be found. Make sure that your environment includes zone-testing.js");
+    }
+    const proxyZone = proxyZoneSpec.get() !== void 0 ? Zone.current : getOrCreateRootProxy();
+    return proxyZone.run(fn, this, args);
+  };
+  return autoProxyFn;
+}
+function getOrCreateRootProxy() {
+  const ProxyZoneSpec2 = getProxyZoneSpec();
+  if (ProxyZoneSpec2 === void 0) {
+    throw new Error("ProxyZoneSpec is needed for withProxyZone but could not be found. Make sure that your environment includes zone-testing.js");
+  }
+  if (_sharedProxyZoneSpec === null) {
+    _sharedProxyZoneSpec = new ProxyZoneSpec2();
+  }
+  _sharedProxyZone = Zone.root.fork(_sharedProxyZoneSpec);
+  return _sharedProxyZone;
+}
+function flushMicrotasks() {
+  _getFakeAsyncZoneSpec().flushMicrotasks();
+}
+function patchFakeAsyncTest(Zone22) {
+  Zone22["FakeAsyncTestZoneSpec"] = FakeAsyncTestZoneSpec;
+  Zone22.__load_patch("fakeasync", (global32, Zone3, api) => {
+    Zone3[api.symbol("fakeAsyncTest")] = {
+      resetFakeAsyncZone,
+      flushMicrotasks,
+      discardPeriodicTasks,
+      tick,
+      flush,
+      fakeAsync,
+      withProxyZone
+    };
+  }, true);
+  patchedTimers = {
+    setTimeout: global22.setTimeout,
+    setInterval: global22.setInterval,
+    clearTimeout: global22.clearTimeout,
+    clearInterval: global22.clearInterval,
+    nativeSetTimeout: global22[Zone22.__symbol__("setTimeout")],
+    nativeClearTimeout: global22[Zone22.__symbol__("clearTimeout")]
+  };
+  Scheduler.nextId = Scheduler.getNextId();
+}
+function safeAsync(fn) {
+  return __async(this, null, function* () {
+    try {
+      return yield fn();
+    } catch (e) {
+      hostReportError(e);
+    }
+  });
+}
+function hostReportError(e) {
+  Zone.root.run(() => {
+    originalTimeout(() => {
+      throw e;
+    });
+  });
+}
+function patchLongStackTrace(Zone22) {
+  const NEWLINE = "\n";
+  const IGNORE_FRAMES = {};
+  const creationTrace = "__creationTrace__";
+  const ERROR_TAG = "STACKTRACE TRACKING";
+  const SEP_TAG = "__SEP_TAG__";
+  let sepTemplate = SEP_TAG + "@[native]";
+  class LongStackTrace {
+    constructor() {
+      __publicField2(this, "error", getStacktrace());
+      __publicField2(this, "timestamp", /* @__PURE__ */ new Date());
+    }
+  }
+  function getStacktraceWithUncaughtError() {
+    return new Error(ERROR_TAG);
+  }
+  function getStacktraceWithCaughtError() {
+    try {
+      throw getStacktraceWithUncaughtError();
+    } catch (err) {
+      return err;
+    }
+  }
+  const error = getStacktraceWithUncaughtError();
+  const caughtError = getStacktraceWithCaughtError();
+  const getStacktrace = error.stack ? getStacktraceWithUncaughtError : caughtError.stack ? getStacktraceWithCaughtError : getStacktraceWithUncaughtError;
+  function getFrames(error2) {
+    return error2.stack ? error2.stack.split(NEWLINE) : [];
+  }
+  function addErrorStack(lines, error2) {
+    let trace = getFrames(error2);
+    for (let i = 0; i < trace.length; i++) {
+      const frame = trace[i];
+      if (!Object.hasOwn(IGNORE_FRAMES, frame)) {
+        lines.push(trace[i]);
+      }
+    }
+  }
+  function renderLongStackTrace(frames, stack) {
+    const longTrace = [stack ? stack.trim() : ""];
+    if (frames) {
+      let timestamp = (/* @__PURE__ */ new Date()).getTime();
+      for (let i = 0; i < frames.length; i++) {
+        const traceFrames = frames[i];
+        const lastTime = traceFrames.timestamp;
+        let separator = `____________________Elapsed ${timestamp - lastTime.getTime()} ms; At: ${lastTime}`;
+        separator = separator.replace(/[^\w\d]/g, "_");
+        longTrace.push(sepTemplate.replace(SEP_TAG, separator));
+        addErrorStack(longTrace, traceFrames.error);
+        timestamp = lastTime.getTime();
+      }
+    }
+    return longTrace.join(NEWLINE);
+  }
+  function stackTracesEnabled() {
+    return Error.stackTraceLimit > 0;
+  }
+  Zone22["longStackTraceZoneSpec"] = {
+    name: "long-stack-trace",
+    longStackTraceLimit: 10,
+    // Max number of task to keep the stack trace for.
+    // add a getLongStackTrace method in spec to
+    // handle handled reject promise error.
+    getLongStackTrace: function(error2) {
+      if (!error2) {
+        return void 0;
+      }
+      const trace = error2[Zone22.__symbol__("currentTaskTrace")];
+      if (!trace) {
+        return error2.stack;
+      }
+      return renderLongStackTrace(trace, error2.stack);
+    },
+    onScheduleTask: function(parentZoneDelegate, currentZone, targetZone, task) {
+      if (stackTracesEnabled()) {
+        const currentTask = Zone22.currentTask;
+        let trace = currentTask && currentTask.data && currentTask.data[creationTrace] || [];
+        trace = [new LongStackTrace()].concat(trace);
+        if (trace.length > this.longStackTraceLimit) {
+          trace.length = this.longStackTraceLimit;
+        }
+        if (!task.data)
+          task.data = {};
+        if (task.type === "eventTask") {
+          task.data = __spreadValues2({}, task.data);
+        }
+        task.data[creationTrace] = trace;
+      }
+      return parentZoneDelegate.scheduleTask(targetZone, task);
+    },
+    onHandleError: function(parentZoneDelegate, currentZone, targetZone, error2) {
+      if (stackTracesEnabled()) {
+        const parentTask = Zone22.currentTask || error2.task;
+        if (error2 instanceof Error && parentTask) {
+          const longStack = renderLongStackTrace(parentTask.data && parentTask.data[creationTrace], error2.stack);
+          try {
+            error2.stack = error2.longStack = longStack;
+          } catch (err) {
+          }
+        }
+      }
+      return parentZoneDelegate.handleError(targetZone, error2);
+    }
+  };
+  function captureStackTraces(stackTraces, count) {
+    if (count > 0) {
+      stackTraces.push(getFrames(new LongStackTrace().error));
+      captureStackTraces(stackTraces, count - 1);
+    }
+  }
+  function computeIgnoreFrames() {
+    if (!stackTracesEnabled()) {
+      return;
+    }
+    const frames = [];
+    captureStackTraces(frames, 2);
+    const frames1 = frames[0];
+    const frames2 = frames[1];
+    for (let i = 0; i < frames1.length; i++) {
+      const frame1 = frames1[i];
+      if (frame1.indexOf(ERROR_TAG) == -1) {
+        let match = frame1.match(/^\s*at\s+/);
+        if (match) {
+          sepTemplate = match[0] + SEP_TAG + " (http://localhost)";
+          break;
+        }
+      }
+    }
+    for (let i = 0; i < frames1.length; i++) {
+      const frame1 = frames1[i];
+      const frame2 = frames2[i];
+      if (frame1 === frame2) {
+        IGNORE_FRAMES[frame1] = true;
+      } else {
+        break;
+      }
+    }
+  }
+  computeIgnoreFrames();
+}
+function patchSyncTest(Zone22) {
+  class SyncTestZoneSpec {
+    constructor(namePrefix) {
+      __publicField2(this, "runZone", Zone22.current);
+      __publicField2(this, "name");
+      this.name = "syncTestZone for " + namePrefix;
+    }
+    onScheduleTask(delegate, current, target, task) {
+      switch (task.type) {
+        case "microTask":
+        case "macroTask":
+          throw new Error(`Cannot call ${task.source} from within a sync test (${this.name}).`);
+        case "eventTask":
+          task = delegate.scheduleTask(target, task);
+          break;
+      }
+      return task;
+    }
+  }
+  Zone22["SyncTestZoneSpec"] = SyncTestZoneSpec;
+}
+function patchPromiseTesting(Zone22) {
+  Zone22.__load_patch("promisefortest", (global32, Zone3, api) => {
+    const symbolState = api.symbol("state");
+    const UNRESOLVED = null;
+    const symbolParentUnresolved = api.symbol("parentUnresolved");
+    Promise[api.symbol("patchPromiseForTest")] = function patchPromiseForTest() {
+      let oriThen = Promise[Zone3.__symbol__("ZonePromiseThen")];
+      if (oriThen) {
+        return;
+      }
+      oriThen = Promise[Zone3.__symbol__("ZonePromiseThen")] = Promise.prototype.then;
+      Promise.prototype.then = function() {
+        const chained = oriThen.apply(this, arguments);
+        if (this[symbolState] === UNRESOLVED) {
+          const asyncTestZoneSpec = Zone3.current.get("AsyncTestZoneSpec");
+          if (asyncTestZoneSpec) {
+            asyncTestZoneSpec.unresolvedChainedPromiseCount++;
+            chained[symbolParentUnresolved] = true;
+          }
+        }
+        return chained;
+      };
+    };
+    Promise[api.symbol("unPatchPromiseForTest")] = function unpatchPromiseForTest() {
+      const oriThen = Promise[Zone3.__symbol__("ZonePromiseThen")];
+      if (oriThen) {
+        Promise.prototype.then = oriThen;
+        Promise[Zone3.__symbol__("ZonePromiseThen")] = void 0;
+      }
+    };
+  });
+}
+function rollupTesting(Zone22) {
+  patchLongStackTrace(Zone22);
+  patchProxyZoneSpec(Zone22);
+  patchSyncTest(Zone22);
+  patchJasmine(Zone22);
+  patchJest(Zone22);
+  patchMocha(Zone22);
+  patchAsyncTest(Zone22);
+  patchFakeAsyncTest(Zone22);
+  patchPromiseTesting(Zone22);
+}
+rollupTesting(Zone);
+
+// src/polyfills.ts
+var import_reflect = __toESM(require_reflect());
+//# debugId=5dd90f7c-1dd5-5520-a2c5-166a54910fa6
 //# sourceMappingURL=polyfills.js.map
