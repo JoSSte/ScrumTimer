@@ -8,7 +8,7 @@ describe('HelpComponent', () => {
   let fixture: ComponentFixture<HelpComponent>;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       declarations: [HelpComponent],
       providers: [
         provideHttpClient(withXhr(), withInterceptorsFromDi()),

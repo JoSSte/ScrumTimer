@@ -10,7 +10,7 @@ describe('SettingsComponent', () => {
   //let service: SettingsService;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       declarations: [SettingsComponent],
       providers: [SettingsService],
       imports: [

@@ -16,7 +16,7 @@ describe('TimerComponent', () => {
   let fixture: ComponentFixture<TimerComponent>;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
     imports: [AppModule, CommonModule, RouterTestingModule.withRoutes([]),
       FormsModule,
       SecsPipe],

@@ -15,7 +15,7 @@ describe('ParticipantListComponent', () => {
   let fixture: ComponentFixture<ParticipantListComponent>;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
     declarations: [
         ParticipantListComponent
     ],

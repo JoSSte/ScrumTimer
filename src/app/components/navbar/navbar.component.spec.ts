@@ -24,7 +24,7 @@ describe('NavbarComponent', () => {
   } as unknown as Window;
 */
   beforeEach(async () => {
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       declarations: [NavbarComponent],
       imports: [
         CommonModule,

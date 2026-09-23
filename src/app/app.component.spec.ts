@@ -8,7 +8,7 @@ import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/com
 
 describe('AppComponent', () => {
   beforeEach(async () => {
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
     declarations: [
         NavbarComponent,
         AppComponent
